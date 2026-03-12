@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>Gfinance</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>166.48.219.202</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+<string>This app needs your location to show map</string>
+
+<key>NSLocationAlwaysUsageDescription</key>
+<string>This app needs your location to show map</string>
+
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>This app needs your location to show map</string>
+
+	<key>UIAppFonts</key>
+	<array>
+	  <string>MaterialIcons.ttf</string>
+       <string>Ionicons.ttf</string>
+      <string>FontAwesome.ttf</string>
+		<string>TT Neoris Trial Black Italic.ttf</string>
+		<string>TT Neoris Trial Black.ttf</string>
+		<string>TT Neoris Trial Bold Italic.ttf</string>
+		<string>TT Neoris Trial Bold.ttf</string>
+		<string>TT Neoris Trial DemiBold Italic.ttf</string>
+		<string>TT Neoris Trial DemiBold.ttf</string>
+		<string>TT Neoris Trial ExtraBold Italic.ttf</string>
+		<string>TT Neoris Trial ExtraBold.ttf</string>
+		<string>TT Neoris Trial ExtraLight Italic.ttf</string>
+		<string>TT Neoris Trial ExtraLight.ttf</string>
+		<string>TT Neoris Trial Hairline Italic.ttf</string>
+		<string>TT Neoris Trial Hairline.ttf</string>
+		<string>TT Neoris Trial Italic.ttf</string>
+		<string>TT Neoris Trial Light Italic.ttf</string>
+		<string>TT Neoris Trial Light.ttf</string>
+		<string>TT Neoris Trial Medium Italic.ttf</string>
+		<string>TT Neoris Trial Medium.ttf</string>
+		<string>TT Neoris Trial Regular.ttf</string>
+		<string>TT Neoris Trial Thin Italic.ttf</string>
+		<string>TT Neoris Trial Thin.ttf</string>
+		<string>TT Neoris Trial Variable.ttf</string>
+		<string>Panton-Trial-SemiBold.ttf</string>
+		<string>Monolith Regular.otf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>arm64</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+</dict>
+</plist>
