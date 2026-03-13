@@ -129,28 +129,24 @@ export function buildProfile(quiz?: Quiz) {
  
   // Horizonte (0:<1a, 1:1–2a, 2:3–7a, 3:>7a)
   const h = quiz?.raw?.horiz;
-  if (h === 0) {
-    maxRV = RV_MAX_HORIZ_LT1;
+  if (h === 0 || quiz?.P_Horiz === 'Corto') {
+    maxRV = (maxRV === null) ? RV_MAX_HORIZ_LT1 : Math.min(maxRV, RV_MAX_HORIZ_LT1);
     cryptoBlocked = true;
-    notes.push(`Horizonte < 1 año: RV máx ${Math.round(RV_MAX_HORIZ_LT1 * 100)}% y cripto bloqueada.`);
+    notes.push(`Horizonte corto (< 1 año): RV máx ${Math.round(RV_MAX_HORIZ_LT1 * 100)}% y cripto bloqueada.`);
   } else if (h === 1) {
-    maxRV = RV_MAX_HORIZ_1_2;
+    maxRV = (maxRV === null) ? RV_MAX_HORIZ_1_2 : Math.min(maxRV, RV_MAX_HORIZ_1_2);
     cryptoBlocked = true;
     notes.push(`Horizonte 1–2 años: RV máx ${Math.round(RV_MAX_HORIZ_1_2 * 100)}% y cripto bloqueada.`);
-  } else if (h === 2) {
-    maxRV = (maxRV == null) ? RV_MAX_HORIZ_3_7 : Math.min(maxRV, RV_MAX_HORIZ_3_7);
+  } else if (h === 2 || quiz?.P_Horiz === 'Medio') {
+    maxRV = (maxRV === null) ? RV_MAX_HORIZ_3_7 : Math.min(maxRV, RV_MAX_HORIZ_3_7);
     notes.push(`Horizonte 3–7 años: RV máx ${Math.round(RV_MAX_HORIZ_3_7 * 100)}%.`);
-  } else if (h === 3) {
-    notes.push('Horizonte > 7 años: sin límite específico de RV.');
-  } else if (quiz?.P_Horiz === 'Corto') {
-    maxRV = RV_MAX_HORIZ_1_2;
-    cryptoBlocked = true;
-    notes.push(`Horizonte corto: RV máx ${Math.round(RV_MAX_HORIZ_1_2 * 100)}% y cripto bloqueada.`);
+  } else if (h === 3 || quiz?.P_Horiz === 'Largo') {
+    notes.push('Horizonte largo (> 7 años): sin límite específico de RV.');
   }
  
   // Tolerancia baja (0: vendería todo)
   if (quiz?.raw?.toler === 0 || quiz?.P_Toler === 'Baja') {
-    maxRV = (maxRV == null) ? RV_MAX_TOLER_BAJA : Math.min(maxRV, RV_MAX_TOLER_BAJA);
+    maxRV = (maxRV === null) ? RV_MAX_TOLER_BAJA : Math.min(maxRV, RV_MAX_TOLER_BAJA);
     cryptoBlocked = true;
     notes.push(`Tolerancia baja: RV máx ${Math.round(RV_MAX_TOLER_BAJA * 100)}% y cripto bloqueada.`);
   }
@@ -180,7 +176,6 @@ export function buildProfile(quiz?: Quiz) {
     else cryptoTarget = 0;
   } else {
     cryptoTarget = 0;
-    notes.push('Cripto fijada en 0% por reglas anteriores.');
   }
  
   // === 2) Aplicación de restricciones fuertes (determinista) ===
@@ -199,8 +194,8 @@ export function buildProfile(quiz?: Quiz) {
     }
   } else if (dC < 0) {
     w.Crypto += dC;
-    w.RF -= dC;
-  } // devuelve a RF
+    w.RF -= dC; // devuelve a RF
+  }
  
   // Cash mínimo (quita de RV y luego de RF)
   if (w.Cash < minCash) {
@@ -224,12 +219,12 @@ export function buildProfile(quiz?: Quiz) {
  
   // RV mínima para perfil agresivo (h>7 y tolerancia alta, liquidez no prioritaria)
   let minRV: number | null = null;
-  const isAggressive = (h === 3) && (quiz?.raw?.toler === 3 || quiz?.P_Toler === 'Alta');
+  const isAggressive = (h === 3 || quiz?.P_Horiz === 'Largo') && (quiz?.raw?.toler === 3 || quiz?.P_Toler === 'Alta');
   const liqNotPrioritary = (l === 2 || l === 3) || (quiz?.P_Liq === 'No prioritaria');
   if (isAggressive && liqNotPrioritary) {
     minRV = (quiz?.raw?.exp === 3) ? 0.85 : 0.80; // exp avanzada → 85%, si no 80%
     w = enforceMinRV(w, minRV, minCash, maxRV);
-    notes.push(`Perfil agresivo: establecemos RV mínima ${Math.round(minRV * 100)}% (respetando liquidez mínima).`);
+    notes.push(`Perfil agresivo detectado: RV mínima establecida en ${Math.round(minRV * 100)}%.`);
   }
  
   // === 3) Ajustes suaves al final ===
@@ -239,7 +234,7 @@ export function buildProfile(quiz?: Quiz) {
     const move = Math.min(w.RV, Math.abs(TOLER_PARTIAL_SHIFT));
     w.RV -= move;
     w.RF += move;
-    notes.push('Tolerancia: “vendería una parte” → traspaso 5 pp de RV a RF.');
+    notes.push('Tolerancia intermedia: se reduce un 5% la exposición a RV.');
   }
  
   // 3.b) EXPERIENCIA inversora
@@ -247,16 +242,13 @@ export function buildProfile(quiz?: Quiz) {
   let shift = 0;
   if (e === 0) {
     shift = EXP_SHIFT_NONE;
-    notes.push('Experiencia: ninguna → traspaso 3 pp de RV a RF.');
+    if (shift !== 0) notes.push('Sin experiencia: ajuste conservador (-3% RV).');
   } else if (e === 1) {
     shift = EXP_SHIFT_BASIC;
-    notes.push('Experiencia: básica → traspaso 1 pp de RV a RF.');
-  } else if (e === 2) {
-    shift = 0;
-    notes.push('Experiencia: media → sin ajuste.');
+    if (shift !== 0) notes.push('Experiencia básica: ajuste moderado (-1% RV).');
   } else if (e === 3) {
     shift = EXP_SHIFT_ADV;
-    notes.push('Experiencia: avanzada → traspaso 2 pp de RF a RV.');
+    if (shift !== 0) notes.push('Experiencia avanzada: ajuste dinámico (+2% RV).');
   }
  
   if (shift !== 0) {

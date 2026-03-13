@@ -76,6 +76,19 @@ const translations = {
         },
 
         {
+          id: 'exp',
+          label: 'What is your investment experience?',
+          sub: 'Prior knowledge helps determine your risk tolerance.',
+          type: 'options',
+          options: [
+            { id: 0, label: 'None' },
+            { id: 1, label: 'Basic' },
+            { id: 2, label: 'Intermediate' },
+            { id: 3, label: 'Advanced' },
+          ],
+        },
+
+        {
           id: 'crip',
           label: 'Include cryptocurrencies?',
           sub: 'Digital assets in your portfolio.',
@@ -218,6 +231,19 @@ const translations = {
             { id: 1, label: 'Variables', emoji: '📉' },
             { id: 2, label: 'Estables', emoji: '📈' },
             { id: 3, label: 'Muy seguros', emoji: '💎' },
+          ],
+        },
+
+        {
+          id: 'exp',
+          label: '¿Cuál es tu experiencia inversora?',
+          sub: 'El conocimiento previo ayuda a definir tu tolerancia.',
+          type: 'options',
+          options: [
+            { id: 0, label: 'Ninguna' },
+            { id: 1, label: 'Básica' },
+            { id: 2, label: 'Media' },
+            { id: 3, label: 'Avanzada' },
           ],
         },
 
