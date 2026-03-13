@@ -162,13 +162,13 @@ const translations = {
   },
   es: {
     ChangeLanguage: 'Cambiar idioma',
-    financialCalculator: 'Calculadora Financiera',
+    financialCalculator: 'Calculadora financiera',
 
     splash: {
-      tagline: 'Tu futuro financiero,\nsimplificado.',
+      tagline: 'Elabora tu plan financiero en minutos.',
       subtitle:
-        'Responde algunas preguntas y obtén tu\nplan financiero personalizado en minutos.',
-      cta: 'Empezar mi plan',
+        'Responde a unas preguntas y obtén una simulación personalizada con tres escenarios.',
+      cta: 'Iniciar mi plan',
       saved: 'Ver planes guardados',
     },
 

@@ -11,15 +11,18 @@ import {
   Animated,
   Image,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import i18n from '../../i18n';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import StatusBarComponent from '../../compoent/StatusBarCompoent';
 import imageIndex from '../../assets/imageIndex';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import CustomHeader from '../../compoent/CustomHeader';
 
 const InvestmentPlanScreen: React.FC = () => {
   const navigation = useNavigation<any>();
+  const route = useRoute<any>();
+  const { quiz, weights } = route.params || {};
 
   const [capital, setCapital] = useState('');
   const [amount, setAmount] = useState('');
@@ -45,7 +48,11 @@ const InvestmentPlanScreen: React.FC = () => {
       frequency,
       horizon: parseFloat(horizon),
     };
-    navigation.navigate(ScreenNameEnum.ProfileQuizScreen, { financialData });
+    navigation.navigate(ScreenNameEnum.InvestmentScenarioScreen, {
+      quiz,
+      financialData,
+      weights
+    });
   };
 
   const ft = i18n.t('questions.financial') as any;
@@ -54,18 +61,7 @@ const InvestmentPlanScreen: React.FC = () => {
     <SafeAreaView style={styles.safe}>
       <StatusBarComponent />
 
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Image
-            source={imageIndex.back}
-            style={styles.backImage}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-
-        <Text style={styles.headerTitle}>{ft?.title}</Text>
-        <View style={{ width: 40 }} />
-      </View>
+      <CustomHeader />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -155,13 +151,13 @@ const InvestmentPlanScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#FFFFFF' },
+  safe: { flex: 1,      backgroundColor: 'white',
+ },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 14,
-    borderBottomWidth: 1,
     borderBottomColor: '#EEEEEE',
     backgroundColor: '#FFFFFF',
   },
@@ -176,15 +172,13 @@ const styles = StyleSheet.create({
   },
   scrollContent: { padding: 20, paddingBottom: 40 },
   qCard: {
-    backgroundColor: '#F8F9FA',
+    backgroundColor: 'white',
     borderRadius: 20,
     padding: 18,
     marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#EEEEEE',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
+     shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.05,
     shadowRadius: 10,
   },
   qLabel: { fontSize: 16, fontWeight: '800', color: '#111111' },
@@ -192,12 +186,16 @@ const styles = StyleSheet.create({
   numInputWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
-    paddingHorizontal: 14,
-    height: 52,
+      paddingHorizontal: 14,
+    height: 58,
+ 
+    borderRadius: 14,
+    backgroundColor: '#F7F8F8',
+    borderColor: '#ECECEC',
+     color: '#ADA4A5',
+    fontSize: 14,
+    fontWeight: '500',
+
   },
   unitPrefix: { fontSize: 18, fontWeight: '700', color: '#000000', marginRight: 6 },
   numInput: { flex: 1, height: '100%', fontSize: 16, color: '#111111', fontWeight: '700' },
@@ -206,15 +204,15 @@ const styles = StyleSheet.create({
   tabRow: { flexDirection: 'row', gap: 8 },
   tabButton: {
     flex: 1,
-    height: 38,
+    height: 50,
     borderRadius: 10,
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#EBEBEB',
     alignItems: 'center',
     justifyContent: 'center',
   },
   activeTabButton: { backgroundColor: '#000000' },
-  tabText: { fontSize: 12, fontWeight: '600', color: '#4A5568' },
-  activeTabText: { color: '#FFFFFF' },
+  tabText: { fontSize: 14, fontWeight: '600', color: '#4A5568' },
+  activeTabText: { color: '#FFFFFF', fontSize: 14, fontWeight: '600', },
   submitBtn: {
     backgroundColor: '#000000',
     height: 58,
@@ -224,7 +222,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   submitBtnDisabled: { opacity: 0.5 },
-  submitBtnText: { color: '#FFFFFF', fontSize: 16, fontWeight: '800', letterSpacing: 0.5 },
+  submitBtnText: { color: '#FFFFFF', fontSize: 14, fontWeight: '600', letterSpacing: 0.5 },
 });
 
 export default InvestmentPlanScreen;

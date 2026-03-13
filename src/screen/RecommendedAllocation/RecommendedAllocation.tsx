@@ -27,9 +27,9 @@ const RecommendedAllocation: React.FC = () => {
       <StatusBarComponent />
       <CustomHeader />
 
-      <Animated.ScrollView 
-      showsVerticalScrollIndicator={false}
-      style={{ opacity: fadeAnim }} contentContainerStyle={styles.scrollContent}>
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ opacity: fadeAnim }} contentContainerStyle={styles.scrollContent}>
         {/* <View style={styles.heroCard}>
           <Text style={styles.heroSub}>{i18n.t('results.title')}</Text>
           <Text style={styles.heroTitle}>{profile}</Text>
@@ -38,11 +38,11 @@ const RecommendedAllocation: React.FC = () => {
         <View style={styles.card}>
           <Text style={styles.cardTitle}>{i18n.t('results.allocation')}</Text>
           <View style={styles.chartWrap}>
-            <DonutChart 
-              equity={allocation.equity} 
-              fixed={allocation.fixed} 
-              cash={allocation.cash} 
-              crypto={allocation.crypto} 
+            <DonutChart
+              equity={allocation.equity}
+              fixed={allocation.fixed}
+              cash={allocation.cash}
+              crypto={allocation.crypto}
             />
           </View>
 
@@ -70,7 +70,7 @@ const RecommendedAllocation: React.FC = () => {
 
         <TouchableOpacity
           style={styles.nextBtn}
-          onPress={() => navigation.navigate(ScreenNameEnum.InvestmentScenarioScreen, { quiz, financialData, weights })}
+          onPress={() => navigation.navigate(ScreenNameEnum.InvestmentPlanScreen, { quiz, financialData, weights })}
         >
           <Text style={styles.nextBtnText}>{i18n.t('results.scenarios')}  </Text>
         </TouchableOpacity>
@@ -90,24 +90,40 @@ function LegendItem({ color, label, pct }: any) {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#FFF' },
+  safe: {
+    flex: 1, backgroundColor: 'white',
+  },
   scrollContent: { padding: 20 },
   heroCard: { backgroundColor: '#111', borderRadius: 20, padding: 24, marginBottom: 20 },
   heroSub: { color: '#00E5C0', fontSize: 13, fontWeight: '700', textTransform: 'uppercase', marginBottom: 4 },
   heroTitle: { color: '#FFF', fontSize: 28, fontWeight: '900' },
-  card: { backgroundColor: '#FFF', borderRadius: 20, padding: 20, borderWidth: 1, borderColor: '#EEE', marginBottom: 20 },
+  card: {
+
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    backgroundColor: '#FFF', borderRadius: 20, padding: 20, marginBottom: 20
+  },
   cardTitle: { fontSize: 18, fontWeight: '800', color: '#111', marginBottom: 20 },
   chartWrap: { alignItems: 'center', marginBottom: 20 },
   legend: { gap: 12 },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   dot: { width: 10, height: 10, borderRadius: 5 },
-  legendLabel: { flex: 1, fontSize: 14, color: '#666' },
-  legendPct: { fontSize: 16, fontWeight: '800' },
-  notesCard: { backgroundColor: '#F8F9FA', borderRadius: 20, padding: 20, marginBottom: 20, borderWidth: 1, borderColor: '#EEE' },
-  notesTitle: { fontSize: 14, fontWeight: '800', color: '#555', marginBottom: 12, textTransform: 'uppercase' },
+  legendLabel: { flex: 1, fontSize: 13, color: 'black', fontWeight: "600" },
+  legendPct: { fontSize: 14, fontWeight: '800' },
+  notesCard: {
+
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    backgroundColor: '#FFF', borderRadius: 20, padding: 20, marginBottom: 20
+  },
+  notesTitle: { fontSize: 14, fontWeight: '700', color: 'black', marginBottom: 12, textTransform: 'uppercase' },
   noteItem: { flexDirection: 'row', marginBottom: 6 },
-  noteBullet: { color: '#00E5C0', fontSize: 16, marginRight: 8, fontWeight: '900' },
-  noteText: { flex: 1, fontSize: 13, color: '#444', lineHeight: 18 },
+  noteBullet: { color: 'black', fontSize: 11, marginRight: 8, fontWeight: '900' },
+  noteText: { flex: 1, fontSize: 11, color: 'black', lineHeight: 20, fontWeight: "500" },
   nextBtn: { backgroundColor: '#000', height: 56, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginTop: 10 },
   nextBtnText: { color: '#FFF', fontSize: 16, fontWeight: '700' },
 });

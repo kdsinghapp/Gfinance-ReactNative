@@ -109,7 +109,7 @@ const ProfileQuizScreen: React.FC = () => {
                             activeOpacity={0.8}
                         >
                           {opt?.emoji &&  <View style={[styles.emojiBg, isSelected && styles.emojiBgSelected]}>
-                                <Text style={styles.emojiText}>{" "} {optionEmoji} {"  "}</Text>
+                                <Text style={styles.emojiText}>{optionEmoji}</Text>
                             </View>}
                            
                             <Text 
@@ -131,7 +131,8 @@ const ProfileQuizScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#FFFFFF' },
+  safe: { flex: 1   ,     backgroundColor: 'white',
+ },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -204,15 +205,12 @@ const styles = StyleSheet.create({
     height: 150,
     padding: 16,
     borderRadius: 24,
-    borderWidth: 1.5,
-    borderColor: '#F1F5F9',
-    backgroundColor: '#FFFFFF',
+      backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    // Subtle shadow
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.04,
+      shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.05,
     shadowRadius: 10,
    },
     headerTitle: {

@@ -65,14 +65,14 @@ const SavedPlansScreen: React.FC = () => {
           <View style={styles.empty}>
             <Text style={styles.emptyIcon}>📋</Text>
             <Text style={styles.emptyText}>{i18n.t('saved.empty')}</Text>
-
+{/* 
             <TouchableOpacity
               activeOpacity={0.8}
               style={styles.primaryBtn}
               onPress={() => navigation.navigate(ScreenNameEnum.InvestmentPlanScreen)}
             >
               <Text style={styles.primaryBtnText}>{i18n.t('splash.cta')}</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         ) : (
           plans?.map((item) => {
@@ -102,7 +102,10 @@ const SavedPlansScreen: React.FC = () => {
                 </View>
 
                 <TouchableOpacity
-                  style={styles.viewBtn}
+                  style={[styles.viewBtn,{
+                    flex:1,
+                    flexDirection:"row"
+                  }]}
                   onPress={() => {
                     const quiz = { raw: item.answers };
                     const type = "save"
@@ -118,7 +121,14 @@ const SavedPlansScreen: React.FC = () => {
                     });
                   }}
                 >
-                  <Text style={styles.viewBtnText}>{i18n.t('saved.viewDetails')} →</Text>
+                 
+                  <Text style={styles.viewBtnText}>{i18n.t('saved.viewDetails')} </Text>  
+                   <Image source={imageIndex.ViewSavedPlans} 
+                  style={{
+                    height:22,
+                    width:22
+                  }}
+                  />
                 </TouchableOpacity>
               </View>
             )
@@ -180,7 +190,7 @@ const styles = StyleSheet.create({
   stat: { flex: 1 },
   statVal: { color: 'black', fontSize: 16, fontWeight: '700' },
   statLab: { color: '#888', fontSize: 11, marginTop: 4 },
-  viewBtn: { backgroundColor: 'black', height: 48, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+  viewBtn: { backgroundColor: '#5D00DF', height: 48, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
   viewBtnText: { color: 'white', fontSize: 15, fontWeight: '700' },
   primaryBtn: { backgroundColor: '#000', height: 56, borderRadius: 16, alignItems: 'center', justifyContent: 'center', width: "100%", marginTop: 20 },
   primaryBtnText: { color: '#FFF', fontSize: 16, fontWeight: '700' },

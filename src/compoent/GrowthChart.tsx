@@ -157,7 +157,6 @@ import Svg, {
   Stop,
   Text as SvgText,
   Line,
-  Circle,
 } from 'react-native-svg';
 import { formatCurrency } from '../engine/calculator';
 
@@ -236,7 +235,7 @@ export default function GrowthChart({ data }: Props) {
     return `${path} L ${endX} ${bottomY} L ${startX} ${bottomY} Z`;
   };
 
-  const yLabels = [0, 0.5, 1].map((pct) => ({
+  const yLabels = [0, 0.25, 0.5, 0.75, 1].map((pct) => ({
     value: minVal + pct * range,
     y: yOf(minVal + pct * range),
   }));
@@ -248,13 +247,12 @@ export default function GrowthChart({ data }: Props) {
       <Svg width={CHART_W} height={CHART_H}>
         <Defs>
           <LinearGradient id="fillOpt" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0%" stopColor="#4CDFE8" stopOpacity="0.25" />
-            <Stop offset="100%" stopColor="#7947F7" stopOpacity="0" />
+            <Stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.2" />
+            <Stop offset="100%" stopColor="#8B5CF6" stopOpacity="0" />
           </LinearGradient>
-
           <LinearGradient id="fillBase" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0%" stopColor="#4A9EFF" stopOpacity="0.15" />
-            <Stop offset="100%" stopColor="#7947F7" stopOpacity="0" />
+            <Stop offset="0%" stopColor="#22C55E" stopOpacity="0.15" />
+            <Stop offset="100%" stopColor="#22C55E" stopOpacity="0" />
           </LinearGradient>
         </Defs>
 
@@ -262,106 +260,31 @@ export default function GrowthChart({ data }: Props) {
         {yLabels.map((l, i) => (
           <Line
             key={`grid-${i}`}
-            x1={PAD_L}
-            y1={l.y}
-            x2={CHART_W - PAD_R}
-            y2={l.y}
-            stroke="#F0F0F0"
+            x1={PAD_L} y1={l.y} x2={CHART_W - PAD_R} y2={l.y}
+            stroke="#F1F5F9"
             strokeWidth={1}
           />
         ))}
 
-        {/* Fill Areas */}
+        {/* Fills */}
         <Path d={buildSmoothFill('optimistic')} fill="url(#fillOpt)" />
         <Path d={buildSmoothFill('base')} fill="url(#fillBase)" />
 
         {/* Lines */}
-        <Path
-          d={buildSmoothPath('optimistic')}
-          fill="none"
-          stroke="#00E5C0"
-          strokeWidth={3}
-          strokeLinecap="round"
-        />
-        <Path
-          d={buildSmoothPath('base')}
-          fill="none"
-          stroke="#4A9EFF"
-          strokeWidth={3}
-          strokeLinecap="round"
-        />
-        <Path
-          d={buildSmoothPath('conservative')}
-          fill="none"
-          stroke="#6B839A"
-          strokeWidth={2}
-          strokeDasharray="4,4"
-          strokeLinecap="round"
-        />
-
-        {/* End Dots */}
-        <Circle
-          cx={xOf(lastIdx)}
-          cy={yOf(data[lastIdx].optimistic)}
-          r={4}
-          fill="#00E5C0"
-          stroke="#FFF"
-          strokeWidth={1}
-        />
-        <Circle
-          cx={xOf(lastIdx)}
-          cy={yOf(data[lastIdx].base)}
-          r={4}
-          fill="#4A9EFF"
-          stroke="#FFF"
-          strokeWidth={1}
-        />
-        <Circle
-          cx={xOf(lastIdx)}
-          cy={yOf(data[lastIdx].conservative)}
-          r={3}
-          fill="#6B839A"
-          stroke="#FFF"
-          strokeWidth={1}
-        />
+        <Path d={buildSmoothPath('optimistic')} fill="none" stroke="#8B5CF6" strokeWidth={3} strokeLinecap="round" />
+        <Path d={buildSmoothPath('base')} fill="none" stroke="#22C55E" strokeWidth={3} strokeLinecap="round" />
+        <Path d={buildSmoothPath('conservative')} fill="none" stroke="#3B82F6" strokeWidth={2} strokeDasharray="4,4" strokeLinecap="round" />
 
         {/* Y Axis Labels */}
         {yLabels.map((l, i) => (
-          <SvgText
-            key={`ylabel-${i}`}
-            x={PAD_L - 8}
-            y={l.y + 4}
-            textAnchor="end"
-            fill="#AAAAAA"
-            fontSize={9}
-            fontWeight="600"
-          >
+          <SvgText key={`ylabel-${i}`} x={PAD_L - 8} y={l.y + 4} textAnchor="end" fill="#94A3B8" fontSize={8} fontWeight="600">
             {formatCurrency(l.value)}
           </SvgText>
         ))}
 
         {/* X Axis Start / End */}
-        <SvgText
-          x={xOf(0)}
-          y={PAD_T + plotH + 18}
-          textAnchor="start"
-          fill="#999"
-          fontSize={10}
-          fontWeight="700"
-        >
-          TODAY
-        </SvgText>
-
-        <SvgText
-          x={xOf(lastIdx)}
-          y={PAD_T + plotH + 18}
-          textAnchor="end"
-          fill="#999"
-          fontSize={10}
-          fontWeight="700"
-        >
-          YEAR {data[lastIdx].year}
-        </SvgText>
+        <SvgText x={xOf(0)} y={PAD_T + plotH + 18} textAnchor="start" fill="#64748B" fontSize={10} fontWeight="700">HOY</SvgText>
+        <SvgText x={xOf(lastIdx)} y={PAD_T + plotH + 18} textAnchor="end" fill="#64748B" fontSize={10} fontWeight="700">AÑO {data[lastIdx].year}</SvgText>
       </Svg>
 
       {/* Months Row */}

@@ -647,6 +647,8 @@ import {
   ScrollView,
   Image,
   ImageSourcePropType,
+  Modal,
+  TextInput,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -673,6 +675,8 @@ const InvestmentScenarioScreen: React.FC = () => {
   } = route?.params || {};
 
   const [saved, setSaved] = useState(false);
+  const [saveModalVisible, setSaveModalVisible] = useState(false);
+  const [planName, setPlanName] = useState('');
   const [selectedRange, setSelectedRange] = useState<RangeKey>('3Y');
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -740,7 +744,13 @@ const InvestmentScenarioScreen: React.FC = () => {
   }, [fadeAnim, plan?.weights, scenarios]);
 
   const handleSave = async () => {
+    if (!planName.trim()) {
+      setSaveModalVisible(true);
+      return;
+    }
+
     const ok = await Storage.savePlan({
+      name: planName,
       answers: { ...quiz.raw, ...financialData },
       allocation: plan?.weights,
       scenarios: {
@@ -754,6 +764,7 @@ const InvestmentScenarioScreen: React.FC = () => {
 
     if (ok) {
       setSaved(true);
+      setSaveModalVisible(false);
       Analytics.planSaved();
     }
   };
@@ -770,7 +781,9 @@ const InvestmentScenarioScreen: React.FC = () => {
           contentContainerStyle={styles.scrollContent}
         >
           {/* Allocation Card */}
-          <View style={styles.card}>
+          <View style={[styles.card,{
+            marginTop:20
+          }]}>
             <Text style={styles.sectionTitle}>Asignación recomendada</Text>
 
             <AllocationRing
@@ -824,7 +837,7 @@ const InvestmentScenarioScreen: React.FC = () => {
                 activeOpacity={0.85}
               >
                 <Text style={styles.saveBtnText}>
-                  {saved ? i18n.t('results.saved') : 'Save Plan'}
+                  {saved ? i18n.t('results.saved') : 'Guardar plan'}
                 </Text>
               </TouchableOpacity>
             ) : (
@@ -845,9 +858,47 @@ const InvestmentScenarioScreen: React.FC = () => {
             onPress={() => navigation.navigate(ScreenNameEnum.ProfileQuizScreen)}
             activeOpacity={0.8}
           >
-            <Text style={styles.newPlanText}>New Plan</Text>
+            <Text style={styles.newPlanText}>Nuevo plan</Text>
           </TouchableOpacity>
         </ScrollView>
+
+        {/* Save Modal */}
+        <Modal
+          visible={saveModalVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setSaveModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Guardar plan</Text>
+              <Text style={styles.modalSub}>Ponle un nombre a tu plan de inversión.</Text>
+              <TextInput
+                style={styles.modalInput}
+                value={planName}
+                onChangeText={setPlanName}
+                placeholder="My House Fund"
+                placeholderTextColor="#94A3B8"
+                autoFocus
+              />
+              <View style={styles.modalActions}>
+                <TouchableOpacity
+                  style={styles.modalCancel}
+                  onPress={() => setSaveModalVisible(false)}
+                >
+                  <Text style={styles.modalCancelText}>Cancelar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.modalConfirm, !planName.trim() && { opacity: 0.5 }]}
+                  onPress={handleSave}
+                  disabled={!planName.trim()}
+                >
+                  <Text style={styles.modalConfirmText}>Ahorrar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </Animated.View>
     </SafeAreaView>
   );
@@ -1036,7 +1087,7 @@ const LegendDot = ({ label, color }: { label: string; color: string }) => (
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#F4F5F7',
+    backgroundColor: 'white',
   },
   container: {
     flex: 1,
@@ -1058,8 +1109,8 @@ const styles = StyleSheet.create({
   },
 
   sectionTitle: {
-    fontSize: 15,
-    fontWeight: '800',
+    fontSize: 16,
+    fontWeight: '700',
     color: '#111111',
     marginBottom: 8,
   },
@@ -1079,15 +1130,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   ringCenterSubText: {
-    fontSize: 10,
+    fontSize: 12,
     color: '#B0B7C3',
-    marginBottom: 4,
-    fontWeight: '600',
-  },
+    marginBottom: 5,
+   },
   ringCenterValue: {
-    fontSize: 24,
-    fontWeight: '900',
+    fontSize: 21,
+    fontWeight: '700',
     color: '#1A1A1A',
+   marginTop:3
   },
 
   ringFooter: {
@@ -1113,13 +1164,13 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   footerLabel: {
-    fontSize: 11,
-    color: '#9AA0A6',
-    fontWeight: '500',
+    fontSize: 12,
+    color: '#A9A9A9',
+    fontWeight: '700',
   },
   footerValue: {
-    fontSize: 20,
-    fontWeight: '800',
+    fontSize: 18,
+    fontWeight: '700',
     color: '#111111',
     paddingLeft: 13,
   },
@@ -1129,6 +1180,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: CARD_GAP,
     marginBottom: 14,
+    marginTop:8
   },
   metricCard: {
     flex: 1,
@@ -1137,6 +1189,10 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 8,
     alignItems: 'center',
+         shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
   },
   metricCardActive: {
   },
@@ -1156,20 +1212,21 @@ const styles = StyleSheet.create({
   },
   metricLabel: {
     fontSize: 10,
-    color: '#9AA0A6',
+    color: '#AEAEB2',
     marginBottom: 6,
     textAlign: 'center',
+    fontWeight:"500"
   },
   metricValue: {
-    fontSize: 15,
-    fontWeight: '800',
+    fontSize: 18,
+    fontWeight: '700',
     color: '#111111',
     textAlign: 'center',
   },
 
   chartTitle: {
-    fontSize: 15,
-    fontWeight: '800',
+    fontSize: 16,
+    fontWeight: '700',
     color: '#111111',
     marginBottom: 12,
   },
@@ -1194,13 +1251,16 @@ const styles = StyleSheet.create({
     borderColor: '#1D5FA0',
   },
   tabText: {
-    fontSize: 11,
+    fontSize: 10,
     color: '#7A8394',
     fontWeight: '600',
   },
   tabTextActive: {
     color: '#1D5FA0',
-    fontWeight: '700',
+       fontSize: 10,
+
+        fontWeight: '600',
+
   },
 
   chartWrap: {
@@ -1221,13 +1281,13 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   legendDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 10,
+    height: 10,
+    borderRadius: 10,
     marginRight: 5,
   },
   legendText: {
-    fontSize: 11,
+    fontSize: 10,
     color: '#6B7280',
     fontWeight: '600',
   },
@@ -1263,6 +1323,69 @@ const styles = StyleSheet.create({
     color: '#19C84B',
     fontSize: 14,
     fontWeight: '700',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 24,
+    padding: 24,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: '#1E293B',
+    marginBottom: 8,
+  },
+  modalSub: {
+    fontSize: 14,
+    color: '#64748B',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  modalInput: {
+    width: '100%',
+    height: 56,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: '#1E293B',
+    marginBottom: 24,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  modalCancel: {
+    flex: 1,
+    height: 56,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalCancelText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  modalConfirm: {
+    flex: 2,
+    height: 56,
+    backgroundColor: '#19C84B',
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalConfirmText: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: 'white',
   },
 });
 

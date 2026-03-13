@@ -5,6 +5,7 @@ const PLAN_KEY = '@gfinance_plans_v2';
 
 export type PlanData = {
   id: string;
+  name?: string;
   answers: Record<string, any>;
   allocation: any;
   scenarios: any;

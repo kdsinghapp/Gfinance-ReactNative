@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, TouchableOpacity, Image, StyleSheet, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
- 
+
 import imageIndex from '../assets/imageIndex';
 
 interface IconProps {
   type: 'svg' | 'png';
   icon: any;
   onPress: () => void;
-  txtHeading:any
+  txtHeading: any
 }
 
 interface Props {
@@ -20,7 +20,7 @@ interface Props {
   rightComponent?: React.ReactNode;
 }
 
-const  CustomHeader: React.FC<Props> = ({
+const CustomHeader: React.FC<Props> = ({
   label = '',
   leftIcon,
   leftType = 'png',
@@ -35,23 +35,23 @@ const  CustomHeader: React.FC<Props> = ({
     <View style={styles.header}>
       {/* Left Icon */}
       <View style={styles.sideContainer}>
-      
-          <TouchableOpacity
-            onPress={leftPress ? leftPress : () => navigation.goBack()}
-            style={styles.iconWrap}
-          >
-          <Image source={imageIndex.back} style={styles.icon} resizeMode="contain" /> 
-          </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={leftPress ? leftPress : () => navigation.goBack()}
+          style={styles.iconWrap}
+        >
+          <Image source={imageIndex.back} style={styles.icon} resizeMode="contain" />
+        </TouchableOpacity>
       </View>
       {/* Title */}
       <View style={styles.centerContainer}>
-        <Image source={imageIndex.appLogo1} 
-        style={{
-          width:130,
-          height:45 ,
+        <Image source={imageIndex.appLogo1}
+          style={{
+            width: 130,
+            height: 45,
 
-        }}
-        resizeMode='contain'
+          }}
+          resizeMode='contain'
         />
       </View>
 
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     height: 60,
     flexDirection: 'row',
     alignItems: 'center',
- 
+
     paddingHorizontal: 5,
   },
   sideContainer: {
@@ -102,8 +102,8 @@ const styles = StyleSheet.create({
   },
   txtHeading: {
     fontSize: 18,
-     color: 'white',
-     fontWeight:"500"
+    color: 'white',
+    fontWeight: "500"
   },
 });
 

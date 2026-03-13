@@ -383,9 +383,9 @@ export function calculatePlan(quiz: Quiz, financialData: { horizon: number, capi
   const { weights, profile, notes } = buildProfile(quiz);
   const rates = RATE_TABLE[profile] || RATE_TABLE['Moderado'];
   
-  const horizon = Math.max(1, Math.min(50, financialData.horizon));
-  const principal = Math.max(0, financialData.capital);
-  const amount = Math.max(0, financialData.monthly);
+  const horizon = Math?.max(1, Math.min(50, financialData.horizon));
+  const principal = Math?.max(0, financialData.capital);
+  const amount = Math?.max(0, financialData.monthly);
   const frequency = financialData.frequency || 'monthly';
 
   return {

@@ -5,6 +5,7 @@ import {
   Image,
   Animated,
   ScrollView,
+  Platform,
   Easing,
   TouchableOpacity,
   StyleSheet,
@@ -17,7 +18,7 @@ import imageIndex from '../../../assets/imageIndex';
 import i18n from '../../../i18n';
 import { Storage } from '../../../engine/storage';
 import { useFocusEffect } from '@react-navigation/native';
-
+ 
 const ChoosePlan = () => {
   const navigation = useNavigation<any>();
   const [hasSaved, setHasSaved] = useState(false);
@@ -77,40 +78,47 @@ const ChoosePlan = () => {
               <Text style={[styles.langText, i18n.locale === 'en' && styles.langTextActive]}>EN</Text>
             </TouchableOpacity>
           </View> */}
-
+<View style={{
+   justifyContent: 'center',
+   alignItems:"center"
+}}>
           <Image source={imageIndex.appLogo1} style={styles.logo} resizeMode="contain" />
-
+ </View>
           <Text style={styles.title}>{i18n.t('splash.tagline')}</Text>
           <Text style={styles.subtitle}>{i18n.t('splash.subtitle')}</Text>
 
           <Image source={imageIndex.financeIllustration} style={styles.heroImage} resizeMode="contain" />
 
           <View style={styles.buttonGroup}>
+            {/* Start My Plan */}
             <TouchableOpacity
               activeOpacity={0.8}
-              style={styles.primaryBtn}
-              onPress={() => navigation.navigate(ScreenNameEnum.InvestmentPlanScreen)}
+              style={[styles.mainBtn, { backgroundColor: '#000000' }]} // Vibrant Teal
+              onPress={() => navigation.navigate(ScreenNameEnum.ProfileQuizScreen)}
             >
               <Text style={styles.primaryBtnText}>{i18n.t('splash.cta')}</Text>
+              <Image source={imageIndex.Planning} style={styles.btnIcon} />
             </TouchableOpacity>
 
+            {/* View Saved Plans */}
             <TouchableOpacity
               activeOpacity={0.8}
-              style={styles.secondaryBtn}
-              onPress={() => navigation.navigate(ScreenNameEnum.FinancialCalculatorScreen)}
+              style={[styles.mainBtn, { backgroundColor: '#5D00DF' }]} // Indigo
+              onPress={() => navigation.navigate(ScreenNameEnum.SavedPlansScreen)}
             >
-              <Text style={styles.secondaryBtnText}>{i18n.t('financialCalculator')}</Text>
+              <Text style={styles.primaryBtnText}>{i18n.t('splash.saved')}</Text>
+              <Image source={imageIndex.ViewSavedPlans} style={styles.btnIcon} />
             </TouchableOpacity>
 
-            {hasSaved && (
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={[styles.secondaryBtn, { borderStyle: 'dashed' }]}
-                onPress={() => navigation.navigate(ScreenNameEnum.SavedPlansScreen)}
-              >
-                <Text style={styles.secondaryBtnText}>{i18n.t('splash.saved')}</Text>
-              </TouchableOpacity>
-            )}
+            {/* Financial Calculator */}
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={[styles.mainBtn, { backgroundColor: '#22C55E' }]} // Amber
+              onPress={() => navigation.navigate(ScreenNameEnum.FinancialCalculatorScreen)}
+            >
+              <Text style={styles.primaryBtnText}>{i18n.t('financialCalculator')}</Text>
+              <Image source={imageIndex.calnder} style={styles.btnIcon} />
+            </TouchableOpacity>
           </View>
         </Animated.View>
       </ScrollView>
@@ -121,16 +129,32 @@ const ChoosePlan = () => {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#FFF' },
   scrollContent: { flexGrow: 1 },
-  container: { flex: 1, padding: 24, alignItems: 'center', justifyContent: 'center' },
+  container: { flex: 1, padding: 20,   justifyContent: 'center' },
   logo: { width: 120, height: 32, marginBottom: 30 },
-  title: { fontSize: 28, fontWeight: '900', color: '#111', textAlign: 'center', marginBottom: 12 },
-  subtitle: { fontSize: 16, color: '#666', textAlign: 'center', marginBottom: 40, lineHeight: 24 },
+  title: { fontSize: 32, fontWeight: '700', color: '#111', marginBottom: 8, fontFamily: Platform.OS === 'ios' ? 'Inter' : 'sans-serif-medium' },
+  subtitle: { fontSize: 16, color: '#64748B', marginBottom: 38, lineHeight: 24, fontWeight: '400', fontFamily: Platform.OS === 'ios' ? 'Inter' : 'sans-serif' },
   heroImage: { width: '100%', height: 260, marginBottom: 40 },
-  buttonGroup: { width: '100%', gap: 12 },
-  primaryBtn: { backgroundColor: '#000', height: 56, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
-  primaryBtnText: { color: '#FFF', fontSize: 16, fontWeight: '700' },
+  buttonGroup: { width: '100%', gap: 16 },
+  mainBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 60,
+    borderRadius: 18,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  btnIcon: {
+    height: 22,
+    width: 22,
+    marginLeft: 12,
+  },
+  primaryBtnText: { color: '#FFF', fontSize: 16, fontWeight: '800', fontFamily: Platform.OS === 'ios' ? 'Inter' : 'sans-serif-bold' },
   secondaryBtn: { height: 56, borderRadius: 16, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#DDD' },
-  secondaryBtnText: { color: '#333', fontSize: 16, fontWeight: '600' },
+  secondaryBtnText: { color: '#333', fontSize: 16, fontWeight: 'bold'  },
   langToggleWrap: {
     position: 'absolute',
     top: 0,
