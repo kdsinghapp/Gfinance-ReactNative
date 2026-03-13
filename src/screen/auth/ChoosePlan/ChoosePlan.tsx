@@ -1,5 +1,4 @@
-// src/screen/auth/ChoosePlan/ChoosePlan.tsx
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -10,18 +9,37 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import StatusBarComponent from '../../../compoent/StatusBarCompoent';
 import ScreenNameEnum from '../../../routes/screenName.enum';
 import imageIndex from '../../../assets/imageIndex';
 import i18n from '../../../i18n';
 import { Storage } from '../../../engine/storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const ChoosePlan = () => {
   const navigation = useNavigation<any>();
   const [hasSaved, setHasSaved] = useState(false);
+  const [locale, setLocale] = useState(i18n.locale);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useFocusEffect(
+    useCallback(() => {
+      Storage.hasPlan().then(setHasSaved);
+
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }).start();
+
+      return () => {
+        // optional cleanup
+      };
+    }, [])
+  );
 
   useEffect(() => {
     Storage.hasPlan().then(setHasSaved);
@@ -38,6 +56,28 @@ const ChoosePlan = () => {
       <StatusBarComponent />
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+          {/* Language Toggle */}
+          {/* <View style={styles.langToggleWrap}>
+            <TouchableOpacity
+              style={[styles.langBtn, i18n.locale === 'es' && styles.langBtnActive]}
+              onPress={() => {
+                i18n.locale = 'es';
+                setLocale('es');
+              }}
+            >
+              <Text style={[styles.langText, i18n.locale === 'es' && styles.langTextActive]}>ES</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.langBtn, i18n.locale === 'en' && styles.langBtnActive]}
+              onPress={() => {
+                i18n.locale = 'en';
+                setLocale('en');
+              }}
+            >
+              <Text style={[styles.langText, i18n.locale === 'en' && styles.langTextActive]}>EN</Text>
+            </TouchableOpacity>
+          </View> */}
+
           <Image source={imageIndex.appLogo1} style={styles.logo} resizeMode="contain" />
 
           <Text style={styles.title}>{i18n.t('splash.tagline')}</Text>
@@ -54,10 +94,18 @@ const ChoosePlan = () => {
               <Text style={styles.primaryBtnText}>{i18n.t('splash.cta')}</Text>
             </TouchableOpacity>
 
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.secondaryBtn}
+              onPress={() => navigation.navigate(ScreenNameEnum.FinancialCalculatorScreen)}
+            >
+              <Text style={styles.secondaryBtnText}>{i18n.t('financialCalculator')}</Text>
+            </TouchableOpacity>
+
             {hasSaved && (
               <TouchableOpacity
                 activeOpacity={0.8}
-                style={styles.secondaryBtn}
+                style={[styles.secondaryBtn, { borderStyle: 'dashed' }]}
                 onPress={() => navigation.navigate(ScreenNameEnum.SavedPlansScreen)}
               >
                 <Text style={styles.secondaryBtnText}>{i18n.t('splash.saved')}</Text>
@@ -83,6 +131,36 @@ const styles = StyleSheet.create({
   primaryBtnText: { color: '#FFF', fontSize: 16, fontWeight: '700' },
   secondaryBtn: { height: 56, borderRadius: 16, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#DDD' },
   secondaryBtnText: { color: '#333', fontSize: 16, fontWeight: '600' },
+  langToggleWrap: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    flexDirection: 'row',
+    backgroundColor: '#F1F5F9',
+    borderRadius: 20,
+    padding: 4,
+  },
+  langBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+  langBtnActive: {
+    backgroundColor: '#FFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  langText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  langTextActive: {
+    color: '#0F172A',
+  },
 });
 
 export default ChoosePlan;

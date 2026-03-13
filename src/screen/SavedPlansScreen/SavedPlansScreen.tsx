@@ -1,12 +1,13 @@
 // src/screen/SavedPlansScreen/SavedPlansScreen.tsx
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity,   Alert, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import i18n from '../../i18n';
 import { Storage, PlanData } from '../../engine/storage';
 import { Analytics } from '../../engine/analytics';
 import StatusBarComponent from '../../compoent/StatusBarCompoent';
 import { getProfileLabel, formatCurrency } from '../../engine/calculator';
+import ScreenNameEnum from '../../routes/screenName.enum';
 import imageIndex from '../../assets/imageIndex';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -27,7 +28,7 @@ const SavedPlansScreen: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    Alert.alert('Delete Plan', 'Are you sure?', [
+    Alert.alert('Eliminar plan', 'Estas segura', [
       { text: 'No', style: 'cancel' },
       {
         text: 'Yes', style: 'destructive', onPress: async () => {
@@ -45,60 +46,79 @@ const SavedPlansScreen: React.FC = () => {
       <StatusBarComponent />
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-        <Image source={imageIndex.back} 
-        
-        style={{
-          height:44,
-          width:44
-        }}
-        />
+          <Image source={imageIndex.back}
+
+            style={{
+              height: 44,
+              width: 44
+            }}
+          />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{i18n.t('saved.title')}</Text>
         <View style={{ width: 40 }} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         {loading ? (
-          <Text style={styles.infoText}>Loading...</Text>
-        ) : plans.length === 0 ? (
+          <Text style={styles.infoText}>Cargando...</Text>
+        ) : plans?.length === 0 ? (
           <View style={styles.empty}>
             <Text style={styles.emptyIcon}>📋</Text>
             <Text style={styles.emptyText}>{i18n.t('saved.empty')}</Text>
+
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.primaryBtn}
+              onPress={() => navigation.navigate(ScreenNameEnum.InvestmentPlanScreen)}
+            >
+              <Text style={styles.primaryBtnText}>{i18n.t('splash.cta')}</Text>
+            </TouchableOpacity>
           </View>
         ) : (
-          plans.map((item) => {
-            console.log("item", item)
+          plans?.map((item) => {
             return (
               <View key={item.id} style={styles.planCard}>
                 <View style={styles.planHeader}>
                   <View>
-                    <Text style={styles.planType}>Profile {getProfileLabel(item.allocation)}</Text>
-                    <Text style={styles.planTitle}>My Financial Plan</Text>
+                    <Text style={styles.planType}>{i18n.t('saved.profile')} {getProfileLabel(item.allocation)}</Text>
+                    <Text style={styles.planTitle}>Plan</Text>
                     <Text style={styles.planDate}>{new Date(item.savedAt).toLocaleDateString()}</Text>
                   </View>
                   <TouchableOpacity onPress={() => handleDelete(item.id)}>
-                     <Image source={imageIndex.delite} 
-                     style={{
-                      height:25,
-                      width:25 ,
-                      resizeMode:"contain"
-                     }}
-                     />
+                    <Image source={imageIndex.delite}
+                      style={{
+                        height: 25,
+                        width: 25,
+                        resizeMode: "contain"
+                      }}
+                    />
                   </TouchableOpacity>
                 </View>
 
                 <View style={styles.stats}>
-                  <StatItem label="Capital" value={formatCurrency(item?.answers.capital)} />
-                  <StatItem label="Monthly" value={formatCurrency(item?.answers.monthly)} />
-                  <StatItem label="Target" value={`${item.scenarios.years} Years`} />
-
+                  <StatItem label={i18n.t('questions.financial.initialLabel')} value={formatCurrency(item?.answers.capital)} />
+                  <StatItem label={i18n.t('questions.financial.monthlyLabel')} value={formatCurrency(item?.answers.monthly)} />
+                  <StatItem label={i18n.t('questions.financial.horizonLabel')} value={`${item.scenarios?.years || 0} ${i18n.t('questions.financial.yearsUnit')}`} />
                 </View>
 
                 <TouchableOpacity
                   style={styles.viewBtn}
-                  onPress={() => navigation.navigate('InvestmentScenarioScreen', { answers: item.answers, allocation: item.allocation })}
+                  onPress={() => {
+                    const quiz = { raw: item.answers };
+                    const type = "save"
+
+                    const financialData = {
+                      capital: item.answers.capital,
+                      monthly: item.answers.monthly,
+                      horizon: item.scenarios?.years || 10
+                    };
+                    navigation.navigate(ScreenNameEnum.InvestmentScenarioScreen, { quiz, financialData, type
+
+
+                    });
+                  }}
                 >
-                  <Text style={styles.viewBtnText}>View Details →</Text>
+                  <Text style={styles.viewBtnText}>{i18n.t('saved.viewDetails')} →</Text>
                 </TouchableOpacity>
               </View>
             )
@@ -131,25 +151,26 @@ const styles = StyleSheet.create({
   scroll: { padding: 20 },
   infoText: { textAlign: 'center', color: '#999', marginTop: 40 },
   empty: { alignItems: 'center', marginTop: 80 },
-  emptyIcon: { fontSize: 60, marginBottom: 16 , },
+  emptyIcon: { fontSize: 60, marginBottom: 16, },
   emptyText: { color: '#999', fontSize: 16 },
   planCard: {
     backgroundColor: 'white',
-  borderRadius: 24,
-  padding: 20,
-  marginBottom: 16,
+    borderRadius: 24,
+    padding: 20,
+    marginBottom: 16,
 
-  // Android shadow
-  elevation: 5,
+    // Android shadow
+    elevation: 5,
 
-  // iOS shadow
-  shadowColor: '#000',
-  shadowOffset: {
-    width: 0,
-    height: 2,
+    // iOS shadow
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
   },
-  shadowOpacity: 0.25,
-  shadowRadius: 4,},
   planHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 },
   planType: { color: 'black', fontSize: 12, fontWeight: '700', textTransform: 'uppercase' },
   planTitle: { color: 'black', fontSize: 20, fontWeight: '800', marginTop: 4 },
@@ -161,6 +182,11 @@ const styles = StyleSheet.create({
   statLab: { color: '#888', fontSize: 11, marginTop: 4 },
   viewBtn: { backgroundColor: 'black', height: 48, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
   viewBtnText: { color: 'white', fontSize: 15, fontWeight: '700' },
+  primaryBtn: { backgroundColor: '#000', height: 56, borderRadius: 16, alignItems: 'center', justifyContent: 'center', width: "100%", marginTop: 20 },
+  primaryBtnText: { color: '#FFF', fontSize: 16, fontWeight: '700' },
+  buttonGroup: { width: '100%', gap: 12 },
+
 });
+
 
 export default SavedPlansScreen;

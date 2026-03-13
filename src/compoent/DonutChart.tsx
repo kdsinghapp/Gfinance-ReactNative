@@ -2,11 +2,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
+import i18n from '../i18n';
 
 type Props = {
   equity: number;
   fixed: number;
   cash: number;
+  crypto?: number;
   size?: number;
 };
 
@@ -14,10 +16,11 @@ const COLORS = {
   equity: '#00E5C0',
   fixed: '#4A9EFF',
   cash: '#F0C040',
+  crypto: '#FF6B6B',
   border: '#1A2840',
 };
 
-export default function DonutChart({ equity, fixed, cash, size = 130 }: Props) {
+export default function DonutChart({ equity, fixed, cash, crypto = 0, size = 130 }: Props) {
   const cx = size / 2;
   const cy = size / 2;
   const radius = size * 0.32;
@@ -28,6 +31,7 @@ export default function DonutChart({ equity, fixed, cash, size = 130 }: Props) {
     { value: equity, color: COLORS.equity },
     { value: fixed, color: COLORS.fixed },
     { value: cash, color: COLORS.cash },
+    { value: crypto, color: COLORS.crypto },
   ];
 
   let cumulativePct = 0;
@@ -61,9 +65,10 @@ export default function DonutChart({ equity, fixed, cash, size = 130 }: Props) {
         })}
       </Svg>
       <View style={[styles.center, { width: size, height: size }]}>
-        <Text style={styles.centerPct}>{equity}%</Text>
-        <Text style={styles.centerLabel}>Stocks</Text>
+        <Text style={styles.centerPct}>{equity.toFixed(1)}%</Text>
       </View>
+              <Text style={styles.centerLabel}>{i18n.t('results.RV')}</Text>
+
     </View>
   );
 }
@@ -71,6 +76,6 @@ export default function DonutChart({ equity, fixed, cash, size = 130 }: Props) {
 const styles = StyleSheet.create({
   container: { alignItems: 'center', justifyContent: 'center' },
   center: { position: 'absolute', alignItems: 'center', justifyContent: 'center' },
-  centerPct: { fontSize: 20, fontWeight: '900', color: '#111' },
+  centerPct: { fontSize: 15, fontWeight: '900', color: '#111' },
   centerLabel: { fontSize: 9, color: '#666', fontWeight: '600' },
 });

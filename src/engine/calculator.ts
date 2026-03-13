@@ -11,28 +11,16 @@ const parseNum = (val: any): number => {
   return 0;
 };
 
-export interface UserAnswers {
-  age: string;
-  goal: string;
-  horizon: number | string;
-  risk: string;
-  initialCapital?: number | string;
-  capital?: number | string;
-  monthlyContribution?: number | string;
-  monthly?: number | string;
-  income: string;
-  experience: string;
-  liquidity: string;
-  crypto: string;
-}
+export type Weights = { RV: number; RF: number; Cash: number; Crypto: number }; // 0..1
 
-export interface Allocation {
-  equities: number; // percentage
-  fixedIncome: number;
-  cash: number;
-  realAssets: number;
-  alternatives: number;
-}
+export type Quiz = {
+  P_Horiz?: 'Corto' | 'Medio' | 'Largo'; // compatibilidad
+  P_Toler?: 'Baja' | 'Media' | 'Alta';
+  P_Liq?: 'Muy alta' | 'Algo importante' | 'No prioritaria';
+  P_Estab?: 'Estables' | 'Inestables';
+  P_Cripto?: 'No' | 'Indiferente' | 'Sí';
+  raw?: { horiz?: number; toler?: number; liq?: number; estab?: number; exp?: number; crip?: number };
+};
 
 export interface ScenarioResult {
   label: 'conservative' | 'base' | 'optimistic';
@@ -45,8 +33,9 @@ export interface ScenarioResult {
 }
 
 export interface PlanResult {
-  allocation: Allocation;
-  riskProfile: 'conservative' | 'moderate' | 'aggressive';
+  weights: Weights;
+  profile: string;
+  notes: string[];
   scenarios: {
     conservative: ScenarioResult;
     base: ScenarioResult;
@@ -54,139 +43,322 @@ export interface PlanResult {
   };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Risk scoring: produces a 0–100 score (higher = more aggressive)
-// ─────────────────────────────────────────────────────────────────────────────
-function computeRiskScore(answers: UserAnswers): number {
-  let score = 0;
+// ====== Parámetros ======
+const BASE: Weights = { RV: 0.60, RF: 0.30, Cash: 0.10, Crypto: 0.00 };
 
-  const getIdx = (val: any, options: string[]) => {
-    if (!val) return 0;
-    const idx = options.indexOf(val);
-    return idx !== -1 ? idx : 0;
-  };
+// Horizonte (4 opciones)
+const RV_MAX_HORIZ_LT1 = 0.15; // < 1 año
+const RV_MAX_HORIZ_1_2 = 0.20; // 1–2 años
+const RV_MAX_HORIZ_3_7 = 0.75; // 3–7 años
+// >7 años → sin límite
 
-  // Map IDs from i18n.js to scores
-  const ageIdx = getIdx(answers.age, ['under_25', '25_35', '36_45', '46_55', 'over_55']);
-  const horizon = parseNum(answers.horizon);
-  const riskIdx = getIdx(answers.risk, ['sell_all', 'sell_part', 'hold', 'invest_more']);
-  const experienceIdx = getIdx(answers.experience, ['none', 'basic', 'moderate', 'advanced']);
-  const incomeIdx = getIdx(answers.income, ['very_unstable', 'unstable', 'stable', 'very_stable']);
-  const liquidityIdx = getIdx(answers.liquidity, ['very', 'somewhat', 'little', 'none']);
+// Tolerancia
+const RV_MAX_TOLER_BAJA = 0.27; // baja → máx 27%
+// NUEVO: si raw.toler === 1 ("vendería una parte"): mover 5 pp RV→RF
+const TOLER_PARTIAL_SHIFT = -0.05;
 
-  // Age factor
-  const ageScores = [30, 25, 20, 10, 5];
-  score += ageScores[ageIdx] ?? 15;
+// Estabilidad de ingresos
+const RV_PENALTY_INGRESOS_INESTABLES = 0.10;
 
-  // Horizon factor
-  if (horizon >= 20) score += 25;
-  else if (horizon >= 10) score += 20;
-  else if (horizon >= 5) score += 12;
-  else score += 5;
+// Liquidez
+const CASH_MIN_LIQ_MUY_ALTA = 0.25;
+const CASH_MIN_LIQ_ALGO = 0.13;
 
-  // Risk tolerance
-  const riskScores = [0, 10, 20, 30];
-  score += riskScores[riskIdx] ?? 15;
+// Cripto
+const CRYPTO_TARGET_SI = 0.03;
+const CRYPTO_TARGET_INDIF = 0.01;
 
-  // Experience
-  const expScores = [0, 5, 10, 15];
-  score += expScores[experienceIdx] ?? 5;
+// Experiencia (pp del total)
+const EXP_SHIFT_NONE = -0.03; // Ninguna: RV→RF 3 pp
+const EXP_SHIFT_BASIC = -0.01; // Básica: RV→RF 1 pp
+const EXP_SHIFT_ADV = +0.02; // Avanzada: RF→RV 2 pp
 
-  // Income stability
-  const incomeScores = [0, 5, 15, 20];
-  score += incomeScores[incomeIdx] ?? 10;
+// ========================
 
-  // Liquidity (Higher need for immediate access = lower risk capacity)
-  const liquidityScores = [-10, -5, 0, 5];
-  score += liquidityScores[liquidityIdx] ?? 0;
+const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 
-  return Math.min(100, Math.max(0, score));
+const normalize = (w: Weights): Weights => {
+  const s = w.RV + w.RF + w.Cash + w.Crypto;
+  if (s <= 0) return { ...BASE };
+  return { RV: w.RV / s, RF: w.RF / s, Cash: w.Cash / s, Crypto: w.Crypto / s };
+};
+
+function take(value: number, want: number) {
+  const t = Math.max(0, Math.min(value, want));
+  return [t, want - t] as const;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Allocation engine
-// ─────────────────────────────────────────────────────────────────────────────
-function computeAllocation(riskScore: number): {
-  allocation: Allocation;
-  riskProfile: 'conservative' | 'moderate' | 'aggressive';
-} {
-  let allocation: Allocation;
-  let riskProfile: 'conservative' | 'moderate' | 'aggressive';
-
-  if (riskScore < 35) {
-    riskProfile = 'conservative';
-    allocation = {
-      equities: 30,
-      fixedIncome: 50,
-      cash: 10,
-      realAssets: 7,
-      alternatives: 3,
-    };
-  } else if (riskScore < 65) {
-    riskProfile = 'moderate';
-    allocation = {
-      equities: 60,
-      fixedIncome: 30,
-      cash: 5,
-      realAssets: 3,
-      alternatives: 2,
-    };
-  } else {
-    riskProfile = 'aggressive';
-    allocation = {
-      equities: 80,
-      fixedIncome: 12,
-      cash: 3,
-      realAssets: 3,
-      alternatives: 2,
-    };
+// mueve masa de RF/Cash a RV respetando cash mínimo y un posible cap de RV
+function enforceMinRV(w: Weights, minRV: number, minCash: number, maxRV: number | null) {
+  if (minRV == null) return w;
+  const cap = (maxRV != null) ? Math.min(minRV, maxRV) : minRV;
+  if (w.RV >= cap) return w;
+  
+  let need = cap - w.RV;
+  
+  // 1) Tomar de RF primero
+  const takeRF = Math.min(w.RF, need);
+  w.RF -= takeRF;
+  w.RV += takeRF;
+  need -= takeRF;
+  
+  // 2) Si aún falta, tomar de Cash pero sin bajar de minCash
+  if (need > 0) {
+    const availCash = Math.max(0, w.Cash - minCash);
+    const takeC = Math.min(availCash, need);
+    w.Cash -= takeC;
+    w.RV += takeC;
+    need -= takeC;
   }
+  
+  return w;
+}
 
-  return { allocation, riskProfile };
+/** Devuelve pesos + etiqueta de perfil + notas explicativas de los ajustes */
+export function buildProfile(quiz?: Quiz) {
+  const notes: string[] = [];
+  let w: Weights = { ...BASE };
+ 
+  // Restricciones fuertes acumuladas
+  let maxRV: number | null = null;
+  let minCash = 0;
+  let cryptoBlocked = false;
+  let cryptoTarget = 0;
+ 
+  // === 1) Reglas por respuestas (prioridad alta: horizonte y liquidez) ===
+ 
+  // Horizonte (0:<1a, 1:1–2a, 2:3–7a, 3:>7a)
+  const h = quiz?.raw?.horiz;
+  if (h === 0) {
+    maxRV = RV_MAX_HORIZ_LT1;
+    cryptoBlocked = true;
+    notes.push(`Horizonte < 1 año: RV máx ${Math.round(RV_MAX_HORIZ_LT1 * 100)}% y cripto bloqueada.`);
+  } else if (h === 1) {
+    maxRV = RV_MAX_HORIZ_1_2;
+    cryptoBlocked = true;
+    notes.push(`Horizonte 1–2 años: RV máx ${Math.round(RV_MAX_HORIZ_1_2 * 100)}% y cripto bloqueada.`);
+  } else if (h === 2) {
+    maxRV = (maxRV == null) ? RV_MAX_HORIZ_3_7 : Math.min(maxRV, RV_MAX_HORIZ_3_7);
+    notes.push(`Horizonte 3–7 años: RV máx ${Math.round(RV_MAX_HORIZ_3_7 * 100)}%.`);
+  } else if (h === 3) {
+    notes.push('Horizonte > 7 años: sin límite específico de RV.');
+  } else if (quiz?.P_Horiz === 'Corto') {
+    maxRV = RV_MAX_HORIZ_1_2;
+    cryptoBlocked = true;
+    notes.push(`Horizonte corto: RV máx ${Math.round(RV_MAX_HORIZ_1_2 * 100)}% y cripto bloqueada.`);
+  }
+ 
+  // Tolerancia baja (0: vendería todo)
+  if (quiz?.raw?.toler === 0 || quiz?.P_Toler === 'Baja') {
+    maxRV = (maxRV == null) ? RV_MAX_TOLER_BAJA : Math.min(maxRV, RV_MAX_TOLER_BAJA);
+    cryptoBlocked = true;
+    notes.push(`Tolerancia baja: RV máx ${Math.round(RV_MAX_TOLER_BAJA * 100)}% y cripto bloqueada.`);
+  }
+ 
+  // Estabilidad de ingresos
+  if (quiz?.raw?.estab === 0 || quiz?.raw?.estab === 1 || quiz?.P_Estab === 'Inestables') {
+    w.RV = clamp01(w.RV - RV_PENALTY_INGRESOS_INESTABLES);
+    cryptoBlocked = true;
+    notes.push(`Ingresos inestables: -${Math.round(RV_PENALTY_INGRESOS_INESTABLES * 100)} pp en RV y cripto bloqueada.`);
+  }
+ 
+  // Liquidez mínima
+  const l = quiz?.raw?.liq;
+  if (l === 0 || quiz?.P_Liq === 'Muy alta') {
+    minCash = Math.max(minCash, CASH_MIN_LIQ_MUY_ALTA);
+    notes.push(`Liquidez muy alta: cash mínimo ${Math.round(CASH_MIN_LIQ_MUY_ALTA * 100)}%.`);
+  } else if (l === 1 || quiz?.P_Liq === 'Algo importante') {
+    minCash = Math.max(minCash, CASH_MIN_LIQ_ALGO);
+    notes.push(`Liquidez algo importante: cash mínimo ${Math.round(CASH_MIN_LIQ_ALGO * 100)}%.`);
+  }
+ 
+  // Preferencia cripto
+  if (!cryptoBlocked) {
+    const c = quiz?.raw?.crip;
+    if (c === 2 || quiz?.P_Cripto === 'Sí') cryptoTarget = CRYPTO_TARGET_SI;
+    else if (c === 1 || quiz?.P_Cripto === 'Indiferente') cryptoTarget = CRYPTO_TARGET_INDIF;
+    else cryptoTarget = 0;
+  } else {
+    cryptoTarget = 0;
+    notes.push('Cripto fijada en 0% por reglas anteriores.');
+  }
+ 
+  // === 2) Aplicación de restricciones fuertes (determinista) ===
+ 
+  // Crypto al objetivo (quita de RV y luego de RF)
+  const dC = cryptoTarget - w.Crypto;
+  if (dC > 0) {
+    let need = dC, t;
+    [t, need] = take(w.RV, need);
+    w.RV -= t;
+    w.Crypto += t;
+    if (need > 0) {
+      [t, need] = take(w.RF, need);
+      w.RF -= t;
+      w.Crypto += t;
+    }
+  } else if (dC < 0) {
+    w.Crypto += dC;
+    w.RF -= dC;
+  } // devuelve a RF
+ 
+  // Cash mínimo (quita de RV y luego de RF)
+  if (w.Cash < minCash) {
+    let need = minCash - w.Cash, t;
+    [t, need] = take(w.RV, need);
+    w.RV -= t;
+    w.Cash += t;
+    if (need > 0) {
+      [t, need] = take(w.RF, need);
+      w.RF -= t;
+      w.Cash += t;
+    }
+  }
+ 
+  // RV máximo (mueve exceso a RF)
+  if (maxRV != null && w.RV > maxRV) {
+    const exceso = w.RV - maxRV;
+    w.RV = maxRV;
+    w.RF += exceso;
+  }
+ 
+  // RV mínima para perfil agresivo (h>7 y tolerancia alta, liquidez no prioritaria)
+  let minRV: number | null = null;
+  const isAggressive = (h === 3) && (quiz?.raw?.toler === 3 || quiz?.P_Toler === 'Alta');
+  const liqNotPrioritary = (l === 2 || l === 3) || (quiz?.P_Liq === 'No prioritaria');
+  if (isAggressive && liqNotPrioritary) {
+    minRV = (quiz?.raw?.exp === 3) ? 0.85 : 0.80; // exp avanzada → 85%, si no 80%
+    w = enforceMinRV(w, minRV, minCash, maxRV);
+    notes.push(`Perfil agresivo: establecemos RV mínima ${Math.round(minRV * 100)}% (respetando liquidez mínima).`);
+  }
+ 
+  // === 3) Ajustes suaves al final ===
+ 
+  // 3.a) TOLERANCIA "vendería una parte" → mover 5 pp de RV a RF
+  if (quiz?.raw?.toler === 1) {
+    const move = Math.min(w.RV, Math.abs(TOLER_PARTIAL_SHIFT));
+    w.RV -= move;
+    w.RF += move;
+    notes.push('Tolerancia: “vendería una parte” → traspaso 5 pp de RV a RF.');
+  }
+ 
+  // 3.b) EXPERIENCIA inversora
+  const e = quiz?.raw?.exp;
+  let shift = 0;
+  if (e === 0) {
+    shift = EXP_SHIFT_NONE;
+    notes.push('Experiencia: ninguna → traspaso 3 pp de RV a RF.');
+  } else if (e === 1) {
+    shift = EXP_SHIFT_BASIC;
+    notes.push('Experiencia: básica → traspaso 1 pp de RV a RF.');
+  } else if (e === 2) {
+    shift = 0;
+    notes.push('Experiencia: media → sin ajuste.');
+  } else if (e === 3) {
+    shift = EXP_SHIFT_ADV;
+    notes.push('Experiencia: avanzada → traspaso 2 pp de RF a RV.');
+  }
+ 
+  if (shift !== 0) {
+    if (shift > 0) {
+      const mv = Math.min(w.RF, shift);
+      w.RF -= mv;
+      w.RV += mv;
+    } else {
+      const mv = Math.min(w.RV, -shift);
+      w.RV -= mv;
+      w.RF += mv;
+    }
+  }
+ 
+  // 3.c) Reaplicar SOLO restricciones fuertes (horizonte / liquidez) tras ajustes finales
+  if (w.Cash < minCash) {
+    let need = minCash - w.Cash, t;
+    [t, need] = take(w.RV, need);
+    w.RV -= t;
+    w.Cash += t;
+    if (need > 0) {
+      [t, need] = take(w.RF, need);
+      w.RF -= t;
+      w.Cash += t;
+    }
+  }
+ 
+  if (maxRV != null && w.RV > maxRV) {
+    const exceso = w.RV - maxRV;
+    w.RV = maxRV;
+    w.RF += exceso;
+  }
+ 
+  if (minRV != null && w.RV < minRV) {
+    w = enforceMinRV(w, minRV, minCash, maxRV);
+  }
+ 
+  // Limpieza y normalización final
+  w = normalize({
+    RV: clamp01(w.RV),
+    RF: clamp01(w.RF),
+    Cash: clamp01(w.Cash),
+    Crypto: clamp01(w.Crypto),
+  });
+ 
+  // Etiqueta de perfil (informativa)
+  const profile =
+    w.RV < 0.25 ? 'Muy conservador' :
+    w.RV < 0.40 ? 'Conservador' :
+    w.RV < 0.60 ? 'Moderado' :
+    w.RV < 0.80 ? 'Dinámico' :
+    'Agresivo';
+ 
+  return { weights: w, profile, notes };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Rate table per risk profile
 // ─────────────────────────────────────────────────────────────────────────────
-const RATE_TABLE: Record<
-  'conservative' | 'moderate' | 'aggressive',
-  { conservative: number; base: number; optimistic: number }
-> = {
-  conservative: { conservative: 0.03, base: 0.05, optimistic: 0.07 },
-  moderate: { conservative: 0.04, base: 0.07, optimistic: 0.10 },
-  aggressive: { conservative: 0.05, base: 0.09, optimistic: 0.13 },
+const RATE_TABLE: Record<string, { conservative: number; base: number; optimistic: number }> = {
+  'Muy conservador': { conservative: 0.02, base: 0.04, optimistic: 0.06 },
+  'Conservador': { conservative: 0.03, base: 0.05, optimistic: 0.07 },
+  'Moderado': { conservative: 0.04, base: 0.07, optimistic: 0.10 },
+  'Dinámico': { conservative: 0.05, base: 0.08, optimistic: 0.12 },
+  'Agresivo': { conservative: 0.06, base: 0.10, optimistic: 0.15 },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Future value with periodic contributions (standard compound formula)
-// FV = P*(1+r)^n + PMT * [((1+r)^n - 1) / r]
-// where r = monthly rate, n = total months
+// Future value formulas
 // ─────────────────────────────────────────────────────────────────────────────
-function futureValue(
+export function futureValue(
   principal: number,
-  monthlyContrib: number,
+  contrib: number,
   annualRate: number,
   years: number,
+  frequency: 'weekly' | 'monthly' | 'annual' = 'monthly'
 ): number {
-  if (annualRate === 0) {
-    return principal + monthlyContrib * 12 * years;
-  }
-  const r = annualRate / 12;
-  const n = years * 12;
+  const mults = { weekly: 52, monthly: 12, annual: 1 };
+  const m = mults[frequency] || 12;
+  
+  if (annualRate === 0) return principal + (contrib * m * years);
+  
+  const r = annualRate / m;
+  const n = years * m;
+  
   const fvPrincipal = principal * Math.pow(1 + r, n);
-  const fvContribs = monthlyContrib * ((Math.pow(1 + r, n) - 1) / r);
-  return fvPrincipal + fvContribs;
+  const fvContribs = contrib * ((Math.pow(1 + r, n) - 1) / r);
+  
+  const result = fvPrincipal + fvContribs;
+  return isFinite(result) ? Math.min(result, 1e25) : 1e25;
 }
 
 function buildYearlyValues(
   principal: number,
-  monthlyContrib: number,
+  contrib: number,
   annualRate: number,
   years: number,
+  frequency: 'weekly' | 'monthly' | 'annual' = 'monthly'
 ): number[] {
   const values: number[] = [principal];
   for (let y = 1; y <= years; y++) {
-    values.push(futureValue(principal, monthlyContrib, annualRate, y));
+    values.push(futureValue(principal, contrib, annualRate, y, frequency));
   }
   return values;
 }
@@ -195,140 +367,89 @@ function buildScenario(
   label: 'conservative' | 'base' | 'optimistic',
   annualRate: number,
   principal: number,
-  monthlyContrib: number,
+  contrib: number,
   years: number,
+  frequency: 'weekly' | 'monthly' | 'annual' = 'monthly'
 ): ScenarioResult {
-  const finalValue = futureValue(principal, monthlyContrib, annualRate, years);
-  const totalContributed = principal + monthlyContrib * 12 * years;
+  const finalValue = futureValue(principal, contrib, annualRate, years, frequency);
+  
+  const mults = { weekly: 52, monthly: 12, annual: 1 };
+  const m = mults[frequency] || 12;
+  const totalContributed = principal + (contrib * m * years);
+  
   const totalGrowth = finalValue - totalContributed;
-  const growthPercentage =
-    totalContributed > 0 ? (totalGrowth / totalContributed) * 100 : 0;
-  const yearlyValues = buildYearlyValues(
-    principal,
-    monthlyContrib,
-    annualRate,
-    years,
-  );
+  const growthPercentage = totalContributed > 0 ? (totalGrowth / totalContributed) * 100 : 0;
+  const yearlyValues = buildYearlyValues(principal, contrib, annualRate, years, frequency);
 
-  return {
-    label,
-    annualRate,
-    finalValue,
-    totalContributed,
-    totalGrowth,
-    growthPercentage,
-    yearlyValues,
-  };
+  return { label, annualRate, finalValue, totalContributed, totalGrowth, growthPercentage, yearlyValues };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Main export
 // ─────────────────────────────────────────────────────────────────────────────
-export function calculatePlan(answers: UserAnswers): PlanResult {
-  const riskScore = computeRiskScore(answers);
-  const { allocation, riskProfile } = computeAllocation(riskScore);
-  const rates = RATE_TABLE[riskProfile];
+export function calculatePlan(quiz: Quiz, financialData: { horizon: number, capital: number, monthly: number, frequency?: 'weekly' | 'monthly' | 'annual' }): PlanResult {
+  const { weights, profile, notes } = buildProfile(quiz);
+  const rates = RATE_TABLE[profile] || RATE_TABLE['Moderado'];
   
-  const horizon = parseNum(answers.horizon);
-  const initialCapital = parseNum(answers.initialCapital ?? answers.capital);
-  const monthlyContribution = parseNum(answers.monthlyContribution ?? answers.monthly);
-
-  const safeHorizon = Math.max(1, Math.min(50, horizon));
-  const safePrincipal = Math.max(0, initialCapital);
-  const safeMonthly = Math.max(0, monthlyContribution);
+  const horizon = Math.max(1, Math.min(50, financialData.horizon));
+  const principal = Math.max(0, financialData.capital);
+  const amount = Math.max(0, financialData.monthly);
+  const frequency = financialData.frequency || 'monthly';
 
   return {
-    allocation,
-    riskProfile,
+    weights,
+    profile,
+    notes,
     scenarios: {
-      conservative: buildScenario(
-        'conservative',
-        rates.conservative,
-        safePrincipal,
-        safeMonthly,
-        safeHorizon,
-      ),
-      base: buildScenario(
-        'base',
-        rates.base,
-        safePrincipal,
-        safeMonthly,
-        safeHorizon,
-      ),
-      optimistic: buildScenario(
-        'optimistic',
-        rates.optimistic,
-        safePrincipal,
-        safeMonthly,
-        safeHorizon,
-      ),
+      conservative: buildScenario('conservative', rates.conservative, principal, amount, horizon, frequency),
+      base: buildScenario('base', rates.base, principal, amount, horizon, frequency),
+      optimistic: buildScenario('optimistic', rates.optimistic, principal, amount, horizon, frequency),
     },
   };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// UI Compatibility Layer (Exports expected by Screens)
+// UI Compatibility Layer
 // ─────────────────────────────────────────────────────────────────────────────
-
-export function calcAllocation(answers: UserAnswers): { equity: number; fixed: number; cash: number } {
-  const riskScore = computeRiskScore(answers);
-  const { allocation } = computeAllocation(riskScore);
-  return {
-    equity: allocation.equities,
-    fixed: allocation.fixedIncome,
-    cash: allocation.cash,
-  };
-}
-
-export function getProfileLabel(allocation: { equity: number; fixed: number; cash: number } | any): string {
-  // If passed the result of calcAllocation (flat object)
-  const equity = allocation.equity ?? allocation.equities;
-  if (equity >= 75) return 'Aggressive';
-  if (equity >= 50) return 'Moderate';
-  return 'Conservative';
-}
-
-export function calcFV(principal: number, monthly: number, years: number, rate: number): number {
-  return futureValue(principal, monthly, rate, years);
-}
-
-export function calcScenarios(answers: UserAnswers, allocation: any) {
-  const plan = calculatePlan(answers);
-  const horizon = parseNum(answers.horizon);
-  const initialCapital = parseNum(answers.initialCapital ?? answers.capital);
-  const monthlyContribution = parseNum(answers.monthlyContribution ?? answers.monthly);
-
-  return {
-    years: horizon,
-    capital: initialCapital,
-    monthly: monthlyContribution,
-    conservative: plan.scenarios.conservative.finalValue,
-    base: plan.scenarios.base.finalValue,
-    optimistic: plan.scenarios.optimistic.finalValue,
-    rates: {
-      conservative: plan.scenarios.conservative.annualRate,
-      base: plan.scenarios.base.annualRate,
-      optimistic: plan.scenarios.optimistic.annualRate,
-    }
-  };
+export function toPct(x: number) {
+  return (x * 100).toFixed(1) + '%';
 }
 
 export function formatCurrency(value: number): string {
-  if (value === null || value === undefined || isNaN(value)) {
-    return '$0';
-  }
+  if (value === null || value === undefined || isNaN(value)) return '$0';
+  if (!isFinite(value)) return '∞';
   
-  if (value >= 1_000_000) {
-    return `$${(value / 1_000_000).toFixed(2)}M`;
-  }
-  if (value >= 1_000) {
-    return `$${(value / 1_000).toFixed(1)}K`;
-  }
-  
-  // Basic comma formatter for RN compatibility (avoiding complex toLocaleString options)
-  return `$${Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+  const absValue = Math.abs(value);
+  const sign = value < 0 ? '-' : '';
+
+  if (absValue >= 1e15) return `${sign}$${(absValue / 1e15).toFixed(2)}Q`;
+  if (absValue >= 1e12) return `${sign}$${(absValue / 1e12).toFixed(2)}T`;
+  if (absValue >= 1e9)  return `${sign}$${(absValue / 1e9).toFixed(2)}B`;
+  if (absValue >= 1e6)  return `${sign}$${(absValue / 1e6).toFixed(2)}M`;
+  if (absValue >= 1e3)  return `${sign}$${(absValue / 1e3).toFixed(1)}K`;
+
+  return `${sign}$${Math.round(absValue).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
 }
 
 export function formatPercent(value: number, decimals = 0): string {
   return `${value.toFixed(decimals)}%`;
+}
+
+// Helper for RecommendedAllocation screen
+export function calcAllocation(weights: Weights) {
+  return {
+    equity: weights.RV * 100,
+    fixed: weights.RF * 100,
+    cash: weights.Cash * 100,
+    crypto: weights.Crypto * 100
+  };
+}
+
+export function getProfileLabel(weights: Weights | any): string {
+  const rv = weights.RV ?? weights.equity / 100;
+  if (rv < 0.25) return 'Muy conservador';
+  if (rv < 0.40) return 'Conservador';
+  if (rv < 0.60) return 'Moderado';
+  if (rv < 0.80) return 'Dinámico';
+  return 'Agresivo';
 }

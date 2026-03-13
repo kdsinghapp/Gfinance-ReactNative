@@ -15,6 +15,7 @@ import imageIndex from '../../../assets/imageIndex';
 import ScreenNameEnum from '../../../routes/screenName.enum';
 import { handleLogout } from '../../../Api/apiRequest';
 import { color } from '../../../constant';
+import i18n from '../../../i18n';
 
 const HEADER_BG = '#035093';
 const CARD_BG = '#FFFFFF';
@@ -49,7 +50,7 @@ const UserRoleSetting = () => {
   const onLogout = async () => {
     await handleLogout(dispatch);
     navigation.dispatch(
-      CommonActions.reset({ index: 0, routes: [{ name: ScreenNameEnum.ChooseRole }] })
+      CommonActions.reset({ index: 0, routes: [{ name: ScreenNameEnum.SPLASH_SCREEN }] })
     );
   };
 
@@ -85,7 +86,7 @@ const UserRoleSetting = () => {
         </View>
 
         {/* Menu card */}
-        <Text style={styles.sectionLabel}>Preferences</Text>
+        <Text style={styles.sectionLabel}>{i18n.t('settings.preferences')}</Text>
         <View style={styles.menuCard}>
           {MENU_ITEMS.map((item, index) => (
             <TouchableOpacity
@@ -94,20 +95,45 @@ const UserRoleSetting = () => {
               onPress={() => navigation.navigate(item.screen)}
               activeOpacity={0.7}
             >
-              {/* <View style={styles.iconWrap}>
-                <Image source={item.icon} style={styles.menuIcon} resizeMode="contain" />
-              </View> */}
               <Text style={styles.menuLabel}>{item.label}</Text>
               <Image source={imageIndex.right} style={styles.arrowIcon} resizeMode="contain" />
             </TouchableOpacity>
           ))}
         </View>
 
+        {/* Language Section */}
+        <Text style={styles.sectionLabel}>{i18n.t('settings.language')}</Text>
+        <View style={styles.menuCard}>
+          <TouchableOpacity
+            style={[styles.menuRow, styles.menuRowBorder]}
+            onPress={() => {
+              i18n.locale = 'es';
+              // Force re-render if needed, but usually i18n is enough if used in render
+              navigation.setParams({ _update: Date.now() });
+            }}
+            activeOpacity={0.7}
+          >
+            <Text style={[styles.menuLabel, i18n.locale === 'es' && styles.selectedLabel]}>Español</Text>
+            {i18n.locale === 'es' && <Text style={styles.check}>✓</Text>}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.menuRow}
+            onPress={() => {
+              i18n.locale = 'en';
+              navigation.setParams({ _update: Date.now() });
+            }}
+            activeOpacity={0.7}
+          >
+            <Text style={[styles.menuLabel, i18n.locale === 'en' && styles.selectedLabel]}>English</Text>
+            {i18n.locale === 'en' && <Text style={styles.check}>✓</Text>}
+          </TouchableOpacity>
+        </View>
+
         {/* Logout */}
         <View style={styles.logoutWrap}>
           <TouchableOpacity style={styles.logoutBtn} onPress={onLogout} activeOpacity={0.85}>
             <Image source={imageIndex.logout} style={styles.logoutIcon} resizeMode="contain" />
-            <Text style={styles.logoutLabel}>Logout</Text>
+            <Text style={styles.logoutLabel}>{i18n.t('settings.logout')}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -224,6 +250,15 @@ const styles = StyleSheet.create({
   },
   logoutIcon: { width: 22, height: 22, marginRight: 10, tintColor: '#fff' },
   logoutLabel: { fontSize: 16, fontWeight: '600', color: '#fff' },
+  selectedLabel: {
+    color: HEADER_BG,
+    fontWeight: '700',
+  },
+  check: {
+    fontSize: 18,
+    color: HEADER_BG,
+    fontWeight: '700',
+  },
 });
 
 export default UserRoleSetting;

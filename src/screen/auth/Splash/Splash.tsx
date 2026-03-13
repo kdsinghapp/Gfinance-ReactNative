@@ -33,12 +33,12 @@ const Splash: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBarComponent backgroundColor="#FFF" barStyle="dark-content" />
+      <StatusBarComponent backgroundColor="#FFF" barStyle="default" />
       <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
         <View style={styles.logoBox}>
           <FastImage
             style={styles.logo}
-            source={imageIndex.appLogo1}
+            source={imageIndex.appLogo}
             resizeMode={FastImage.resizeMode.contain}
           />
         </View>
@@ -48,7 +48,7 @@ const Splash: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF', justifyContent: 'center' },
+  container: { flex: 1, backgroundColor: 'black', justifyContent: 'center' },
   content: { alignItems: 'center' },
   logoBox: { marginBottom: 20 },
   logo: { width: 140, height: 40 },

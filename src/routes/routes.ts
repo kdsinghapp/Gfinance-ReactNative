@@ -17,15 +17,25 @@ import RecommendedAllocation from "../screen/RecommendedAllocation/RecommendedAl
 import SavedPlansScreen from "../screen/SavedPlansScreen/SavedPlansScreen";
 import FinancialCalculatorScreen from "../screen/FinancialCalculator/FinancialCalculatorScreen";
 import InvestmentScenarioScreen from "../screen/InvestmentScenarioScreen/InvestmentScenarioScreen";
+import ProfileQuizScreen from "../screen/InvestmentPlanScreen/ProfileQuizScreen";
+import FinanShare from "../screen/FinanShare/FinanShare";
   const _routes: any = {
-  REGISTRATION_ROUTE: [
-    {
-      name: ScreenNameEnum.SPLASH_SCREEN,
-      Component: Splash,
-    },
+    REGISTRATION_ROUTE: [
+      {
+        name: ScreenNameEnum.SPLASH_SCREEN,
+        Component: Splash,
+      },
+      {
+        name: ScreenNameEnum.ProfileQuizScreen,
+        Component: ProfileQuizScreen,
+      },
     {
       name: ScreenNameEnum.Sinup,
       Component: Sinup,
+    },
+    {
+      name: ScreenNameEnum.FinanShare,
+      Component: FinanShare,
     },
     {
       name: ScreenNameEnum.YourGoalScreen,

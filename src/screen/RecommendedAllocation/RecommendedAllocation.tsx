@@ -1,60 +1,78 @@
-// src/screen/RecommendedAllocation/RecommendedAllocation.tsx
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity,   Animated, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import i18n from '../../i18n';
-import { calcAllocation, getProfileLabel } from '../../engine/calculator';
+import { buildProfile, calcAllocation } from '../../engine/calculator';
 import DonutChart from '../../compoent/DonutChart';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import StatusBarComponent from '../../compoent/StatusBarCompoent';
-import imageIndex from '../../assets/imageIndex';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomHeader from '../../compoent/CustomHeader';
 
 const RecommendedAllocation: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
-  const { answers } = route.params;
+  const { quiz = { raw: {} }, financialData = { horizon: 10, capital: 10000, monthly: 500 } } = route.params || {};
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const allocation = calcAllocation(answers);
-  const profileLabel = getProfileLabel(allocation);
+  const { weights, profile, notes } = buildProfile(quiz);
+  const allocation = calcAllocation(weights);
 
   useEffect(() => {
     Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }).start();
-  }, []);
+  }, [fadeAnim]);
 
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBarComponent />
-   
+      <CustomHeader />
 
-     <CustomHeader/>
-
-      <Animated.ScrollView style={{ opacity: fadeAnim }} contentContainerStyle={styles.scrollContent}>
-        <View style={styles.heroCard}>
-          <Text style={styles.heroSub}>Your recommended profile</Text>
-          <Text style={styles.heroTitle}>{profileLabel}</Text>
-        </View>
+      <Animated.ScrollView 
+      showsVerticalScrollIndicator={false}
+      style={{ opacity: fadeAnim }} contentContainerStyle={styles.scrollContent}>
+        {/* <View style={styles.heroCard}>
+          <Text style={styles.heroSub}>{i18n.t('results.title')}</Text>
+          <Text style={styles.heroTitle}>{profile}</Text>
+        </View> */}
 
         <View style={styles.card}>
           <Text style={styles.cardTitle}>{i18n.t('results.allocation')}</Text>
           <View style={styles.chartWrap}>
-            <DonutChart equity={allocation.equity} fixed={allocation.fixed} cash={allocation.cash} />
+            <DonutChart 
+              equity={allocation.equity} 
+              fixed={allocation.fixed} 
+              cash={allocation.cash} 
+              crypto={allocation.crypto} 
+            />
           </View>
 
           <View style={styles.legend}>
-            <LegendItem color="#00E5C0" label={i18n.t('results.equity')} pct={allocation.equity} />
-            <LegendItem color="#4A9EFF" label={i18n.t('results.fixed')} pct={allocation.fixed} />
-            <LegendItem color="#F0C040" label={i18n.t('results.cash')} pct={allocation.cash} />
+            <LegendItem color="#00E5C0" label={i18n.t('results.RV')} pct={allocation.equity} />
+            <LegendItem color="#4A9EFF" label={i18n.t('results.RF')} pct={allocation.fixed} />
+            <LegendItem color="#F0C040" label={i18n.t('results.Cash')} pct={allocation.cash} />
+            {allocation.crypto > 0 && (
+              <LegendItem color="#FF6B6B" label={i18n.t('results.Crypto')} pct={allocation.crypto} />
+            )}
           </View>
         </View>
 
+        {notes && notes.length > 0 && (
+          <View style={styles.notesCard}>
+            <Text style={styles.notesTitle}>{i18n.t('results.notesTitle')}</Text>
+            {notes.map((note, idx) => (
+              <View key={idx} style={styles.noteItem}>
+                <Text style={styles.noteBullet}>•</Text>
+                <Text style={styles.noteText}>{note}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
         <TouchableOpacity
           style={styles.nextBtn}
-          onPress={() => navigation.navigate(ScreenNameEnum.InvestmentScenarioScreen, { answers, allocation })}
+          onPress={() => navigation.navigate(ScreenNameEnum.InvestmentScenarioScreen, { quiz, financialData, weights })}
         >
-          <Text style={styles.nextBtnText}>View Projections →</Text>
+          <Text style={styles.nextBtnText}>{i18n.t('results.scenarios')}  </Text>
         </TouchableOpacity>
       </Animated.ScrollView>
     </SafeAreaView>
@@ -66,22 +84,18 @@ function LegendItem({ color, label, pct }: any) {
     <View style={styles.legendItem}>
       <View style={[styles.dot, { backgroundColor: color }]} />
       <Text style={styles.legendLabel}>{label}</Text>
-      <Text style={[styles.legendPct, { color }]}>{pct}%</Text>
+      <Text style={[styles.legendPct, { color }]}>{pct.toFixed(1)}%</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#FFF' },
-  header: { flexDirection: 'row', alignItems: 'center', padding: 16 },
-  backBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  backIcon: { fontSize: 24, color: '#000' },
-  headerTitle: { flex: 1, textAlign: 'center', fontSize: 18, fontWeight: '700', color: '#000' },
   scrollContent: { padding: 20 },
   heroCard: { backgroundColor: '#111', borderRadius: 20, padding: 24, marginBottom: 20 },
   heroSub: { color: '#00E5C0', fontSize: 13, fontWeight: '700', textTransform: 'uppercase', marginBottom: 4 },
   heroTitle: { color: '#FFF', fontSize: 28, fontWeight: '900' },
-  card: { backgroundColor: '#FFF', borderRadius: 20, padding: 20, borderWidth: 1, borderColor: '#EEE' },
+  card: { backgroundColor: '#FFF', borderRadius: 20, padding: 20, borderWidth: 1, borderColor: '#EEE', marginBottom: 20 },
   cardTitle: { fontSize: 18, fontWeight: '800', color: '#111', marginBottom: 20 },
   chartWrap: { alignItems: 'center', marginBottom: 20 },
   legend: { gap: 12 },
@@ -89,7 +103,12 @@ const styles = StyleSheet.create({
   dot: { width: 10, height: 10, borderRadius: 5 },
   legendLabel: { flex: 1, fontSize: 14, color: '#666' },
   legendPct: { fontSize: 16, fontWeight: '800' },
-  nextBtn: { backgroundColor: '#000', height: 56, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginTop: 20 },
+  notesCard: { backgroundColor: '#F8F9FA', borderRadius: 20, padding: 20, marginBottom: 20, borderWidth: 1, borderColor: '#EEE' },
+  notesTitle: { fontSize: 14, fontWeight: '800', color: '#555', marginBottom: 12, textTransform: 'uppercase' },
+  noteItem: { flexDirection: 'row', marginBottom: 6 },
+  noteBullet: { color: '#00E5C0', fontSize: 16, marginRight: 8, fontWeight: '900' },
+  noteText: { flex: 1, fontSize: 13, color: '#444', lineHeight: 18 },
+  nextBtn: { backgroundColor: '#000', height: 56, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginTop: 10 },
   nextBtnText: { color: '#FFF', fontSize: 16, fontWeight: '700' },
 });
 
