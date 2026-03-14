@@ -4,8 +4,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
+   Platform,
   Animated,
   Image,
   Dimensions,
@@ -109,7 +108,10 @@ const ProfileQuizScreen: React.FC = () => {
                             activeOpacity={0.8}
                         >
                           {opt?.emoji &&  <View style={[styles.emojiBg, isSelected && styles.emojiBgSelected]}>
-                                <Text style={styles.emojiText}>{optionEmoji}</Text>
+                                <Text style={styles.emojiText}>
+                                  {optionEmoji}
+                                  
+                                </Text>
                             </View>}
                            
                             <Text 
@@ -118,7 +120,7 @@ const ProfileQuizScreen: React.FC = () => {
                                     isSelected && styles.optionLabelSelected
                                 ]}
                             >
-                        {optionLabel} {"  "}
+                              {optionLabel} {"  "}
                             </Text>
                         </TouchableOpacity>
                     );
@@ -212,6 +214,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
+        elevation:10
+
    },
     headerTitle: {
     flex: 1,
@@ -226,10 +230,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   emojiBg: {
-    width: 56,
-    height: 56,
+    width: 60,
+    height: 60,
     borderRadius: 28,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: 'black',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 14,
@@ -238,8 +242,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   emojiText: { 
-      fontSize: 25 ,
-      textAlign:"center"
+      fontSize: 30 ,
+      textAlign:"center" ,
+      color:"white"
   },
   optionLabel: { 
       fontSize: 15, 

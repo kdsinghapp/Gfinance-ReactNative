@@ -414,11 +414,11 @@ export function formatCurrency(value: number): string {
   const absValue = Math.abs(value);
   const sign = value < 0 ? '-' : '';
 
-  if (absValue >= 1e15) return `${sign}$${(absValue / 1e15).toFixed(2)}Q`;
-  if (absValue >= 1e12) return `${sign}$${(absValue / 1e12).toFixed(2)}T`;
-  if (absValue >= 1e9)  return `${sign}$${(absValue / 1e9).toFixed(2)}B`;
-  if (absValue >= 1e6)  return `${sign}$${(absValue / 1e6).toFixed(2)}M`;
-  if (absValue >= 1e3)  return `${sign}$${(absValue / 1e3).toFixed(1)}K`;
+  if (absValue >= 1e15) return `${sign}${(absValue / 1e15).toFixed(2)}Q`;
+  if (absValue >= 1e12) return `${sign}€${(absValue / 1e12).toFixed(2)}T`;
+  if (absValue >= 1e9)  return `${sign}€${(absValue / 1e9).toFixed(2)}B`;
+  if (absValue >= 1e6)  return `${sign}€${(absValue / 1e6).toFixed(2)}M`;
+  if (absValue >= 1e3)  return `${sign}€${(absValue / 1e3).toFixed(1)}K`;
 
   return `${sign}$${Math.round(absValue).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
 }

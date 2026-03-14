@@ -193,7 +193,7 @@ const FinanShare = () => {
   const lastPointX =
     LEFT_PADDING +
     ((lastPoint?.year || 0) / (data.horizon || 1)) *
-      (CHART_WIDTH - LEFT_PADDING - RIGHT_PADDING);
+    (CHART_WIDTH - LEFT_PADDING - RIGHT_PADDING);
 
   const lastPointY =
     TOP_PADDING +
@@ -215,12 +215,12 @@ const FinanShare = () => {
         {/* Main Value Card */}
         <View style={styles.valueCard}>
           <Text style={styles.valueLabel}>
-           Valor estimado en {data.horizon} Años
+            Valor estimado en {data.horizon} Años
           </Text>
           <Text style={styles.value}>{formatCurrency(data.fv || 0)}</Text>
-          <Text style={styles.growthText}>
+          {/* <Text style={styles.growthText}>
             +{formatCurrency(data.growth || 0)} ({(data.gainPct || 0).toFixed(1)}%)
-          </Text>
+          </Text> */}
         </View>
 
         {/* Graph Card */}
@@ -272,7 +272,7 @@ const FinanShare = () => {
               const x =
                 LEFT_PADDING +
                 (i / (data.horizon || 1)) *
-                  (CHART_WIDTH - LEFT_PADDING - RIGHT_PADDING);
+                (CHART_WIDTH - LEFT_PADDING - RIGHT_PADDING);
 
               return (
                 <SvgText
@@ -327,7 +327,7 @@ const FinanShare = () => {
           <View style={styles.infoRow}>
             <View style={styles.infoLeft}>
               <Image source={imageIndex.Conservative} style={styles.icon} />
-              <Text style={styles.infoLabel}>Interest Rate</Text>
+              <Text style={styles.infoLabel}>Tasa de interés</Text>
             </View>
             <Text style={styles.infoValue}>{data.returnRate}%</Text>
           </View>
@@ -335,12 +335,12 @@ const FinanShare = () => {
           <View style={styles.infoRow}>
             <View style={styles.infoLeft}>
               <Image source={imageIndex.Base} style={styles.icon} />
-              <Text style={styles.infoLabel}>Investment Period</Text>
+              <Text style={styles.infoLabel}>Período de inversión</Text>
             </View>
             <Text style={styles.infoValue}>{data.horizon} Years</Text>
           </View>
 
-          <View style={styles.infoRow}>
+          {/* <View style={styles.infoRow}>
             <View style={styles.infoLeft}>
               <Image source={imageIndex.Base} style={styles.icon} />
               <Text style={styles.infoLabel}>
@@ -348,23 +348,23 @@ const FinanShare = () => {
               </Text>
             </View>
             <Text style={styles.infoValue}>{formatCurrency(data.monthly || 0)}</Text>
-          </View>
+          </View> */}
 
-          <View style={styles.infoRow}>
+          {/* <View style={styles.infoRow}>
             <View style={styles.infoLeft}>
               <Image source={imageIndex.Base} style={styles.icon} />
               <Text style={styles.infoLabel}>Capital inicial</Text>
             </View>
             <Text style={styles.infoValue}>{formatCurrency(data.capital || 0)}</Text>
-          </View>
+          </View> */}
 
-          <View style={[styles.infoRow, { marginBottom: 0 }]}>
+          {/* <View style={[styles.infoRow, { marginBottom: 0 }]}>
             <View style={styles.infoLeft}>
               <Image source={imageIndex.Base} style={styles.icon} />
               <Text style={styles.infoLabel}>Total Invested</Text>
             </View>
             <Text style={styles.infoValue}>{formatCurrency(data.invested || 0)}</Text>
-          </View>
+          </View> */}
         </View>
 
         <TouchableOpacity style={styles.shareButton}>
@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
   shareButton: {
     backgroundColor: "#34C759",
     marginHorizontal: 20,
-    borderRadius: 30,
+    borderRadius: 15,
     paddingVertical: 16,
     justifyContent: "center",
     alignItems: "center",

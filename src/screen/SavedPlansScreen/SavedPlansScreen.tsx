@@ -1,6 +1,16 @@
-// src/screen/SavedPlansScreen/SavedPlansScreen.tsx
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import i18n from '../../i18n';
 import { Storage, PlanData } from '../../engine/storage';
@@ -9,7 +19,7 @@ import StatusBarComponent from '../../compoent/StatusBarCompoent';
 import { getProfileLabel, formatCurrency } from '../../engine/calculator';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import imageIndex from '../../assets/imageIndex';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { successToast } from '../../utils/customToast';
 
 const SavedPlansScreen: React.FC = () => {
   const navigation = useNavigation<any>();
@@ -17,186 +27,401 @@ const SavedPlansScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    load();
+    loadPlans();
   }, []);
 
-  const load = async () => {
-    const p = await Storage.loadPlans();
-    setPlans(p);
-    setLoading(false);
-    if (p.length > 0) Analytics.savedPlanViewed();
+  const loadPlans = async () => {
+    try {
+      setLoading(true);
+      const storedPlans = await Storage.loadPlans();
+      setPlans(storedPlans || []);
+
+      if (storedPlans?.length > 0) {
+        Analytics.savedPlanViewed();
+      }
+    } catch (error) {
+      console.log('Load plans error:', error);
+      setPlans([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatPlanDate = (dateString?: string) => {
+    if (!dateString) return '--';
+    const date = new Date(dateString);
+
+    if (isNaN(date.getTime())) return '--';
+
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+  };
+
+  const getHorizonYears = (item: any) => {
+    return item?.scenarios?.years || item?.answers?.horizon || 0;
+  };
+
+  const getBaseValue = (item: any) => {
+    if (item?.scenarios?.base) return item.scenarios.base;
+    if (item?.answers?.capital) return item.answers.capital;
+    return 0;
+  };
+
+  const openPlanDetails = (item: any) => {
+    const quiz = { raw: item.answers };
+    const type = 'save';
+
+    const financialData = {
+      capital: item?.answers?.capital || 0,
+      monthly: item?.answers?.monthly || 0,
+      frequency: item?.answers?.frequency || 'monthly',
+      horizon: getHorizonYears(item),
+      returnRate: '8',
+    };
+
+    navigation.navigate(ScreenNameEnum.InvestmentScenarioScreen, {
+      quiz,
+      financialData,
+      type,
+      savedPlan: item,
+    });
   };
 
   const handleDelete = async (id: string) => {
-    Alert.alert('Eliminar plan', 'Estas segura', [
-      { text: 'No', style: 'cancel' },
-      {
-        text: 'Yes', style: 'destructive', onPress: async () => {
-          await Storage.deletePlan(id);
-          const updated = plans.filter(p => p.id !== id);
-          setPlans(updated);
-          Analytics.planDeleted();
-        }
-      }
-    ]);
+    Alert.alert(
+      'Eliminar plan',
+      '¿Estás seguro de que quieres eliminar este plan?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Borrar',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await Storage.deletePlan(id);
+              const updatedPlans = plans.filter(plan => plan.id !== id);
+              setPlans(updatedPlans);
+              Analytics.planDeleted();
+              successToast("Plan eliminado", "Su plan ha sido eliminado correctamente.", 8000);
+            } catch (error) {
+              console.log('Delete plan error:', error);
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safeArea}>
       <StatusBarComponent />
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Image source={imageIndex.back}
 
-            style={{
-              height: 44,
-              width: 44
-            }}
-          />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>{i18n.t('saved.title')}</Text>
-        <View style={{ width: 40 }} />
-      </View>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Image source={imageIndex.back} style={styles.backIcon} />
+          </TouchableOpacity>
 
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {loading ? (
-          <Text style={styles.infoText}>Cargando...</Text>
-        ) : plans?.length === 0 ? (
-          <View style={styles.empty}>
-            <Text style={styles.emptyIcon}>📋</Text>
-            <Text style={styles.emptyText}>{i18n.t('saved.empty')}</Text>
-{/* 
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.primaryBtn}
-              onPress={() => navigation.navigate(ScreenNameEnum.InvestmentPlanScreen)}
-            >
-              <Text style={styles.primaryBtnText}>{i18n.t('splash.cta')}</Text>
-            </TouchableOpacity> */}
-          </View>
-        ) : (
-          plans?.map((item) => {
-            return (
-              <View key={item.id} style={styles.planCard}>
-                <View style={styles.planHeader}>
-                  <View>
-                    <Text style={styles.planType}>{i18n.t('saved.profile')} {getProfileLabel(item.allocation)}</Text>
-                    <Text style={styles.planTitle}>Plan</Text>
-                    <Text style={styles.planDate}>{new Date(item.savedAt).toLocaleDateString()}</Text>
-                  </View>
-                  <TouchableOpacity onPress={() => handleDelete(item.id)}>
-                    <Image source={imageIndex.delite}
-                      style={{
-                        height: 25,
-                        width: 25,
-                        resizeMode: "contain"
-                      }}
+          <Text style={styles.headerTitle}>Planes guardados</Text>
+
+          <View style={styles.headerRightSpace} />
+        </View>
+
+        <ScrollView
+          contentContainerStyle={[styles.scrollContent, {
+            marginTop: 18
+          }]}
+          showsVerticalScrollIndicator={false}
+        >
+          {loading ? (
+            <View style={styles.loaderWrap}>
+              <ActivityIndicator size="large" color="#5F16EA" />
+              <Text style={styles.loaderText}>Cargando planes...</Text>
+            </View>
+          ) : plans.length === 0 ? (
+            <View style={styles.emptyWrap}>
+              <Text style={styles.emptyEmoji}>📋</Text>
+              <Text style={styles.emptyTitle}>No hay planes guardados</Text>
+              <Text style={styles.emptySubtitle}>
+                Tus planes de inversión guardados aparecerán aquí.
+              </Text>
+            </View>
+          ) : (
+            plans.map((item) => {
+              const profile = getProfileLabel(item?.allocation);
+              const horizon = getHorizonYears(item);
+              const baseValue = getBaseValue(item);
+
+              return (
+                <View key={item.id} style={styles.card}>
+                  <Text style={styles.planTitle}>
+                    {item?.name || 'Plan'} - {formatPlanDate(item?.savedAt)}
+                  </Text>
+
+                  <View style={styles.infoBlock}>
+                    <InfoRow
+                      label="Profile:"
+                      value={profile}
+                      valueStyle={styles.profileValue}
                     />
-                  </TouchableOpacity>
+                    <InfoRow
+                      label="Valor base:"
+                      value={`${horizon} years`}
+                      valueStyle={styles.blueValue}
+                    />
+                    <InfoRow
+                      label="Valor base:"
+                      value={formatCurrency(baseValue)}
+                      valueStyle={styles.greenValue}
+                    />
+                  </View>
+
+                  <View style={styles.actionRow}>
+                    <TouchableOpacity
+                      activeOpacity={0.85}
+                      style={styles.detailsButtonWrap}
+                      onPress={() => openPlanDetails(item)}
+                    >
+                      <LinearGradient
+                        colors={['#5D00DF', '#2F0071',]}
+                        start={{ x: 0, y: 0.5 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.detailsButton}
+                      >
+                        <Text style={styles.detailsButtonText}>Ver detalles</Text>
+
+                        <View style={styles.eyeWrap}>
+                          <Image
+                            source={imageIndex.ViewSavedPlans}
+                            style={styles.eyeIcon}
+                          />
+                        </View>
+                      </LinearGradient>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      activeOpacity={0.85}
+                      onPress={() => handleDelete(item.id)}
+                      style={styles.deleteButton}
+                    >
+                      <Image source={imageIndex.delite} style={styles.deleteIcon} />
+                    </TouchableOpacity>
+                  </View>
                 </View>
-
-                <View style={styles.stats}>
-                  <StatItem label={i18n.t('questions.financial.initialLabel')} value={formatCurrency(item?.answers.capital)} />
-                  <StatItem label={i18n.t('questions.financial.monthlyLabel')} value={formatCurrency(item?.answers.monthly)} />
-                  <StatItem label={i18n.t('questions.financial.horizonLabel')} value={`${item.scenarios?.years || 0} ${i18n.t('questions.financial.yearsUnit')}`} />
-                </View>
-
-                <TouchableOpacity
-                  style={[styles.viewBtn,{
-                    flex:1,
-                    flexDirection:"row"
-                  }]}
-                  onPress={() => {
-                    const quiz = { raw: item.answers };
-                    const type = "save"
-
-                    const financialData = {
-                      capital: item.answers.capital,
-                      monthly: item.answers.monthly,
-                      horizon: item.scenarios?.years || 10
-                    };
-                    navigation.navigate(ScreenNameEnum.InvestmentScenarioScreen, { quiz, financialData, type
-
-
-                    });
-                  }}
-                >
-                 
-                  <Text style={styles.viewBtnText}>{i18n.t('saved.viewDetails')} </Text>  
-                   <Image source={imageIndex.ViewSavedPlans} 
-                  style={{
-                    height:22,
-                    width:22
-                  }}
-                  />
-                </TouchableOpacity>
-              </View>
-            )
-          })
-        )}
-      </ScrollView>
+              );
+            })
+          )}
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
 
-function StatItem({ label, value, text }: any) {
+type InfoRowProps = {
+  label: string;
+  value: string;
+  valueStyle?: any;
+};
+
+const InfoRow = ({ label, value, valueStyle }: InfoRowProps) => {
   return (
-    <View style={styles.stat}>
-      <Text style={styles.statVal}>{value}</Text>
-      <Text style={styles.statLab}>{label}</Text>
-      {
-        text
-      }
-      <Text style={styles.statLab}>{text}</Text>
+    <View style={styles.infoRow}>
+      <Text style={styles.infoLabel}>{label}</Text>
+      <Text style={[styles.infoValue, valueStyle]} numberOfLines={1}>
+        {value}
+      </Text>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#FFF' },
-  header: { flexDirection: 'row', alignItems: 'center', padding: 16 },
-  backBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  backIcon: { fontSize: 24, color: '#000' },
-  headerTitle: { flex: 1, textAlign: 'center', fontSize: 18, fontWeight: '700', color: '#000' },
-  scroll: { padding: 20 },
-  infoText: { textAlign: 'center', color: '#999', marginTop: 40 },
-  empty: { alignItems: 'center', marginTop: 80 },
-  emptyIcon: { fontSize: 60, marginBottom: 16, },
-  emptyText: { color: '#999', fontSize: 16 },
-  planCard: {
-    backgroundColor: 'white',
-    borderRadius: 24,
-    padding: 20,
-    marginBottom: 16,
-
-    // Android shadow
-    elevation: 5,
-
-    // iOS shadow
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#F7F7F8',
   },
-  planHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 },
-  planType: { color: 'black', fontSize: 12, fontWeight: '700', textTransform: 'uppercase' },
-  planTitle: { color: 'black', fontSize: 20, fontWeight: '800', marginTop: 4 },
-  planDate: { color: '#666', fontSize: 10, marginTop: 2 },
-  deleteIcon: { fontSize: 24 },
-  stats: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24 },
-  stat: { flex: 1 },
-  statVal: { color: 'black', fontSize: 16, fontWeight: '700' },
-  statLab: { color: '#888', fontSize: 11, marginTop: 4 },
-  viewBtn: { backgroundColor: '#5D00DF', height: 48, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
-  viewBtnText: { color: 'white', fontSize: 15, fontWeight: '700' },
-  primaryBtn: { backgroundColor: '#000', height: 56, borderRadius: 16, alignItems: 'center', justifyContent: 'center', width: "100%", marginTop: 20 },
-  primaryBtnText: { color: '#FFF', fontSize: 16, fontWeight: '700' },
-  buttonGroup: { width: '100%', gap: 12 },
+  container: {
+    flex: 1,
+    backgroundColor: '#F7F7F8',
+  },
 
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 18,
+    paddingTop: 10,
+    paddingBottom: 14,
+  },
+  backButton: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backIcon: {
+    width: 45,
+    height: 45,
+    resizeMode: 'contain',
+  },
+  headerTitle: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#111',
+    marginHorizontal: 10,
+  },
+  headerRightSpace: {
+    width: 42,
+  },
+
+  scrollContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 24,
+  },
+
+  loaderWrap: {
+    marginTop: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loaderText: {
+    marginTop: 12,
+    fontSize: 15,
+    color: '#7C7C7C',
+    fontWeight: '500',
+  },
+
+  emptyWrap: {
+    marginTop: 80,
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  emptyEmoji: {
+    fontSize: 54,
+    marginBottom: 12,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#111',
+    marginBottom: 8,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: '#7C7C7C',
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+
+  card: {
+    backgroundColor: '#FFF',
+    borderRadius: 22,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.06,
+    shadowRadius: 16,
+    
+  },
+
+  planTitle: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#121212',
+    marginBottom: 14,
+  },
+
+  infoBlock: {
+    marginBottom: 16,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 7,
+  },
+  infoLabel: {
+    width: 78,
+    fontSize: 13,
+    color: '#B2B2B2',
+    fontWeight: '500',
+  },
+  infoValue: {
+    flex: 1,
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#1E1E1E',
+  },
+  profileValue: {
+    color: '#1F1F1F',
+  },
+  blueValue: {
+    color: '#1CA3FF',
+  },
+  greenValue: {
+    color: '#20C67A',
+  },
+
+  actionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  detailsButtonWrap: {
+    flex: 1,
+    marginRight: 12,
+  },
+  detailsButton: {
+    height: 46,
+    borderRadius: 20,
+    paddingHorizontal: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#6B1DFF',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.22,
+    shadowRadius: 12,
+  },
+  detailsButtonText: {
+    color: '#FFF',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  eyeWrap: {
+    marginLeft: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  eyeIcon: {
+    width: 16,
+    height: 16,
+    resizeMode: 'contain',
+    tintColor: '#FFF',
+  },
+
+  deleteButton: {
+    alignItems: "center",
+    justifyContent: "center"
+
+  },
+  deleteIcon: {
+    width: 43,
+    height: 43,
+    resizeMode: 'contain',
+  },
 });
-
 
 export default SavedPlansScreen;

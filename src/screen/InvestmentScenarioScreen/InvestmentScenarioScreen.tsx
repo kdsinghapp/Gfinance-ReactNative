@@ -662,6 +662,8 @@ import ScreenNameEnum from '../../routes/screenName.enum';
 import StatusBarComponent from '../../compoent/StatusBarCompoent';
 import imageIndex from '../../assets/imageIndex';
 import CustomHeader from '../../compoent/CustomHeader';
+import { successToast } from '../../utils/customToast';
+import CashChart from '../../compoent/CashChart';
 type RangeKey = '1Y' | '3Y' | '5Y' | '7Y' | '10Y';
 const CARD_GAP = 10;
 const InvestmentScenarioScreen: React.FC = () => {
@@ -763,9 +765,11 @@ const InvestmentScenarioScreen: React.FC = () => {
     });
 
     if (ok) {
+      successToast("Plan agregado correctamente", "El plan ha sido guardado.", 2000);
       setSaved(true);
       setSaveModalVisible(false);
       Analytics.planSaved();
+      navigation.navigate(ScreenNameEnum.SavedPlansScreen)
     }
   };
 
@@ -781,8 +785,8 @@ const InvestmentScenarioScreen: React.FC = () => {
           contentContainerStyle={styles.scrollContent}
         >
           {/* Allocation Card */}
-          <View style={[styles.card,{
-            marginTop:20
+          <View style={[styles.card, {
+            marginTop: 20
           }]}>
             <Text style={styles.sectionTitle}>Asignación recomendada</Text>
 
@@ -811,7 +815,7 @@ const InvestmentScenarioScreen: React.FC = () => {
               value={formatCurrency(scenarios.optimistic.finalValue)}
             />
           </View>
-
+ 
           {/* Chart Card */}
           <View style={styles.card}>
             <Text style={styles.chartTitle}>Future Value Projection</Text>
@@ -831,7 +835,10 @@ const InvestmentScenarioScreen: React.FC = () => {
           {type !== "save" && (
             !saved ? (
               <TouchableOpacity
-                style={[styles.saveBtn, saved && styles.saveBtnSuccess]}
+                style={[styles.saveBtn, saved && styles.saveBtnSuccess, {
+                  flexDirection: "row",
+                  alignItems: "center"
+                }]}
                 onPress={handleSave}
                 disabled={saved}
                 activeOpacity={0.85}
@@ -839,6 +846,15 @@ const InvestmentScenarioScreen: React.FC = () => {
                 <Text style={styles.saveBtnText}>
                   {saved ? i18n.t('results.saved') : 'Guardar plan'}
                 </Text>
+                <Image source={imageIndex.saveP}
+                  style={{
+                    height: 27,
+                    width: 27,
+                    left: 11,
+                    resizeMode: "cover"
+                  }}
+                />
+
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
@@ -851,15 +867,54 @@ const InvestmentScenarioScreen: React.FC = () => {
               </TouchableOpacity>
             )
           )}
-
-
-          <TouchableOpacity
-            style={styles.newPlanBtn}
+          {type !== "save" ? (<TouchableOpacity
+            style={[styles.newPlanBtn, {
+              flexDirection: "row",
+              alignItems: "center"
+            }]}
             onPress={() => navigation.navigate(ScreenNameEnum.ProfileQuizScreen)}
             activeOpacity={0.8}
           >
             <Text style={styles.newPlanText}>Nuevo plan</Text>
-          </TouchableOpacity>
+
+            <Image source={imageIndex.addplain}
+
+              style={{
+                height: 33,
+                width: 33,
+                resizeMode: "contain",
+                left: 11
+              }}
+            />
+          </TouchableOpacity>) : 
+          
+           <TouchableOpacity
+                style={[styles.saveBtn, saved && styles.saveBtnSuccess, {
+                  flexDirection: "row",
+                  alignItems: "center"
+                }]}
+                         onPress={() => navigation.navigate(ScreenNameEnum.ProfileQuizScreen)}
+
+                 activeOpacity={0.85}
+              >
+                <Text style={styles.saveBtnText}>
+              Nuevo plan
+                </Text>
+                 <Image source={imageIndex.addplain}
+
+              style={{
+                height: 30,
+                width: 30,
+                resizeMode: "contain",
+                left: 11 ,
+                tintColor:"white"
+              }}
+            />
+
+              </TouchableOpacity>
+          }
+
+
         </ScrollView>
 
         {/* Save Modal */}
@@ -877,7 +932,7 @@ const InvestmentScenarioScreen: React.FC = () => {
                 style={styles.modalInput}
                 value={planName}
                 onChangeText={setPlanName}
-                placeholder="My House Fund"
+                placeholder="Nombre del plan"
                 placeholderTextColor="#94A3B8"
                 autoFocus
               />
@@ -893,7 +948,7 @@ const InvestmentScenarioScreen: React.FC = () => {
                   onPress={handleSave}
                   disabled={!planName.trim()}
                 >
-                  <Text style={styles.modalConfirmText}>Ahorrar</Text>
+                  <Text style={styles.modalConfirmText}>Ahorrar </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -1106,6 +1161,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
+    elevation: 10
+
   },
 
   sectionTitle: {
@@ -1133,12 +1190,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#B0B7C3',
     marginBottom: 5,
-   },
+  },
   ringCenterValue: {
     fontSize: 21,
     fontWeight: '700',
     color: '#1A1A1A',
-   marginTop:3
+    marginTop: 3
   },
 
   ringFooter: {
@@ -1180,7 +1237,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: CARD_GAP,
     marginBottom: 14,
-    marginTop:8
+    marginTop: 8
   },
   metricCard: {
     flex: 1,
@@ -1189,10 +1246,12 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 8,
     alignItems: 'center',
-         shadowColor: '#000',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
+    elevation: 10
+
   },
   metricCardActive: {
   },
@@ -1215,7 +1274,7 @@ const styles = StyleSheet.create({
     color: '#AEAEB2',
     marginBottom: 6,
     textAlign: 'center',
-    fontWeight:"500"
+    fontWeight: "500"
   },
   metricValue: {
     fontSize: 18,
@@ -1257,9 +1316,9 @@ const styles = StyleSheet.create({
   },
   tabTextActive: {
     color: '#1D5FA0',
-       fontSize: 10,
+    fontSize: 10,
 
-        fontWeight: '600',
+    fontWeight: '600',
 
   },
 
@@ -1376,7 +1435,7 @@ const styles = StyleSheet.create({
   },
   modalConfirm: {
     flex: 2,
-    height: 56,
+    height: 50,
     backgroundColor: '#19C84B',
     borderRadius: 16,
     justifyContent: 'center',

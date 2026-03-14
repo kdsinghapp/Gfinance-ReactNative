@@ -819,7 +819,7 @@ const FinancialCalculatorScreen = () => {
             value={returnRate}
             onChangeText={setReturnRate}
             keyboardType="numeric"
-            placeholder="8"
+            placeholder="0"
             placeholderTextColor="#B8B8B8"
           />
 
@@ -831,7 +831,7 @@ const FinancialCalculatorScreen = () => {
             value={years}
             onChangeText={setYears}
             keyboardType="numeric"
-            placeholder="10"
+            placeholder="0"
             placeholderTextColor="#B8B8B8"
           />
 
@@ -873,7 +873,7 @@ const FinancialCalculatorScreen = () => {
             years={parseInt(years, 10) || 1}
           />
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             disabled={!isFormValid}
             activeOpacity={0.9}
             style={[styles.generateButton, !isFormValid && {
@@ -899,7 +899,7 @@ const FinancialCalculatorScreen = () => {
             }
           >
             <Text style={styles.generateButtonText}>Generate Simulation</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -937,6 +937,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
+    elevation:10
   },
 
   label: {
@@ -953,7 +954,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F8F8',
     borderColor: '#ECECEC',
     paddingHorizontal: 14,
-    color: '#ADA4A5',
+    color: 'black',
     fontSize: 14,
     fontWeight: '500',
   },

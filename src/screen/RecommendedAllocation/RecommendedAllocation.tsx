@@ -68,13 +68,17 @@ const RecommendedAllocation: React.FC = () => {
           </View>
         )}
 
-        <TouchableOpacity
-          style={styles.nextBtn}
+       
+      </Animated.ScrollView>
+       <TouchableOpacity
+        style={[styles.nextBtn,{
+          marginHorizontal:15,
+          marginBottom:15
+        }]}
           onPress={() => navigation.navigate(ScreenNameEnum.InvestmentPlanScreen, { quiz, financialData, weights })}
         >
           <Text style={styles.nextBtnText}>{i18n.t('results.scenarios')}  </Text>
         </TouchableOpacity>
-      </Animated.ScrollView>
     </SafeAreaView>
   );
 };
@@ -103,7 +107,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
-    backgroundColor: '#FFF', borderRadius: 20, padding: 20, marginBottom: 20
+    backgroundColor: '#FFF', borderRadius: 20, padding: 20, marginBottom: 20,
+    elevation: 10
+
   },
   cardTitle: { fontSize: 18, fontWeight: '800', color: '#111', marginBottom: 20 },
   chartWrap: { alignItems: 'center', marginBottom: 20 },
@@ -118,6 +124,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
+    elevation: 10
+    ,
     backgroundColor: '#FFF', borderRadius: 20, padding: 20, marginBottom: 20
   },
   notesTitle: { fontSize: 14, fontWeight: '700', color: 'black', marginBottom: 12, textTransform: 'uppercase' },

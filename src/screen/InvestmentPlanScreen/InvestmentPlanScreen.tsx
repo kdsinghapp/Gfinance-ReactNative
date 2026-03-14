@@ -151,8 +151,9 @@ const InvestmentPlanScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  safe: { flex: 1,      backgroundColor: 'white',
- },
+  safe: {
+    flex: 1, backgroundColor: 'white',
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -176,23 +177,25 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 18,
     marginBottom: 16,
-     shadowColor: '#000',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
+    elevation: 10
+
   },
   qLabel: { fontSize: 16, fontWeight: '800', color: '#111111' },
   qSub: { fontSize: 12, color: '#888888', marginTop: 4 },
   numInputWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-      paddingHorizontal: 14,
+    paddingHorizontal: 14,
     height: 58,
- 
+
     borderRadius: 14,
     backgroundColor: '#F7F8F8',
     borderColor: '#ECECEC',
-     color: '#ADA4A5',
+    color: '#ADA4A5',
     fontSize: 14,
     fontWeight: '500',
 
