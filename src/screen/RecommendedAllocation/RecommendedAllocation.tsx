@@ -75,7 +75,7 @@ const RecommendedAllocation: React.FC = () => {
           marginHorizontal:15,
           marginBottom:15
         }]}
-          onPress={() => navigation.navigate(ScreenNameEnum.InvestmentPlanScreen, { quiz, financialData, weights })}
+          onPress={() => navigation.navigate(ScreenNameEnum.ContributionInputScreen, { quiz, financialData, weights })}
         >
           <Text style={styles.nextBtnText}>{i18n.t('results.scenarios')}  </Text>
         </TouchableOpacity>

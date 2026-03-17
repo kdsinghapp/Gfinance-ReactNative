@@ -6,7 +6,7 @@ export const ScreenNameEnum = {
   UserRoleDashBoard: 'UserRoleDashBoard',
   HomeStack: 'HomeStack',
   ProfileScreen: 'ProfileScreen',
-  InvestmentPlanScreen: 'InvestmentPlanScreen',
+  ContributionInputScreen: 'ContributionInputScreen',
   SavedPlansScreen:"SavedPlansScreen",
   PreferencesScreen: 'PreferencesScreen',
   InvestmentScenarioScreen:"InvestmentScenarioScreen",

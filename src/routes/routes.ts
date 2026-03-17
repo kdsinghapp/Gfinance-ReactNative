@@ -11,7 +11,7 @@ import EditProfile from "../screen/Profile/EditProfile/EditProfile";
  import UserRoleSetting from "../screen/UserRole/UserRoleSetting/UserRoleSetting";
 import ChoosePlan from "../screen/auth/ChoosePlan/ChoosePlan";
 import YourGoalScreen from "../screen/YourGoalScreen/YourGoal";
-import InvestmentPlanScreen from "../screen/InvestmentPlanScreen/InvestmentPlanScreen";
+import ContributionInputScreen from "../screen/InvestmentPlanScreen/ContributionInputScreen";
 import PreferencesScreen from "../screen/PreferencesScreen/PreferencesScreen";
 import RecommendedAllocation from "../screen/RecommendedAllocation/RecommendedAllocation";
 import SavedPlansScreen from "../screen/SavedPlansScreen/SavedPlansScreen";
@@ -72,8 +72,8 @@ import FinanShare from "../screen/FinanShare/FinanShare";
       Component: PreferencesScreen,
     },
     {
-      name: ScreenNameEnum.InvestmentPlanScreen,
-      Component: InvestmentPlanScreen,
+      name: ScreenNameEnum.ContributionInputScreen,
+      Component: ContributionInputScreen,
     },
    
 

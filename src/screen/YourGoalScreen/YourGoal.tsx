@@ -72,9 +72,7 @@ const YourGoalScreen = () => {
 
           <View style={styles.headerRightSpace} />
         </View>
-
         <Text style={styles.screenTitle}>Your Goal</Text>
-
         <View style={styles.card}>
           <Text style={styles.label}>Email</Text>
           <TextInputField placeholder="Enter your age"
@@ -82,11 +80,8 @@ const YourGoalScreen = () => {
             keyboardType="numeric"
             onChangeText={setAge}
           />
-
-
           <Text style={[styles.label, styles.sectionSpacing]}>Primary Goal</Text>
-
-          {goalOptions.map((goal) => {
+          {goalOptions?.map((goal) => {
             const isSelected = selectedGoal === goal;
             return (
               <TouchableOpacity
@@ -136,7 +131,7 @@ const YourGoalScreen = () => {
             activeOpacity={0.85}
             disabled={!isFormValid}
             onPress={() => {
-              navigation.navigate(ScreenNameEnum.InvestmentPlanScreen)
+              navigation.navigate(ScreenNameEnum.ContributionInputScreen)
             }}
           >
             <Text

@@ -176,7 +176,7 @@ const SavedPlansScreen: React.FC = () => {
                       valueStyle={styles.profileValue}
                     />
                     <InfoRow
-                      label="Valor base:"
+                      label="Horizonte:"
                       value={`${horizon} years`}
                       valueStyle={styles.blueValue}
                     />
@@ -248,11 +248,11 @@ const InfoRow = ({ label, value, valueStyle }: InfoRowProps) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F7F7F8',
+    backgroundColor: 'white',
   },
   container: {
     flex: 1,
-    backgroundColor: '#F7F7F8',
+    backgroundColor: 'white',
   },
 
   header: {
@@ -335,7 +335,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.06,
     shadowRadius: 16,
-    
+    elevation: 10
+
+
   },
 
   planTitle: {

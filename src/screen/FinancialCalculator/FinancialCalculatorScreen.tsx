@@ -511,12 +511,13 @@ import i18n from '../../i18n';
 import StatusBarComponent from '../../compoent/StatusBarCompoent';
 import CustomHeader from '../../compoent/CustomHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import InvestmentGraph from '../../compoent/InvestmentGraph';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const frequencyOptions = [
-  { label: 'Weekly', value: 'weekly' },
-  { label: 'Monthly', value: 'monthly' },
+  { label: 'Semanalmente', value: 'weekly' },
+  { label: 'Mensual', value: 'monthly' },
   { label: 'Annual', value: 'annual' },
 ];
 
@@ -619,22 +620,32 @@ const Graph = ({ portfolioData, capitalData, years }: GraphProps) => {
           );
         })}
 
+        {/* X Axis Labels (Years) */}
         {xLabels.map((label, i) => {
-          const x =
-            PAD_LEFT + (i / (xLabels.length - 1)) * plotWidth;
+          const x = PAD_LEFT + (i / (xLabels.length - 1)) * plotWidth;
 
           return (
-            <SvgText
-              key={`xlabel-${i}`}
-              x={x}
-              y={chartHeight - 6}
-              fontSize="10"
-              fill="#9CA3AF"
-              fontWeight="500"
-              textAnchor="middle"
-            >
-              {label}
-            </SvgText>
+            <React.Fragment key={`xlabel-group-${i}`}>
+              <Line
+                x1={x}
+                y1={PAD_TOP}
+                x2={x}
+                y2={PAD_TOP + plotHeight}
+                stroke="#ECECEC"
+                strokeWidth={1}
+                strokeDasharray="4,4"
+              />
+              <SvgText
+                x={x}
+                y={chartHeight - 6}
+                fontSize="10"
+                fill="#9CA3AF"
+                fontWeight="500"
+                textAnchor="middle"
+              >
+                {label} {i === xLabels.length - 1 ? 'y' : ''}
+              </SvgText>
+            </React.Fragment>
           );
         })}
 
@@ -745,7 +756,7 @@ const FinancialCalculatorScreen = () => {
     contribution !== '' &&
     years !== '' &&
     returnRate !== '' &&
-    frequency !== '';
+    frequency;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -866,40 +877,19 @@ const FinancialCalculatorScreen = () => {
               </View>
             </View>
           </View>
-
+          {/* 
           <Graph
+            portfolioData={portfolioPoints}
+            capitalData={capitalPoints}
+            years={parseInt(years, 10) || 1}
+          /> */}
+          {/* <InvestmentGraph/> */}
+          <InvestmentGraph
             portfolioData={portfolioPoints}
             capitalData={capitalPoints}
             years={parseInt(years, 10) || 1}
           />
 
-          {/* <TouchableOpacity
-            disabled={!isFormValid}
-            activeOpacity={0.9}
-            style={[styles.generateButton, !isFormValid && {
-              opacity: 0.5,
-              backgroundColor: "black"
-
-            }]}
-            onPress={() =>
-              navigation.navigate(ScreenNameEnum.FinanShare, {
-                quiz: { raw: {} },
-                financialData: {
-                  capital: parseFloat(capital) || 0,
-                  monthly: parseFloat(contribution) || 0,
-                  frequency,
-                  horizon: parseFloat(years) || 1,
-                  returnRate,
-                  gainPct,
-                  growth,
-                  invested,
-                  fv,
-                },
-              })
-            }
-          >
-            <Text style={styles.generateButtonText}>Generate Simulation</Text>
-          </TouchableOpacity> */}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -937,7 +927,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
-    elevation:10
+    elevation: 10
   },
 
   label: {

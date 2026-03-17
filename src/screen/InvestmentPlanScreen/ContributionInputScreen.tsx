@@ -19,7 +19,7 @@ import imageIndex from '../../assets/imageIndex';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomHeader from '../../compoent/CustomHeader';
 
-const InvestmentPlanScreen: React.FC = () => {
+const ContributionInputScreen: React.FC = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const { quiz, weights } = route.params || {};
@@ -228,4 +228,4 @@ const styles = StyleSheet.create({
   submitBtnText: { color: '#FFFFFF', fontSize: 14, fontWeight: '600', letterSpacing: 0.5 },
 });
 
-export default InvestmentPlanScreen;
+export default ContributionInputScreen;

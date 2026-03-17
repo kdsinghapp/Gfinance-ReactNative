@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   emojiBg: {
     width: 60,
     height: 60,
-    borderRadius: 28,
+    borderRadius: 30,
     backgroundColor: 'black',
     alignItems: 'center',
     justifyContent: 'center',
