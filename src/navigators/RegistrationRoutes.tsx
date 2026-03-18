@@ -5,8 +5,7 @@ import ScreenNameEnum from '../routes/screenName.enum';
 
 export type RegistrationStackParamList = {
   [ScreenNameEnum.SPLASH_SCREEN]: undefined;
-  [ScreenNameEnum.OnboardingScreen]: undefined;
-   [ScreenNameEnum.ReadyScreen]: undefined;
+    [ScreenNameEnum.ReadyScreen]: undefined;
   [ScreenNameEnum.LoginScreen]: undefined;
   [ScreenNameEnum.OtpScreen]: { phone?: string; code?: string; fromUserLogin?: boolean } | undefined;
   [ScreenNameEnum.CreatePassword]: undefined;
@@ -15,8 +14,7 @@ export type RegistrationStackParamList = {
   [ScreenNameEnum.MerchantDrawer]: undefined;
   [ScreenNameEnum.DeliveryDrawer]: undefined;
   [ScreenNameEnum.DeliveryTabNavigator]: undefined;
-  [ScreenNameEnum.DeliveryHome]: undefined;
-  [ScreenNameEnum.DeliveryOrdersList]: undefined;
+   [ScreenNameEnum.DeliveryOrdersList]: undefined;
   [ScreenNameEnum.DeliveryRequest]: { order?: any };
   [ScreenNameEnum.DeliveryOrderDetails]: { order?: any; isAccepted?: boolean };
   [ScreenNameEnum.DeliveryFailed]: { order?: any };

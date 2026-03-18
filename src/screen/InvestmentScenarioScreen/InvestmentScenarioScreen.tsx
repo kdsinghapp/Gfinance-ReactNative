@@ -25,6 +25,8 @@ import StatusBarComponent from '../../compoent/StatusBarCompoent';
 import imageIndex from '../../assets/imageIndex';
 import CustomHeader from '../../compoent/CustomHeader';
 import { successToast } from '../../utils/customToast';
+import RecommendedAllocationChart from '../../compoent/RecommendedAllocationChart';
+import font from '../../theme/font';
 
 type RangeKey = '1Y' | '3Y' | '5Y' | '7Y' | '10Y';
 
@@ -104,7 +106,7 @@ const InvestmentScenarioScreen: React.FC = () => {
   }, [fullChartData, selectedRange, initialPoint]);
 
   const totalPortfolioValue = scenarios?.base?.finalValue ?? 0;
-
+  console.log("totalPortfolioValue", totalPortfolioValue)
   useEffect(() => {
     Analytics.resultsViewed(plan?.weights, scenarios);
 
@@ -142,7 +144,12 @@ const InvestmentScenarioScreen: React.FC = () => {
       navigation.navigate(ScreenNameEnum.SavedPlansScreen);
     }
   };
-
+  const formatCurrency = (amount: number) => {
+    return `$${amount.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+  };
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBarComponent />
@@ -156,12 +163,18 @@ const InvestmentScenarioScreen: React.FC = () => {
         >
           {/* Allocation Card */}
           <View style={[styles.card, { marginTop: 20 }]}>
-            <Text style={styles.sectionTitle}>Asignación recomendada</Text>
-
+            <Text style={[styles.sectionTitle, {
+            }]}>Asignación recomendada</Text>
+            {/* <RecommendedAllocationChart
+              value={allocation.equities * totalPortfolioValue}
+              total={totalPortfolioValue}
+              centerLabel={"Portafolio total"}
+            /> */}
             <AllocationRing
               allocation={allocation}
               totalValue={formatCurrency(totalPortfolioValue)}
             />
+
           </View>
 
           {/* Scenario Cards */}
@@ -186,7 +199,9 @@ const InvestmentScenarioScreen: React.FC = () => {
 
           {/* Chart Card */}
           <View style={styles.card}>
-            <Text style={styles.chartTitle}>{i18n.t('results.growthChart')}</Text>
+            <Text style={[styles.chartTitle, {
+              marginTop: 8
+            }]}>{i18n.t('results.growthChart')}</Text>
 
             <RangeTabs selected={selectedRange} onSelect={setSelectedRange} />
 
@@ -195,10 +210,10 @@ const InvestmentScenarioScreen: React.FC = () => {
             </View>
 
             <View style={styles.legendRow}>
-               <LegendDot label="Equities" color="#3B82F6" />
-               <LegendDot label="Fixed Income" color="#22C55E" />
-               <LegendDot label="Cash" color="#F59E0B" />
-               <LegendDot label="Crypto" color="#8B5CF6" />
+              <LegendDot label="Conservative" color="#3B82F6" />
+              <LegendDot label="Base" color="#22C55E" />
+              <LegendDot label="Optimista" color="#F59E0B" />
+              {/* <LegendDot label="Crypto" color="#8B5CF6" /> */}
             </View>
           </View>
 
@@ -358,10 +373,11 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
   }).filter((slice) => slice.pct > 0);
 
   return (
-    <View style={styles.ringWrap}>
-      <View style={styles.ringContainer}>
-        <Svg width={RING_SIZE} height={RING_SIZE}>
-          <Circle
+    <View style={{
+    }} >
+ <View style={styles.ringContainer}>
+         <Svg width={RING_SIZE} height={RING_SIZE}>
+            <Circle
             stroke="#EDF2EE"
             fill="none"
             cx={cx}
@@ -370,7 +386,7 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
             strokeWidth={STROKE_WIDTH}
           />
 
-          {arcs.map((arc) => {
+         {arcs?.map((arc) => {
             const arcLen = (CIRCUMFERENCE * arc.pct) / 100;
             const rotationDeg = (arc.startPct / 100) * 360 - 90;
 
@@ -392,14 +408,197 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
           })}
         </Svg>
 
-        <View style={styles.ringCenterContent}>
-          <Text style={styles.ringCenterSubText}>Portafolio total</Text>
-          <Text style={styles.ringCenterValue}>{totalValue}</Text>
+          <View style={styles.ringCenterContent}>
+         <Text style={styles.ringCenterSubText}>Portafolio total</Text>
+        <Text style={styles.ringCenterValue}>{totalValue}</Text>
         </View>
-      </View>
+       </View>
+      <View >
+        <View style={{
+          justifyContent: "space-around",
+          flexDirection: "row"
+        }}>
 
-      <View style={styles.ringFooter}>
-        <RingFooterItem
+          <View>
+
+            <View style={{
+              justifyContent: "center",
+              flexDirection: "row",
+              alignItems: "center"
+            }}>
+
+              <View style={{
+                height: 10,
+                width: 10,
+                backgroundColor: "#3B82F6",
+                borderRadius: 20,
+                right: 8
+              }} />
+
+              <Text style={{
+                color: "#A9A9A9",
+                fontSize: 12,
+                fontFamily: font.PoppinsRegular,
+                marginBottom: 2
+
+              }}>Equities</Text>
+              <Image
+
+                style={{
+                  height: 15,
+                  width: 15,
+                  left: 5
+                }}
+                source={imageIndex.wait} />
+            </View>
+
+            <Text style={{
+              color: "black",
+              fontSize: 18,
+              fontFamily: font.PoppinsBold,
+              textAlign: "center"
+            }}>{`${Math.round(allocation.equities * 100)}%`}</Text>
+          </View>
+
+
+
+          <View>
+
+            <View style={{
+              justifyContent: "center",
+              flexDirection: "row",
+              alignItems: "center"
+            }}>
+
+              <View style={{
+                height: 10,
+                width: 10,
+                backgroundColor: "#22C55E",
+                borderRadius: 20,
+                right: 8
+              }} />
+
+              <Text style={{
+                color: "#A9A9A9",
+                fontSize: 12,
+                fontFamily: font.PoppinsRegular,
+                marginBottom: 2
+              }}>Fixed Income</Text>
+              <Image
+
+                style={{
+                  height: 15,
+                  width: 15,
+                  left: 5
+                }}
+                source={imageIndex.wait} />
+            </View>
+
+            <Text style={{
+              color: "black",
+              fontSize: 18,
+              fontFamily: font.PoppinsBold,
+              textAlign: "center"
+            }}>{`${Math.round(allocation.fixedIncome * 100)}%`}</Text>
+          </View>
+        </View>
+        <View style={{
+          justifyContent: "space-around",
+          flexDirection: "row",
+          marginTop: 30
+        }}>
+
+          <View>
+
+            <View style={{
+              justifyContent: "center",
+              flexDirection: "row",
+              alignItems: "center"
+            }}>
+
+              <View style={{
+                height: 10,
+                width: 10,
+                backgroundColor: "#F59E0B",
+ 
+                borderRadius: 20,
+                right: 8
+              }} />
+
+              <Text style={{
+                color: "#A9A9A9",
+                fontSize: 12,
+                fontFamily: font.PoppinsRegular,
+                marginBottom: 2
+
+              }}>Cash</Text>
+              <Image
+
+                style={{
+                  height: 15,
+                  width: 15,
+                  left: 5
+                }}
+                source={imageIndex.wait} />
+            </View>
+
+            <Text style={{
+              color: "black",
+              fontSize: 18,
+              fontFamily: font.PoppinsBold,
+              textAlign: "center"
+            }}>{`${Math.round(allocation.cash * 100)}%`}
+
+            </Text>
+          </View>
+          <View>
+            <View style={{
+              justifyContent: "center",
+              flexDirection: "row",
+              alignItems: "center"
+            }}>
+              <View style={{
+                height: 10,
+                width: 10,
+                backgroundColor: "#8B5CF6",
+                borderRadius: 20,
+                right: 8
+              }} />
+              <Text style={{
+                color: "#A9A9A9",
+                fontSize: 12,
+                fontFamily: font.PoppinsRegular,
+                marginBottom: 2
+              }}>Crypto</Text>
+              <Image
+                style={{
+                  height: 15,
+                  width: 15,
+                  left: 5
+                }}
+                source={imageIndex.wait} />
+            </View>
+
+            <Text style={{
+              color: "black",
+              fontSize: 18,
+              fontFamily: font.PoppinsBold,
+              textAlign: "center"
+            }}>
+              {`${Math.round(allocation.crypto * 100)}%`}
+
+            </Text>
+          </View>
+
+
+
+
+
+
+
+        </View>
+
+        {/* <RingFooterItem
           color="#3B82F6"
           label="Equities"
           value={`${Math.round(allocation.equities * 100)}%`}
@@ -418,11 +617,96 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
           color="#8B5CF6"
           label="Crypto"
           value={`${Math.round(allocation.crypto * 100)}%`}
-        />
+        /> */}
       </View>
     </View>
   );
 };
+// const AllocationRing: React.FC<AllocationRingProps> = ({
+//   allocation,
+//   totalValue,
+// }) => {
+//   const cx = RING_SIZE / 2;
+//   const cy = RING_SIZE / 2;
+
+//   let cumulativePct = 0;
+
+//   const arcs = SLICES.map((slice) => {
+//     const pct = allocation[slice.key] * 100;
+//     const startPct = cumulativePct;
+//     cumulativePct += pct;
+
+//     return { ...slice, pct, startPct };
+//   }).filter((slice) => slice.pct > 0);
+
+//   return (
+//     <View  >
+//       {/* <View style={styles.ringContainer}>
+//         <Svg width={RING_SIZE} height={RING_SIZE}>
+//           <Circle
+//             stroke="#EDF2EE"
+//             fill="none"
+//             cx={cx}
+//             cy={cy}
+//             r={RADIUS}
+//             strokeWidth={STROKE_WIDTH}
+//           />
+
+//           {arcs.map((arc) => {
+//             const arcLen = (CIRCUMFERENCE * arc.pct) / 100;
+//             const rotationDeg = (arc.startPct / 100) * 360 - 90;
+
+//             return (
+//               <Circle
+//                 key={arc.key}
+//                 stroke={arc.color}
+//                 fill="none"
+//                 cx={cx}
+//                 cy={cy}
+//                 r={RADIUS}
+//                 strokeWidth={STROKE_WIDTH}
+//                 strokeDasharray={`${Math.max(arcLen - 4, 0)} ${CIRCUMFERENCE}`}
+//                 strokeLinecap="round"
+//                 rotation={rotationDeg}
+//                 origin={`${cx}, ${cy}`}
+//               />
+//             );
+//           })}
+//         </Svg>
+
+//         <View style={styles.ringCenterContent}>
+//           <Text style={styles.ringCenterSubText}>Portafolio total</Text>
+//           <Text style={styles.ringCenterValue}>{totalValue}</Text>
+//         </View>
+//       </View> */}
+
+//       <View style={[styles.ringFooter,{
+//          backgroundColor:"red" ,
+//        }]}>
+//         <RingFooterItem
+//           color="#3B82F6"
+//           label="Equities"
+//           value={`${Math.round(allocation.equities * 100)}%`}
+//         />
+//         <RingFooterItem
+//           color="#22C55E"
+//           label="Fixed Income"
+//           value={`${Math.round(allocation.fixedIncome * 100)}%`}
+//         />
+//         <RingFooterItem
+//           color="#F59E0B"
+//           label="Cash"
+//           value={`${Math.round(allocation.cash * 100)}%`}
+//         />
+//         <RingFooterItem
+//           color="#8B5CF6"
+//           label="Crypto"
+//           value={`${Math.round(allocation.crypto * 100)}%`}
+//         />
+//       </View>
+//     </View>
+//   );
+// };
 
 const RingFooterItem = ({
   color,
@@ -433,7 +717,8 @@ const RingFooterItem = ({
   label: string;
   value: string;
 }) => (
-  <View style={styles.ringFooterItem}>
+  <View style={[styles.ringFooterItem, {
+  }]}>
     <View style={styles.footerRow}>
       <View style={[styles.smallDot, { backgroundColor: color }]} />
       <Text style={styles.footerLabel}>{label}</Text>
@@ -459,7 +744,6 @@ const MetricCard = ({
     <View style={styles.metricImageWrap}>
       <Image source={icon} style={styles.metricIconImage} resizeMode="contain" />
     </View>
-
     <Text style={styles.metricLabel}>{label}</Text>
     <Text style={styles.metricValue}>{value}</Text>
   </View>
@@ -484,7 +768,8 @@ const RangeTabs = ({
         return (
           <TouchableOpacity
             key={tab}
-            style={[styles.tabBtn, active && styles.tabBtnActive]}
+            style={[styles.tabBtn,]}
+            // style={[styles.tabBtn, active && styles.tabBtnActive]}
             onPress={() => onSelect(tab)}
             activeOpacity={0.8}
           >
@@ -524,14 +809,16 @@ const styles = StyleSheet.create({
 
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 24,
-    padding: 16,
+    borderRadius: 30,
+    padding: 15,
     marginBottom: 14,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 10,
+
+    shadowColor: '#BCDBFF', // iOS me dark color better dikhta hai
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3, // increase karo
+    shadowRadius: 12,
+
+    elevation: 18, // Android ke liye
   },
 
   sectionTitle: {
@@ -568,15 +855,14 @@ const styles = StyleSheet.create({
   },
 
   ringFooter: {
-    width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
     rowGap: 14,
-    paddingHorizontal: 6,
+    alignItems: "center",
+    justifyContent: "center"
   },
   ringFooterItem: {
-    width: '48%',
+    width: '45%',
   },
   footerRow: {
     flexDirection: 'row',
@@ -591,7 +877,7 @@ const styles = StyleSheet.create({
   },
   footerLabel: {
     fontSize: 12,
-    color: '#A9A9A9',
+    color: 'red',
     fontWeight: '700',
   },
   footerValue: {
@@ -605,8 +891,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: CARD_GAP,
-    marginBottom: 14,
-    marginTop: 8,
+    marginBottom: 12,
+    marginTop: 5,
   },
   metricCard: {
     flex: 1,
@@ -615,11 +901,12 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 8,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: '#BCDBFF',
     shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.3, // 30% opacity
     shadowRadius: 10,
-    elevation: 10,
+    elevation: 18,
+    opacity: 0.9
   },
   metricCardActive: {},
   metricImageWrap: {
@@ -633,22 +920,21 @@ const styles = StyleSheet.create({
   metricLabel: {
     fontSize: 10,
     color: '#AEAEB2',
-    marginBottom: 6,
     textAlign: 'center',
-    fontWeight: '500',
+    fontFamily: font.PoppinsMedium,
+    marginBottom: 2
   },
   metricValue: {
     fontSize: 18,
-    fontWeight: '700',
     color: '#111111',
     textAlign: 'center',
+    fontFamily: font.PoppinsBold
   },
-
   chartTitle: {
     fontSize: 16,
-    fontWeight: '700',
-    color: '#111111',
-    marginBottom: 12,
+    fontFamily: font.PoppinsBold,
+    marginBottom: 15,
+    color: "black"
   },
 
   tabsRow: {
@@ -659,10 +945,11 @@ const styles = StyleSheet.create({
   },
   tabBtn: {
     paddingHorizontal: 12,
-    height: 30,
+    height: 25,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#D7DDE5',
+    borderColor: '#1D5FA0',
+    // borderColor: '#D7DDE5',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
@@ -673,13 +960,13 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 10,
-    color: '#7A8394',
-    fontWeight: '600',
+    color: '#1D5FA0',
+    fontFamily: font.PoppinsSemiBold
   },
   tabTextActive: {
     color: '#1D5FA0',
     fontSize: 10,
-    fontWeight: '600',
+    fontFamily: font.PoppinsSemiBold
   },
 
   chartWrap: {
@@ -707,8 +994,8 @@ const styles = StyleSheet.create({
   },
   legendText: {
     fontSize: 10,
-    color: '#6B7280',
-    fontWeight: '600',
+    color: '#000000',
+    fontFamily: font.PoppinsMedium
   },
 
   saveBtn: {
@@ -729,7 +1016,8 @@ const styles = StyleSheet.create({
   saveBtnText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: '800',
+    fontFamily: font.PoppinsBold,
+
   },
 
   saveBtnIcon: {
@@ -747,7 +1035,7 @@ const styles = StyleSheet.create({
   newPlanText: {
     color: '#19C84B',
     fontSize: 14,
-    fontWeight: '700',
+    fontFamily: font.PoppinsBold
   },
   newPlanIcon: {
     height: 33,

@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-   Platform,
+  Platform,
   Animated,
   Image,
   Dimensions,
@@ -16,6 +16,7 @@ import StatusBarComponent from '../../compoent/StatusBarCompoent';
 import imageIndex from '../../assets/imageIndex';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Analytics } from '../../engine/analytics';
+import font from '../../theme/font';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const PROFILE_QUESTIONS = i18n.t('questions.profile') as any[];
@@ -28,7 +29,7 @@ const ProfileQuizScreen: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [startTime] = useState(Date.now());
-  
+
   const progressAnim = useRef(new Animated.Value(0)).current;
 
   const currentQuestion = PROFILE_QUESTIONS[currentIndex];
@@ -47,24 +48,24 @@ const ProfileQuizScreen: React.FC = () => {
 
     // Short delay to let the user see the selection, then move to next
     setTimeout(() => {
-        if (currentIndex < PROFILE_QUESTIONS.length - 1) {
-            setCurrentIndex(currentIndex + 1);
-        } else {
-            const duration = (Date.now() - startTime) / 1000;
-            Analytics.formCompleted(duration, { ...updatedAnswers, ...financialData });
-            navigation.navigate(ScreenNameEnum.RecommendedAllocation, { 
-                quiz: { raw: updatedAnswers }, 
-                financialData 
-            });
-        }
+      if (currentIndex < PROFILE_QUESTIONS.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+      } else {
+        const duration = (Date.now() - startTime) / 1000;
+        Analytics.formCompleted(duration, { ...updatedAnswers, ...financialData });
+        navigation.navigate(ScreenNameEnum.RecommendedAllocation, {
+          quiz: { raw: updatedAnswers },
+          financialData
+        });
+      }
     }, 200);
   };
 
   const handleBack = () => {
     if (currentIndex > 0) {
-        setCurrentIndex(currentIndex - 1);
+      setCurrentIndex(currentIndex - 1);
     } else {
-        navigation.goBack();
+      navigation.goBack();
     }
   };
   const ft = i18n.t('questions.financial') as any;
@@ -78,54 +79,54 @@ const ProfileQuizScreen: React.FC = () => {
         <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
           <Image source={imageIndex.back} style={styles.backImage} resizeMode="contain" />
         </TouchableOpacity>
-        
+
         <View style={styles.progressContainer}>
-             <Text style={styles.headerTitle}>{ft.title}</Text>
+          <Text style={styles.headerTitle}>{ft.title}</Text>
         </View>
         <View style={{ width: 50 }} />
       </View>
 
       <View style={styles.content}>
         <View style={styles.questionWrapper}>
-            <Text style={styles.qLabel}>{currentQuestion.label}</Text>
-            <Text style={styles.qSub}>{currentQuestion.sub}</Text>
+          <Text style={styles.qLabel}>{currentQuestion.label}</Text>
+          <Text style={styles.qSub}>{currentQuestion.sub}</Text>
 
-            <View style={styles.optionsGrid}>
-                {currentQuestion?.options?.map((opt: any) => {
-                    const optionId = opt?.id;
-                    const optionLabel = opt?.label;
-                    const optionEmoji = opt?.emoji || '';
-                    const isSelected = answers[currentQuestion.id] === optionId;
+          <View style={styles.optionsGrid}>
+            {currentQuestion?.options?.map((opt: any) => {
+              const optionId = opt?.id;
+              const optionLabel = opt?.label;
+              const optionEmoji = opt?.emoji || '';
+              const isSelected = answers[currentQuestion.id] === optionId;
 
-                    return (
-                        <TouchableOpacity
-                            key={optionId}
-                            onPress={() => handleSelect(optionId)}
-                            style={[
-                                styles.optionCard,
-                                isSelected && styles.optionCardSelected,
-                            ]}
-                            activeOpacity={0.8}
-                        >
-                          {opt?.emoji &&  <View style={[styles.emojiBg, isSelected && styles.emojiBgSelected]}>
-                                <Text style={styles.emojiText}>
-                                  {optionEmoji}
-                                  
-                                </Text>
-                            </View>}
-                           
-                            <Text 
-                                style={[
-                                    styles.optionLabel, 
-                                    isSelected && styles.optionLabelSelected
-                                ]}
-                            >
-                              {optionLabel} {"  "}
-                            </Text>
-                        </TouchableOpacity>
-                    );
-                })}
-            </View>
+              return (
+                <TouchableOpacity
+                  key={optionId}
+                  onPress={() => handleSelect(optionId)}
+                  style={[
+                    styles.optionCard,
+                    isSelected && styles.optionCardSelected,
+                  ]}
+                  activeOpacity={0.8}
+                >
+                  {opt?.emoji && <View style={[styles.emojiBg, isSelected && styles.emojiBgSelected]}>
+                    <Text style={styles.emojiText}>
+                      {optionEmoji}
+
+                    </Text>
+                  </View>}
+
+                  <Text
+                    style={[
+                      styles.optionLabel,
+                      isSelected && styles.optionLabelSelected
+                    ]}
+                  >
+                    {optionLabel} {"  "}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -133,8 +134,9 @@ const ProfileQuizScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  safe: { flex: 1   ,     backgroundColor: 'white',
- },
+  safe: {
+    flex: 1, backgroundColor: 'white',
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -145,15 +147,15 @@ const styles = StyleSheet.create({
   backBtn: {
     width: 44,
     height: 44,
-      alignItems: 'center',
+    alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
   },
-  backImage: { width: 42, height: 42,   },
-  progressContainer: { 
-      flex: 1, 
-      alignItems: 'center',
-      marginTop: 6
+  backImage: { width: 42, height: 42, },
+  progressContainer: {
+    flex: 1,
+    alignItems: 'center',
+    marginTop: 6
   },
   progressBarBg: {
     width: '100%',
@@ -174,50 +176,54 @@ const styles = StyleSheet.create({
     color: '#64748B',
     letterSpacing: 1,
   },
-  content: { 
-      flex: 1, 
-      paddingHorizontal: 24, 
-      paddingTop: 40 
+  content: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 40
   },
-  questionWrapper: { 
-      width: '100%' 
+  questionWrapper: {
+    width: '100%'
   },
-  qLabel: { 
-      fontSize: 28, 
-      fontWeight: '900', 
-      fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif-medium',
-      color: '#111', 
-      lineHeight: 36, 
-      marginBottom: 12 
+  qLabel: {
+    fontSize: 32,
+    color: '#111',
+    lineHeight: 38,
+    fontFamily: font.PoppinsBold,
+    marginBottom: 10,
   },
-  qSub: { 
-      fontSize: 16, 
-      color: '#94A3B8', 
-      lineHeight: 24, 
-      marginBottom: 40 
+  qSub: {
+    fontSize: 16,
+    color: '#94A3B8',
+    marginBottom: 30,
+    fontFamily: font.PoppinsRegular,
+
   },
-  optionsGrid: { 
-      flexDirection: 'row', 
-      flexWrap: 'wrap', 
-      justifyContent: 'space-between',
-      gap: 16
+  optionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 16
   },
   optionCard: {
-    width: (SCREEN_WIDTH - 48 - 16) / 2, // 2 items per row, gaps accounted
+    width: (SCREEN_WIDTH - 48 - 16) / 2,
     height: 150,
-    padding: 16,
+    padding: 15,
     borderRadius: 24,
-      backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-      shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-        elevation:10
 
-   },
-    headerTitle: {
+    // iOS Shadow (visible banane ke liye darker + more opacity)
+    shadowColor: '#BCDBFF',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+
+    // Android
+    elevation: 16,
+
+  },
+  headerTitle: {
     flex: 1,
     textAlign: 'center',
     fontSize: 20,
@@ -241,20 +247,24 @@ const styles = StyleSheet.create({
   emojiBgSelected: {
     backgroundColor: 'white',
   },
-  emojiText: { 
-      fontSize: 30 ,
-      textAlign:"center" ,
-      color:"white"
+  emojiText: {
+    fontSize: 30,
+    textAlign: "center",
+    color: "white",
+    fontFamily: font.PoppinsBold
   },
-  optionLabel: { 
-      fontSize: 15, 
-      fontWeight: '700', 
-      color: '#1E293B',
-      textAlign: 'center',
-   },
-  optionLabelSelected: { 
-      color: 'white' ,
-            textAlign: 'center',
+  optionLabel: {
+    color: '#1E293B',
+    textAlign: 'center',
+    fontFamily: font.PoppinsRegular,
+    fontSize: 16
+
+  },
+  optionLabelSelected: {
+    color: 'white',
+    textAlign: 'center',
+    fontFamily: font.PoppinsRegular,
+    fontSize: 16
 
   },
 });

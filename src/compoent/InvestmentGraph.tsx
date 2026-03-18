@@ -1,6 +1,7 @@
 import React from "react";
 import { View, StyleSheet, Dimensions, Text } from "react-native";
 import Svg, { Path, Line, Text as SvgText } from "react-native-svg";
+import font from "../theme/font";
 
 const { width } = Dimensions.get("window");
 
@@ -69,9 +70,10 @@ const InvestmentGraph = ({ portfolioData, capitalData, years }: Props) => {
 
                 right: 50,
                 fontSize: 16,
-                fontWeight: "700",
                 marginTop: 5,
-                marginBottom: 3
+                marginBottom: 3,
+                color: "black",
+                fontFamily: font.PoppinsSemiBold
             }}>Proyección de crecimiento</Text>
             <Svg width={chartWidth} height={chartHeight}>
 

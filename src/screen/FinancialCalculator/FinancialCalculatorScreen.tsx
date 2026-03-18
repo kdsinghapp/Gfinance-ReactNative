@@ -512,6 +512,7 @@ import StatusBarComponent from '../../compoent/StatusBarCompoent';
 import CustomHeader from '../../compoent/CustomHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InvestmentGraph from '../../compoent/InvestmentGraph';
+import font from '../../theme/font';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -912,30 +913,34 @@ const styles = StyleSheet.create({
   screenTitle: {
     textAlign: 'center',
     fontSize: 24,
-    fontWeight: '700',
-    color: '#111111',
+    color: 'black',
     marginTop: 6,
     marginBottom: 20,
+    fontFamily: font.PoppinsBold
   },
 
   mainCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 24,
-    padding: 16,
-    marginBottom: 14,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 10
+     backgroundColor: 'white',
+  borderRadius: 24,
+  padding: 16,
+  marginBottom: 14,
+
+  // iOS Shadow
+  shadowColor: '#767676', // dark color use karo
+  shadowOffset: { width: 0, height: 6 },
+  shadowOpacity: 0.2, // 👈 important
+  shadowRadius: 10,
+
+  // Android Shadow
+  elevation: 15,
   },
 
   label: {
     fontSize: 14,
     color: '#000000',
-    fontWeight: '600',
     marginBottom: 12,
     marginTop: 10,
+    fontFamily: font.PoppinsSemiBold
   },
 
   input: {
@@ -945,26 +950,21 @@ const styles = StyleSheet.create({
     borderColor: '#ECECEC',
     paddingHorizontal: 14,
     color: 'black',
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 15,
   },
-
   frequencyRow: {
     flexDirection: 'row',
     gap: 8,
     marginBottom: 4,
   },
-
   frequencyButton: {
-    flex: 1,
-    height: 48,
-    borderRadius: 15,
-    backgroundColor: '#EBEBEB',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: '#030303',
-  },
-
+   height: 48,
+  borderRadius: 15,
+  backgroundColor: '#EBEBEB',
+  alignItems: 'center',
+  justifyContent: 'center',
+   paddingHorizontal: 10, // vertical padding hatao
+    },
   frequencyButtonActive: {
     backgroundColor: '#000000',
     borderColor: '#111111',
@@ -975,11 +975,13 @@ const styles = StyleSheet.create({
   frequencyButtonText: {
     color: '#111111',
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: font.PoppinsSemiBold,
   },
 
   frequencyButtonTextActive: {
     color: '#FFFFFF',
+    fontFamily: font.PoppinsSemiBold,
+
   },
 
   resultCard: {
@@ -992,9 +994,10 @@ const styles = StyleSheet.create({
   resultHeaderText: {
     fontSize: 14,
     color: '#000000',
-    fontWeight: '600',
     marginBottom: 8,
-    marginTop: 5
+    marginTop: 5,
+    fontFamily: font.PoppinsSemiBold,
+
   },
 
   resultValueRow: {
@@ -1006,7 +1009,8 @@ const styles = StyleSheet.create({
   resultValue: {
     flex: 1,
     fontSize: 31,
-    fontWeight: '800',
+    fontFamily: font.PoppinsSemiBold,
+
     color: '#111111',
     marginRight: 12,
   },
@@ -1023,8 +1027,8 @@ const styles = StyleSheet.create({
 
   badgeText: {
     color: '#FFFFFF',
-    fontSize: 11,
-    fontWeight: '700',
+    fontSize: 10,
+    fontFamily: font.PoppinsSemiBold,
   },
 
   resultBottomRow: {
@@ -1042,7 +1046,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#000000',
     marginBottom: 4,
-    fontWeight: '500',
+    fontFamily: font.PoppinsRegular,
+
   },
 
   resultInfoValue: {

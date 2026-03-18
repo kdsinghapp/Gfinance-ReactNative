@@ -18,7 +18,8 @@ import imageIndex from '../../../assets/imageIndex';
 import i18n from '../../../i18n';
 import { Storage } from '../../../engine/storage';
 import { useFocusEffect } from '@react-navigation/native';
- 
+import font from '../../../theme/font';
+
 const ChoosePlan = () => {
   const navigation = useNavigation<any>();
   const [hasSaved, setHasSaved] = useState(false);
@@ -78,14 +79,20 @@ const ChoosePlan = () => {
               <Text style={[styles.langText, i18n.locale === 'en' && styles.langTextActive]}>EN</Text>
             </TouchableOpacity>
           </View> */}
-<View style={{
-   justifyContent: 'center',
-   alignItems:"center"
-}}>
-          <Image source={imageIndex.appLogo1} style={styles.logo} resizeMode="contain" />
- </View>
-          <Text style={styles.title}>{i18n.t('splash.tagline')}</Text>
-          <Text style={styles.subtitle}>{i18n.t('splash.subtitle')}</Text>
+          <View style={{
+            justifyContent: 'center',
+            alignItems: "center"
+          }}>
+            <Image source={imageIndex.appLogo1} style={styles.logo} resizeMode="contain" />
+          </View>
+          <Text style={[styles.title,{
+            fontFamily: font.PoppinsBold ,
+      
+          }]}>{i18n.t('splash.tagline')}</Text>
+          <Text style={[styles.subtitle,{
+ fontFamily:font.PoppinsRegular , 
+ color:"#000000"
+          }]}>{i18n.t('splash.subtitle')}</Text>
 
           <Image source={imageIndex.financeIllustration} style={styles.heroImage} resizeMode="contain" />
 
@@ -129,10 +136,10 @@ const ChoosePlan = () => {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#FFF' },
   scrollContent: { flexGrow: 1 },
-  container: { flex: 1, padding: 20,   justifyContent: 'center' },
+  container: { flex: 1, padding: 20, justifyContent: 'center' },
   logo: { width: 120, height: 32, marginBottom: 30 },
-  title: { fontSize: 32, fontWeight: '700', color: '#111', marginBottom: 8, fontFamily: Platform.OS === 'ios' ? 'Inter' : 'sans-serif-medium' },
-  subtitle: { fontSize: 16, color: '#64748B', marginBottom: 38, lineHeight: 24, fontWeight: '400', fontFamily: Platform.OS === 'ios' ? 'Inter' : 'sans-serif' },
+  title: { fontSize: 30,  color: '#111', marginBottom: 9, },
+  subtitle: { fontSize: 16, color: '#64748B', marginBottom: 5, lineHeight:24 },
   heroImage: { width: '100%', height: 260, marginBottom: 40 },
   buttonGroup: { width: '100%', gap: 16 },
   mainBtn: {
@@ -145,16 +152,16 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 10,
-   
+
   },
   btnIcon: {
     height: 22,
     width: 22,
     marginLeft: 12,
   },
-  primaryBtnText: { color: '#FFF', fontSize: 16, fontWeight: '800', fontFamily: Platform.OS === 'ios' ? 'Inter' : 'sans-serif-bold' },
+  primaryBtnText: { color: '#FFF', fontSize: 16, fontFamily: font.PoppinsBold },
   secondaryBtn: { height: 56, borderRadius: 16, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#DDD' },
-  secondaryBtnText: { color: '#333', fontSize: 16, fontWeight: 'bold'  },
+  secondaryBtnText: { color: '#333', fontSize: 16, fontWeight: 'bold' },
   langToggleWrap: {
     position: 'absolute',
     top: 0,

@@ -20,6 +20,7 @@ import { getProfileLabel, formatCurrency } from '../../engine/calculator';
 import ScreenNameEnum from '../../routes/screenName.enum';
 import imageIndex from '../../assets/imageIndex';
 import { successToast } from '../../utils/customToast';
+import font from '../../theme/font';
 
 const SavedPlansScreen: React.FC = () => {
   const navigation = useNavigation<any>();
@@ -140,7 +141,7 @@ const SavedPlansScreen: React.FC = () => {
 
         <ScrollView
           contentContainerStyle={[styles.scrollContent, {
-            marginTop: 18
+            marginTop: 15
           }]}
           showsVerticalScrollIndicator={false}
         >
@@ -327,24 +328,27 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    backgroundColor: '#FFF',
-    borderRadius: 22,
-    padding: 16,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.06,
-    shadowRadius: 16,
-    elevation: 10
+  backgroundColor: '#FFF',
+borderRadius: 22,
+padding: 16,
+marginBottom: 16,
 
+// iOS Shadow (FIXED)
+shadowColor: '#BCDBFF', // must be dark
+shadowOffset: { width: 0, height: 6 },
+shadowOpacity: 0.3,
+shadowRadius: 10,
+
+// Android
+elevation: 20,
 
   },
 
   planTitle: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#121212',
-    marginBottom: 14,
+    fontSize: 21,
+     color: '#121212',
+    marginBottom: 10,
+    fontFamily:font.PoppinsBold
   },
 
   infoBlock: {
@@ -356,25 +360,26 @@ const styles = StyleSheet.create({
     marginBottom: 7,
   },
   infoLabel: {
-    width: 78,
-    fontSize: 13,
-    color: '#B2B2B2',
-    fontWeight: '500',
+ 
+    color: '#A9A9A9',
+    fontFamily:font.PoppinsRegular
+ 
   },
   infoValue: {
     flex: 1,
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#1E1E1E',
+    fontSize: 12,
+     color: '#1E1E1E',
+     fontFamily:font.PoppinsSemiBold ,
+     marginLeft:10
   },
   profileValue: {
     color: '#1F1F1F',
   },
   blueValue: {
-    color: '#1CA3FF',
+    color: '#0088FF',
   },
   greenValue: {
-    color: '#20C67A',
+    color: '#22C55E',
   },
 
   actionRow: {
@@ -386,42 +391,41 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   detailsButton: {
-    height: 46,
-    borderRadius: 20,
-    paddingHorizontal: 18,
-    flexDirection: 'row',
+    height: 48,
+    borderRadius: 18,
+     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#6B1DFF',
+    shadowColor: '#006C282E',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.22,
     shadowRadius: 12,
   },
   detailsButtonText: {
     color: '#FFF',
-    fontSize: 15,
-    fontWeight: '700',
-  },
+    fontSize: 14,
+    fontFamily:font.PoppinsBold
+   },
   eyeWrap: {
     marginLeft: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
   eyeIcon: {
-    width: 16,
-    height: 16,
+    width: 19,
+    height: 19,
     resizeMode: 'contain',
     tintColor: '#FFF',
   },
 
   deleteButton: {
     alignItems: "center",
-    justifyContent: "center"
-
+    justifyContent: "center" ,
+ 
   },
   deleteIcon: {
-    width: 43,
-    height: 43,
+    width: 48,
+    height: 48,
     resizeMode: 'contain',
   },
 });

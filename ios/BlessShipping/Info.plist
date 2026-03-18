@@ -40,19 +40,16 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-<string>This app needs your location to show map</string>
-
-<key>NSLocationAlwaysUsageDescription</key>
-<string>This app needs your location to show map</string>
-
-<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-<string>This app needs your location to show map</string>
-
+	<string>This app needs your location to show map</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app needs your location to show map</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs your location to show map</string>
 	<key>UIAppFonts</key>
 	<array>
-	  <string>MaterialIcons.ttf</string>
-       <string>Ionicons.ttf</string>
-      <string>FontAwesome.ttf</string>
+		<string>MaterialIcons.ttf</string>
+		<string>Ionicons.ttf</string>
+		<string>FontAwesome.ttf</string>
 		<string>TT Neoris Trial Black Italic.ttf</string>
 		<string>TT Neoris Trial Black.ttf</string>
 		<string>TT Neoris Trial Bold Italic.ttf</string>
@@ -76,6 +73,28 @@
 		<string>TT Neoris Trial Variable.ttf</string>
 		<string>Panton-Trial-SemiBold.ttf</string>
 		<string>Monolith Regular.otf</string>
+		<string>Monolith Regular copy.otf</string>
+		<string>sackersgothicstd-light.otf</string>
+		<string>sackersgothicstd-heavy.otf</string>
+		<string>sackersgothicstd-medium.otf</string>
+		<string>Poppins-ExtraLight.ttf</string>
+		<string>Poppins-ThinItalic.ttf</string>
+		<string>Poppins-ExtraLightItalic.ttf</string>
+		<string>Poppins-BoldItalic.ttf</string>
+		<string>Poppins-Light.ttf</string>
+		<string>Poppins-Medium.ttf</string>
+		<string>Poppins-SemiBoldItalic.ttf</string>
+		<string>Poppins-ExtraBoldItalic.ttf</string>
+		<string>Poppins-ExtraBold.ttf</string>
+		<string>Poppins-BlackItalic.ttf</string>
+		<string>Poppins-Regular.ttf</string>
+		<string>Poppins-LightItalic.ttf</string>
+		<string>Poppins-Bold.ttf</string>
+		<string>Poppins-Black.ttf</string>
+		<string>Poppins-Thin.ttf</string>
+		<string>Poppins-SemiBold.ttf</string>
+		<string>Poppins-Italic.ttf</string>
+		<string>Poppins-MediumItalic.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
