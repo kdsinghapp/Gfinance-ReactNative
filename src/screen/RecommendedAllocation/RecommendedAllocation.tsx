@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   legend: { gap: 12 },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   dot: { width: 10, height: 10, borderRadius: 5 },
-  legendLabel: { flex: 1, fontSize: 13, color: 'black', fontFamily: font.PoppinsRegular },
+  legendLabel: { flex: 1, fontSize: 14.3, color: 'black', fontFamily: font.PoppinsRegular },
   legendPct: { fontSize: 14, fontFamily: font.PoppinsRegular },
   notesCard: {
 

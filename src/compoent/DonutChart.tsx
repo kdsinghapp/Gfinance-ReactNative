@@ -1,7 +1,8 @@
 // src/compoent/DonutChart.tsx
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
+import imageIndex from '../assets/imageIndex';
 
 type Props = {
   equity: number;
@@ -103,7 +104,16 @@ export default function DonutChart({
 
         {/* Center Content */}
         <View style={styles.centerContent}>
-          <Text style={styles.title}>{title}</Text>
+           <Image source={imageIndex.G}
+                    style={{
+                      width: 130,
+                      height: 45,
+                      bottom:10
+          
+                    }}
+                    resizeMode='contain'
+                  />
+          {/* <Text style={styles.title}>{title}</Text> */}
           <Text style={styles.value} numberOfLines={1}>
             {totalValue}
           </Text>

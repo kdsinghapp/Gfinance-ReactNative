@@ -318,15 +318,6 @@ const FinanShare = () => {
         <View style={styles.infoCard}>
           <View style={styles.infoRow}>
             <View style={styles.infoLeft}>
-              <Image source={imageIndex.Optimistic} style={styles.icon} />
-              <Text style={styles.infoLabel}>Investor Type</Text>
-            </View>
-            <Text style={styles.infoValue}>Dynamic</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <View style={styles.infoLeft}>
-              <Image source={imageIndex.Conservative} style={styles.icon} />
               <Text style={styles.infoLabel}>Tasa de interés</Text>
             </View>
             <Text style={styles.infoValue}>{data.returnRate}%</Text>
@@ -334,37 +325,10 @@ const FinanShare = () => {
 
           <View style={styles.infoRow}>
             <View style={styles.infoLeft}>
-              <Image source={imageIndex.Base} style={styles.icon} />
               <Text style={styles.infoLabel}>Período de inversión</Text>
             </View>
             <Text style={styles.infoValue}>{data.horizon} Years</Text>
           </View>
-
-          {/* <View style={styles.infoRow}>
-            <View style={styles.infoLeft}>
-              <Image source={imageIndex.Base} style={styles.icon} />
-              <Text style={styles.infoLabel}>
-                {getContributionLabel(data.frequency)}
-              </Text>
-            </View>
-            <Text style={styles.infoValue}>{formatCurrency(data.monthly || 0)}</Text>
-          </View> */}
-
-          {/* <View style={styles.infoRow}>
-            <View style={styles.infoLeft}>
-              <Image source={imageIndex.Base} style={styles.icon} />
-              <Text style={styles.infoLabel}>Capital inicial</Text>
-            </View>
-            <Text style={styles.infoValue}>{formatCurrency(data.capital || 0)}</Text>
-          </View> */}
-
-          {/* <View style={[styles.infoRow, { marginBottom: 0 }]}>
-            <View style={styles.infoLeft}>
-              <Image source={imageIndex.Base} style={styles.icon} />
-              <Text style={styles.infoLabel}>Total Invested</Text>
-            </View>
-            <Text style={styles.infoValue}>{formatCurrency(data.invested || 0)}</Text>
-          </View> */}
         </View>
 
         <TouchableOpacity style={styles.shareButton}>

@@ -411,7 +411,16 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
         </Svg>
 
           <View style={styles.ringCenterContent}>
-         <Text style={styles.ringCenterSubText}>Portafolio total</Text>
+             <Image source={imageIndex.G}
+                                style={{
+                                  width: 100,
+                                  height: 45,
+                                  bottom:3.5
+                      
+                                }}
+                                resizeMode='contain'
+                              />
+         {/* <Text style={styles.ringCenterSubText}>Portafolio total</Text> */}
         <Text style={styles.ringCenterValue}>{totalValue}</Text>
         </View>
        </View>
