@@ -506,7 +506,7 @@ import {
 } from 'react-native';
 import Svg, { Path, Line, Circle, Text as SvgText } from 'react-native-svg';
 import ScreenNameEnum from '../../routes/screenName.enum';
-import { formatCurrency, futureValue } from '../../engine/calculator';
+import { formatCurrency, futureValue, calculatePlan, Quiz } from '../../engine/calculator';
 import i18n from '../../i18n';
 import StatusBarComponent from '../../compoent/StatusBarCompoent';
 import CustomHeader from '../../compoent/CustomHeader';
@@ -520,6 +520,12 @@ const frequencyOptions = [
   { label: 'Semanalmente', value: 'weekly' },
   { label: 'Mensual', value: 'monthly' },
   { label: 'Annual', value: 'annual' },
+];
+
+const scenarioOptions = [
+  { label: 'Pesimista', value: 'conservative' },
+  { label: 'Neutral', value: 'base' },
+  { label: 'Optimista', value: 'optimistic' },
 ];
 
 type GraphProps = {
@@ -708,33 +714,40 @@ const FinancialCalculatorScreen = () => {
   const [capital, setCapital] = useState('');
   const [contribution, setContribution] = useState('');
   const [frequency, setFrequency] = useState<'weekly' | 'monthly' | 'annual'>('annual');
-  const [returnRate, setReturnRate] = useState('');
+  const [scenario, setScenario] = useState<'conservative' | 'base' | 'optimistic'>('base');
   const [years, setYears] = useState('');
 
   const { fv, invested, growth, gainPct, portfolioPoints, capitalPoints } = useMemo(() => {
     const cap = parseFloat(capital) || 0;
     const cont = parseFloat(contribution) || 0;
-    const rawRate = parseFloat(returnRate) || 0;
-    const annualRate = Math.min(rawRate, 1000) / 100;
     const rawYears = parseInt(years, 10) || 0;
-    const horizon = Math.min(rawYears, 100);
+    const horizon = Math.max(1, Math.min(rawYears, 100)); // Ensure horizon >= 1
 
-    const mults = { weekly: 52, monthly: 12, annual: 1 };
-    const m = mults[frequency] || 1;
-    const n = horizon * m;
+    const quiz: Quiz = { raw: {} }; // Empty quiz for default weights
+    const financialData = {
+      horizon: horizon,
+      capital: cap,
+      monthly: cont,
+      frequency: frequency
+    };
 
-    const finalValue = futureValue(cap, cont, annualRate, horizon, frequency);
-    const totalInvested = cap + cont * n;
-    const totalGrowth = finalValue - totalInvested;
-    const pct = totalInvested > 0 ? (totalGrowth / totalInvested) * 100 : 0;
+    const plan = calculatePlan(quiz, financialData);
+    const selectedScenario = plan.scenarios[scenario];
+
+    const finalValue = selectedScenario.finalValue;
+    const totalInvested = selectedScenario.totalContributed;
+    const totalGrowth = selectedScenario.totalGrowth;
+    const pct = selectedScenario.growthPercentage;
 
     const pPoints: number[] = [];
     const cPoints: number[] = [];
+    const mults = { weekly: 52, monthly: 12, annual: 1 };
+    const m = mults[frequency] || 1;
 
     const steps = 7;
     for (let i = 0; i <= steps; i++) {
       const stepYears = horizon > 0 ? (i / steps) * horizon : 0;
-      const v = futureValue(cap, cont, annualRate, stepYears, frequency);
+      const v = futureValue(cap, cont, selectedScenario.annualRate, stepYears, frequency);
       const inv = cap + cont * stepYears * m;
 
       pPoints.push(v);
@@ -749,14 +762,13 @@ const FinancialCalculatorScreen = () => {
       portfolioPoints: pPoints,
       capitalPoints: cPoints,
     };
-  }, [capital, contribution, frequency, returnRate, years]);
+  }, [capital, contribution, frequency, scenario, years]);
 
   const ft = (i18n.t('questions.financial') as any) || {};
   const isFormValid =
     capital !== '' &&
     contribution !== '' &&
     years !== '' &&
-    returnRate !== '' &&
     frequency;
 
   return (
@@ -824,16 +836,30 @@ const FinancialCalculatorScreen = () => {
           </View>
 
           <Text style={styles.label}>
-            {ft.returnLabel || 'Expected Annual Return'}
+            Escenario
           </Text>
-          <TextInput
-            style={styles.input}
-            value={returnRate}
-            onChangeText={setReturnRate}
-            keyboardType="numeric"
-            placeholder="0"
-            placeholderTextColor="#B8B8B8"
-          />
+          <View style={styles.frequencyRow}>
+            {scenarioOptions.map((item) => {
+              const active = scenario === item.value;
+              return (
+                <TouchableOpacity
+                  key={item.value}
+                  activeOpacity={0.9}
+                  onPress={() => setScenario(item.value as any)}
+                  style={[styles.frequencyButton, active && styles.frequencyButtonActive]}
+                >
+                  <Text
+                    style={[
+                      styles.frequencyButtonText,
+                      active && styles.frequencyButtonTextActive,
+                    ]}
+                  >
+                    {item.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
 
           <Text style={styles.label}>
             {ft.horizonLabel || 'Horizon'}

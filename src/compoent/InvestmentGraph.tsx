@@ -68,7 +68,7 @@ const InvestmentGraph = ({ portfolioData, capitalData, years }: Props) => {
                 alignItems: "flex-start",
 
 
-                right: 50,
+                right: 40,
                 fontSize: 16,
                 marginTop: 5,
                 marginBottom: 3,

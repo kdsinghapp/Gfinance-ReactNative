@@ -152,7 +152,7 @@ export function buildProfile(quiz?: Quiz) {
   }
  
   // Estabilidad de ingresos
-  if (quiz?.raw?.estab === 0 || quiz?.raw?.estab === 1 || quiz?.P_Estab === 'Inestables') {
+  if (quiz?.raw?.estab === 0 || quiz?.P_Estab === 'Inestables') {
     w.RV = clamp01(w.RV - RV_PENALTY_INGRESOS_INESTABLES);
     cryptoBlocked = true;
     notes.push(`Ingresos inestables: -${Math.round(RV_PENALTY_INGRESOS_INESTABLES * 100)} pp en RV y cripto bloqueada.`);
@@ -308,13 +308,66 @@ export function buildProfile(quiz?: Quiz) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Rate table per risk profile
 // ─────────────────────────────────────────────────────────────────────────────
-const RATE_TABLE: Record<string, { conservative: number; base: number; optimistic: number }> = {
-  'Muy conservador': { conservative: 0.02, base: 0.04, optimistic: 0.06 },
-  'Conservador': { conservative: 0.03, base: 0.05, optimistic: 0.07 },
-  'Moderado': { conservative: 0.04, base: 0.07, optimistic: 0.10 },
-  'Dinámico': { conservative: 0.05, base: 0.08, optimistic: 0.12 },
-  'Agresivo': { conservative: 0.06, base: 0.10, optimistic: 0.15 },
-};
+/**
+ * CAGR Data Meta-info:
+ * - Unit: CAGR_annual (annualized compound returns)
+ * - Dispersion: Designed with mean reversion, dispersion shrinks as horizon increases
+ * - Cash Cap: Capped between 0% and 2% across all horizons
+ */
+const CAGR_DATA = {
+  cash: {
+    pessimistic: { "1": 0.0, "2": 0.3, "3": 0.6, "5": 0.9, "7": 1.1, "10": 1.3, "15": 1.5 },
+    neutral: { "1": 1.2, "2": 1.3, "3": 1.4, "5": 1.5, "7": 1.6, "10": 1.7, "15": 1.8 },
+    optimistic: { "1": 2.0, "2": 2.0, "3": 2.0, "5": 2.0, "7": 2.0, "10": 2.0, "15": 2.0 }
+  },
+  fixed_income: {
+    pessimistic: { "1": -3.0, "2": 0.5, "3": 1.5, "5": 2.5, "7": 3.0, "10": 3.3, "15": 3.5 },
+    neutral: { "1": 3.0, "2": 3.2, "3": 3.3, "5": 3.4, "7": 3.5, "10": 3.6, "15": 3.7 },
+    optimistic: { "1": 6.0, "2": 5.0, "3": 4.6, "5": 4.4, "7": 4.3, "10": 4.2, "15": 4.1 }
+  },
+  equity: {
+    pessimistic: { "1": -18.0, "2": -4.0, "3": 0.0, "5": 3.5, "7": 4.8, "10": 5.6, "15": 6.0 },
+    neutral: { "1": 7.0, "2": 6.8, "3": 6.7, "5": 6.6, "7": 6.5, "10": 6.4, "15": 6.3 },
+    optimistic: { "1": 16.0, "2": 12.0, "3": 10.0, "5": 8.5, "7": 8.0, "10": 7.7, "15": 7.5 }
+  },
+  crypto: {
+    pessimistic: { "1": -55.0, "2": -20.0, "3": -8.0, "5": 1.5, "7": 4.0, "10": 5.5, "15": 6.0 },
+    neutral: { "1": 10.0, "2": 9.0, "3": 8.5, "5": 8.0, "7": 7.5, "10": 7.0, "15": 6.8 },
+    optimistic: { "1": 45.0, "2": 28.0, "3": 20.0, "5": 14.0, "7": 12.0, "10": 11.0, "15": 10.0 }
+  }
+} as const;
+
+export function getAssetRate(asset: keyof typeof CAGR_DATA, scenario: 'pessimistic' | 'neutral' | 'optimistic', years: number): number {
+  const data = CAGR_DATA[asset][scenario] as Record<string, number>;
+  const horizons = [1, 2, 3, 5, 7, 10, 15];
+  
+  if (years <= 1) return data["1"];
+  if (years >= 15) return data["15"];
+  if (data[years.toString()]) return data[years.toString()];
+  
+  let low = 1, high = 15;
+  for (let i = 0; i < horizons.length - 1; i++) {
+    if (years > horizons[i] && years < horizons[i+1]) {
+      low = horizons[i];
+      high = horizons[i+1];
+      break;
+    }
+  }
+  
+  const rLow = data[low.toString()];
+  const rHigh = data[high.toString()];
+  return rLow + (rHigh - rLow) * (years - low) / (high - low);
+}
+
+function getWeightedRate(weights: Weights, scenario: 'pessimistic' | 'neutral' | 'optimistic', years: number): number {
+  let rate = 0;
+  rate += weights.RV * getAssetRate('equity', scenario, years);
+  rate += weights.RF * getAssetRate('fixed_income', scenario, years);
+  rate += weights.Cash * getAssetRate('cash', scenario, years);
+  rate += weights.Crypto * getAssetRate('crypto', scenario, years);
+  return rate / 100;
+}
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Future value formulas
@@ -381,21 +434,25 @@ function buildScenario(
 // ─────────────────────────────────────────────────────────────────────────────
 export function calculatePlan(quiz: Quiz, financialData: { horizon: number, capital: number, monthly: number, frequency?: 'weekly' | 'monthly' | 'annual' }): PlanResult {
   const { weights, profile, notes } = buildProfile(quiz);
-  const rates = RATE_TABLE[profile] || RATE_TABLE['Moderado'];
   
   const horizon = Math?.max(1, Math.min(50, financialData.horizon));
   const principal = Math?.max(0, financialData.capital);
   const amount = Math?.max(0, financialData.monthly);
   const frequency = financialData.frequency || 'monthly';
 
+  // Calculate rates using CAGR data and weights
+  const rateConservative = getWeightedRate(weights, 'pessimistic', horizon);
+  const rateBase = getWeightedRate(weights, 'neutral', horizon);
+  const rateOptimistic = getWeightedRate(weights, 'optimistic', horizon);
+
   return {
     weights,
     profile,
     notes,
     scenarios: {
-      conservative: buildScenario('conservative', rates.conservative, principal, amount, horizon, frequency),
-      base: buildScenario('base', rates.base, principal, amount, horizon, frequency),
-      optimistic: buildScenario('optimistic', rates.optimistic, principal, amount, horizon, frequency),
+      conservative: buildScenario('conservative', rateConservative, principal, amount, horizon, frequency),
+      base: buildScenario('base', rateBase, principal, amount, horizon, frequency),
+      optimistic: buildScenario('optimistic', rateOptimistic, principal, amount, horizon, frequency),
     },
   };
 }

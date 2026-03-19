@@ -53,7 +53,7 @@ const InvestmentScenarioScreen: React.FC = () => {
 
   const plan = calculatePlan(quiz, financialData);
   const { scenarios } = plan;
-
+console.log("plan",plan)
   const weights = plan?.weights ?? {};
 
   const allocation = {
@@ -61,6 +61,9 @@ const InvestmentScenarioScreen: React.FC = () => {
     fixedIncome: weights.RF ?? 0,
     cash: weights.Cash ?? 0,
     crypto: weights.Crypto ?? 0,
+
+    
+    // crypto: weights.Crypto ?? 0,
   };
 
   const fullChartData = useMemo(() => {
@@ -361,8 +364,7 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
 }) => {
   const cx = RING_SIZE / 2;
   const cy = RING_SIZE / 2;
-
-  let cumulativePct = 0;
+   let cumulativePct = 0;
 
   const arcs = SLICES.map((slice) => {
     const pct = allocation[slice.key] * 100;

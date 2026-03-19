@@ -23,11 +23,18 @@ const RecommendedAllocation: React.FC = () => {
   useEffect(() => {
     Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }).start();
   }, [fadeAnim]);
+
+
   const total =
-    allocation.equity +
-    allocation.fixed +
-    allocation.cash +
-    allocation.crypto;
+    (allocation?.equity ?? 0) +
+    (allocation?.fixed ?? 0) +
+    (allocation?.cash ?? 0) +
+    (allocation?.crypto ?? 0);
+
+  const equityPercent =
+    total > 0
+      ? ((allocation?.equity ?? 0) / total) * 100
+      : 0;
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBarComponent />
@@ -44,12 +51,12 @@ const RecommendedAllocation: React.FC = () => {
         <View style={styles.card}>
           <Text style={styles.cardTitle}>{i18n.t('results.allocation')}</Text>
           <View style={styles.chartWrap}>
-<DonutChart
+            <DonutChart
               equity={allocation.equity}
               fixed={allocation.fixed}
               cash={allocation.cash}
               crypto={allocation.crypto}
-              totalValue={allocation.equity}
+              totalValue={`$${allocation?.equity?.toFixed(2)}`}
             />
             {/* <RecommendedAllocationChart
               value={allocation.equity} // ya jo highlight karna hai
