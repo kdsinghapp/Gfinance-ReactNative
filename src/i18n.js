@@ -126,6 +126,7 @@ const translations = {
     },
 
     results: {
+      investorProfile: 'Investor Profile',
       title: 'Your GFinance Plan',
       allocation: 'Asset Allocation',
       RV: 'Stocks (Equities)',
@@ -285,6 +286,7 @@ const translations = {
     },
 
     results: {
+      investorProfile: 'Perfil de inversor',
       title: 'Tu Estrategia',
       allocation: 'Distribución de Activos',
       RV: 'Renta Variable (Acciones)',

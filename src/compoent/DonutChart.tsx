@@ -33,7 +33,7 @@ export default function DonutChart({
   totalValue = '',
   title = 'Portfolio Value',
 }: Props) {
-  const strokeWidth = 24;
+  const strokeWidth = size > 260 ? 32 : 24;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const center = size / 2;
@@ -107,16 +107,15 @@ export default function DonutChart({
            <Image source={imageIndex.G}
                     style={{
                       width: 130,
-                      height: 45,
-                      bottom:10
-          
+                      height: 70,
+           
                     }}
                     resizeMode='contain'
                   />
           {/* <Text style={styles.title}>{title}</Text> */}
-          <Text style={styles.value} numberOfLines={1}>
+          {/* <Text style={styles.value} numberOfLines={1}>
             {totalValue}
-          </Text>
+          </Text> */}
         </View>
       </View>
 

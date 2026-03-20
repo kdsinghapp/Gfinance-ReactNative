@@ -43,10 +43,6 @@ const RecommendedAllocation: React.FC = () => {
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         style={{ opacity: fadeAnim }} contentContainerStyle={styles.scrollContent}>
-        {/* <View style={styles.heroCard}>
-          <Text style={styles.heroSub}>{i18n.t('results.title')}</Text>
-          <Text style={styles.heroTitle}>{profile}</Text>
-        </View> */}
 
         <View style={styles.card}>
           <Text style={styles.cardTitle}>{i18n.t('results.allocation')}</Text>
@@ -57,6 +53,7 @@ const RecommendedAllocation: React.FC = () => {
               cash={allocation.cash}
               crypto={allocation.crypto}
               totalValue={`$${allocation?.equity?.toFixed(2)}`}
+              size={240}
             />
             {/* <RecommendedAllocationChart
               value={allocation.equity} // ya jo highlight karna hai
@@ -116,8 +113,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: { padding: 20 },
   heroCard: { backgroundColor: '#111', borderRadius: 20, padding: 24, marginBottom: 20 },
-  heroSub: { color: '#00E5C0', fontSize: 13, fontWeight: '700', textTransform: 'uppercase', marginBottom: 4 },
-  heroTitle: { color: '#FFF', fontSize: 28, fontWeight: '900' },
+  heroSub: { color: '#00E5C0', fontSize: 13, fontFamily: font.PoppinsSemiBold, textTransform: 'uppercase', marginBottom: 4 },
+  heroTitle: { color: '#FFF', fontSize: 28, fontFamily: font.PoppinsBold },
   card: {
 
     backgroundColor: '#FFF',
@@ -137,11 +134,11 @@ const styles = StyleSheet.create({
   },
   cardTitle: { fontSize: 28, fontFamily: font.PoppinsBold, color: '#111', marginBottom: 1 },
   chartWrap: { alignItems: 'center', marginBottom: 20 },
-  legend: { gap: 12 },
-  legendItem: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  dot: { width: 10, height: 10, borderRadius: 5 },
-  legendLabel: { flex: 1, fontSize: 14.3, color: 'black', fontFamily: font.PoppinsRegular },
-  legendPct: { fontSize: 14, fontFamily: font.PoppinsRegular },
+  legend: { gap: 16 },
+  legendItem: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  dot: { width: 14, height: 14, borderRadius: 7 },
+  legendLabel: { flex: 1, fontSize: 18, color: 'black', fontFamily: font.PoppinsSemiBold },
+  legendPct: { fontSize: 18, fontFamily: font.PoppinsBold },
   notesCard: {
 
     shadowColor: '#BCDBFF',

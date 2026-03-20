@@ -53,7 +53,7 @@ const InvestmentScenarioScreen: React.FC = () => {
 
   const plan = calculatePlan(quiz, financialData);
   const { scenarios } = plan;
-console.log("plan",plan)
+  console.log("plan", plan)
   const weights = plan?.weights ?? {};
 
   const allocation = {
@@ -62,7 +62,7 @@ console.log("plan",plan)
     cash: weights.Cash ?? 0,
     crypto: weights.Crypto ?? 0,
 
-    
+
     // crypto: weights.Crypto ?? 0,
   };
 
@@ -346,7 +346,7 @@ type AllocationRingProps = {
   totalValue: string;
 };
 
-const RING_SIZE = 170;
+const RING_SIZE = 200;
 const STROKE_WIDTH = 18;
 const RADIUS = (RING_SIZE - STROKE_WIDTH) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
@@ -364,7 +364,7 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
 }) => {
   const cx = RING_SIZE / 2;
   const cy = RING_SIZE / 2;
-   let cumulativePct = 0;
+  let cumulativePct = 0;
 
   const arcs = SLICES.map((slice) => {
     const pct = allocation[slice.key] * 100;
@@ -377,9 +377,9 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
   return (
     <View style={{
     }} >
- <View style={styles.ringContainer}>
-         <Svg width={RING_SIZE} height={RING_SIZE}>
-            <Circle
+      <View style={styles.ringContainer}>
+        <Svg width={RING_SIZE} height={RING_SIZE}>
+          <Circle
             stroke="#EDF2EE"
             fill="none"
             cx={cx}
@@ -388,7 +388,7 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
             strokeWidth={STROKE_WIDTH}
           />
 
-         {arcs?.map((arc) => {
+          {arcs?.map((arc) => {
             const arcLen = (CIRCUMFERENCE * arc.pct) / 100;
             const rotationDeg = (arc.startPct / 100) * 360 - 90;
 
@@ -410,20 +410,19 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
           })}
         </Svg>
 
-          <View style={styles.ringCenterContent}>
-             <Image source={imageIndex.G}
-                                style={{
-                                  width: 100,
-                                  height: 45,
-                                  bottom:3.5
-                      
-                                }}
-                                resizeMode='contain'
-                              />
-         {/* <Text style={styles.ringCenterSubText}>Portafolio total</Text> */}
-        <Text style={styles.ringCenterValue}>{totalValue}</Text>
+        <View style={styles.ringCenterContent}>
+          <Image source={imageIndex.G}
+            style={{
+              width: 100,
+              height: 45,
+
+            }}
+            resizeMode='contain'
+          />
+          {/* <Text style={styles.ringCenterSubText}>Portafolio total</Text> */}
+          <Text style={styles.ringCenterValue}>{totalValue}</Text>
         </View>
-       </View>
+      </View>
       <View >
         <View style={{
           justifyContent: "space-around",
@@ -531,7 +530,7 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
                 height: 10,
                 width: 10,
                 backgroundColor: "#F59E0B",
- 
+
                 borderRadius: 20,
                 right: 8
               }} />
