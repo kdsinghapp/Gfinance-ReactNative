@@ -74,8 +74,8 @@ const InvestmentScenarioScreen: React.FC = () => {
     return baseValues.map((val: number, idx: number) => ({
       year: idx + 1,
       label: `Y${idx + 1}`,
-      conservative: conservativeValues[idx] ?? 0,
-      base: val ?? 0,
+      pessimistic: conservativeValues[idx] ?? 0,
+      neutral: val ?? 0,
       optimistic: optimisticValues[idx] ?? 0,
     }));
   }, [scenarios]);
@@ -86,8 +86,8 @@ const InvestmentScenarioScreen: React.FC = () => {
     return {
       year: 0,
       label: 'Start',
-      conservative: initialValue,
-      base: initialValue,
+      pessimistic: initialValue,
+      neutral: initialValue,
       optimistic: initialValue,
     };
   }, [financialData]);
@@ -168,8 +168,15 @@ const InvestmentScenarioScreen: React.FC = () => {
           <View style={[styles.card, { marginTop: 20 }]}>
 
 
+            <View style={styles.profileBadgeRow}>
+              <View style={styles.profileBadge}>
+                <Text style={styles.profileBadgeText}>Tipo de inversor: {plan?.profile}</Text>
+              </View>
+            </View>
+            {/* 
+
             <Text style={[styles.sectionTitle, {
-            }]}>{plan?.profile}</Text>
+            }]}>{plan?.profile}</Text> */}
 
             <Text style={[styles.sectionTitle, {
 
@@ -186,23 +193,34 @@ const InvestmentScenarioScreen: React.FC = () => {
             />
 
           </View>
+          <Text style={{
+            color: "black",
+            fontFamily: font.PoppinsBold
+          }}>
+            Valor futuro según escenarios
+          </Text>
 
           {/* Scenario Cards */}
           <View style={styles.metricsRow}>
+
             <MetricCard
               icon={imageIndex.Conservative}
-              label={i18n.t('results.conservative')}
+              label={"Pesimista"}
+              // label={i18n.t('results.conservative')}
               value={formatCurrency(scenarios?.conservative?.finalValue ?? 0)}
             />
             <MetricCard
               icon={imageIndex.Base}
-              label={i18n.t('results.base')}
+              // label={i18n.t('results.base')}
+              label={"Neutral"}
+
               value={formatCurrency(scenarios?.base?.finalValue ?? 0)}
               active
             />
             <MetricCard
               icon={imageIndex.Optimistic}
-              label={i18n.t('results.optimistic')}
+              label={"Optimista"}
+              // label={i18n.t('results.optimistic')}
               value={formatCurrency(scenarios?.optimistic?.finalValue ?? 0)}
             />
           </View>
@@ -216,15 +234,15 @@ const InvestmentScenarioScreen: React.FC = () => {
             <RangeTabs selected={selectedRange} onSelect={setSelectedRange} />
 
             <View style={styles.chartWrap}>
-              <GrowthChart data={chartData} allocation={allocation} />
+              <GrowthChart data={chartData} />
             </View>
-
+            {/* 
             <View style={styles.legendRow}>
               <LegendDot label="Conservative" color="#3B82F6" />
               <LegendDot label="Base" color="#22C55E" />
               <LegendDot label="Optimista" color="#F59E0B" />
-              {/* <LegendDot label="Crypto" color="#8B5CF6" /> */}
-            </View>
+              <LegendDot label="Crypto" color="#8B5CF6" />
+            </View> */}
           </View>
 
           {/* Save / New Plan */}
@@ -418,7 +436,7 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
         </Svg>
 
         <View style={styles.ringCenterContent}>
-          <Image source={imageIndex.greenG}
+          <Image source={imageIndex.G}
             style={{
               width: 100,
               height: 49,
@@ -426,6 +444,14 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
             }}
             resizeMode='contain'
           />
+          {/* <Image source={imageIndex.greenG}
+            style={{
+              width: 100,
+              height: 49,
+
+            }}
+            resizeMode='contain'
+          /> */}
           {/* <Text style={styles.ringCenterSubText}>Portafolio total</Text> */}
           {/* <Text style={styles.ringCenterValue}>{totalValue}</Text> */}
         </View>
@@ -822,6 +848,21 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
     paddingBottom: 30,
+  },
+  profileBadgeRow: { flexDirection: 'row', marginBottom: 16 },
+  profileBadge: {
+    backgroundColor: '#E8F8ED',
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: '#B2E5BC',
+  },
+  profileBadgeText: {
+    color: '#1A7A35',
+    fontSize: 13,
+    fontFamily: font.PoppinsSemiBold,
+    letterSpacing: 0.2,
   },
 
   card: {

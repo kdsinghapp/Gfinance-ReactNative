@@ -49,7 +49,7 @@ const RecommendedAllocation: React.FC = () => {
           {/* Investor Type Badge */}
           {/* <View style={styles.profileBadgeRow}>
             <View style={styles.profileBadge}>
-              <Text style={styles.profileBadgeText}>{profile}</Text>
+              <Text style={styles.profileBadgeText}>Tipo de inversor: {profile}</Text>
             </View>
           </View> */}
 
@@ -137,16 +137,18 @@ const styles = StyleSheet.create({
   cardTitle: { fontSize: 28, fontFamily: font.PoppinsBold, color: '#111', marginBottom: 8 },
   profileBadgeRow: { flexDirection: 'row', marginBottom: 16 },
   profileBadge: {
-    backgroundColor: '#00C81A',
+    backgroundColor: '#E8F8ED',
     borderRadius: 20,
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
     paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: '#B2E5BC',
   },
   profileBadgeText: {
-    color: '#fff',
-    fontSize: 14,
+    color: '#1A7A35',
+    fontSize: 13,
     fontFamily: font.PoppinsSemiBold,
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
   },
   chartWrap: { alignItems: 'center', marginBottom: 20 },
   legend: { gap: 16 },

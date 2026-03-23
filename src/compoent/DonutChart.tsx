@@ -105,7 +105,7 @@ export default function DonutChart({
         {/* Center Content — logo only, no figure */}
         <View style={styles.centerContent}>
           <Image
-            source={imageIndex.greenG}
+            source={imageIndex.G}
             style={{ width: 110, height: 52 }}
             resizeMode="contain"
           />
