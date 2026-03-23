@@ -36,7 +36,7 @@ const SavedPlansScreen: React.FC = () => {
       setLoading(true);
       const storedPlans = await Storage.loadPlans();
       setPlans(storedPlans || []);
-
+console.log("storedPlans",storedPlans)
       if (storedPlans?.length > 0) {
         Analytics.savedPlanViewed();
       }

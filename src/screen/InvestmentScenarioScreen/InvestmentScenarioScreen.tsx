@@ -53,7 +53,7 @@ const InvestmentScenarioScreen: React.FC = () => {
 
   const plan = calculatePlan(quiz, financialData);
   const { scenarios } = plan;
-  console.log("plan", plan)
+  console.log("plan ffff", plan?.profile)
   const weights = plan?.weights ?? {};
 
   const allocation = {
@@ -166,7 +166,14 @@ const InvestmentScenarioScreen: React.FC = () => {
         >
           {/* Allocation Card */}
           <View style={[styles.card, { marginTop: 20 }]}>
+
+
             <Text style={[styles.sectionTitle, {
+            }]}>{plan?.profile}</Text>
+
+            <Text style={[styles.sectionTitle, {
+
+              fontSize: 16
             }]}>Asignación recomendada</Text>
             {/* <RecommendedAllocationChart
               value={allocation.equities * totalPortfolioValue}
@@ -411,16 +418,16 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
         </Svg>
 
         <View style={styles.ringCenterContent}>
-          <Image source={imageIndex.G}
+          <Image source={imageIndex.greenG}
             style={{
               width: 100,
-              height: 45,
+              height: 49,
 
             }}
             resizeMode='contain'
           />
           {/* <Text style={styles.ringCenterSubText}>Portafolio total</Text> */}
-          <Text style={styles.ringCenterValue}>{totalValue}</Text>
+          {/* <Text style={styles.ringCenterValue}>{totalValue}</Text> */}
         </View>
       </View>
       <View >
@@ -778,8 +785,8 @@ const RangeTabs = ({
         return (
           <TouchableOpacity
             key={tab}
-            style={[styles.tabBtn,]}
-            // style={[styles.tabBtn, active && styles.tabBtnActive]}
+            // style={[styles.tabBtn,]}
+            style={[styles.tabBtn, active && styles.tabBtnActive]}
             onPress={() => onSelect(tab)}
             activeOpacity={0.8}
           >

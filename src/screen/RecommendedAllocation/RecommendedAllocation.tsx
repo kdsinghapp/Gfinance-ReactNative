@@ -8,7 +8,6 @@ import StatusBarComponent from '../../compoent/StatusBarCompoent';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomHeader from '../../compoent/CustomHeader';
 import font from '../../theme/font';
-import RecommendedAllocationChart from '../../compoent/RecommendedAllocationChart';
 import DonutChart from '../../compoent/DonutChart';
 
 const RecommendedAllocation: React.FC = () => {
@@ -46,6 +45,14 @@ const RecommendedAllocation: React.FC = () => {
 
         <View style={styles.card}>
           <Text style={styles.cardTitle}>{i18n.t('results.allocation')}</Text>
+
+          {/* Investor Type Badge */}
+          {/* <View style={styles.profileBadgeRow}>
+            <View style={styles.profileBadge}>
+              <Text style={styles.profileBadgeText}>{profile}</Text>
+            </View>
+          </View> */}
+
           <View style={styles.chartWrap}>
             <DonutChart
               equity={allocation.equity}
@@ -53,13 +60,8 @@ const RecommendedAllocation: React.FC = () => {
               cash={allocation.cash}
               crypto={allocation.crypto}
               totalValue={`$${allocation?.equity?.toFixed(2)}`}
-              size={240}
+              size={230}
             />
-            {/* <RecommendedAllocationChart
-              value={allocation.equity} // ya jo highlight karna hai
-              total={total}
-              centerLabel={"Portfolio Total"}
-            /> */}
           </View>
 
           <View style={styles.legend}>
@@ -132,7 +134,20 @@ const styles = StyleSheet.create({
     elevation: 16,
 
   },
-  cardTitle: { fontSize: 28, fontFamily: font.PoppinsBold, color: '#111', marginBottom: 1 },
+  cardTitle: { fontSize: 28, fontFamily: font.PoppinsBold, color: '#111', marginBottom: 8 },
+  profileBadgeRow: { flexDirection: 'row', marginBottom: 16 },
+  profileBadge: {
+    backgroundColor: '#00C81A',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+  },
+  profileBadgeText: {
+    color: '#fff',
+    fontSize: 14,
+    fontFamily: font.PoppinsSemiBold,
+    letterSpacing: 0.3,
+  },
   chartWrap: { alignItems: 'center', marginBottom: 20 },
   legend: { gap: 16 },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: 12 },

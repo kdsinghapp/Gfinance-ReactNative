@@ -102,20 +102,18 @@ export default function DonutChart({
           ))}
         </Svg>
 
-        {/* Center Content */}
+        {/* Center Content — logo only, no figure */}
         <View style={styles.centerContent}>
-           <Image source={imageIndex.G}
-                    style={{
-                      width: 130,
-                      height: 70,
-           
-                    }}
-                    resizeMode='contain'
-                  />
-          {/* <Text style={styles.title}>{title}</Text> */}
-          {/* <Text style={styles.value} numberOfLines={1}>
-            {totalValue}
-          </Text> */}
+          <Image
+            source={imageIndex.greenG}
+            style={{ width: 110, height: 52 }}
+            resizeMode="contain"
+          />
+          {/* <Image
+            source={imageIndex.G}
+            style={{ width: 110, height: 60 }}
+            resizeMode="contain"
+          /> */}
         </View>
       </View>
 
