@@ -14,9 +14,8 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
-
 import i18n from '../../i18n';
-import { calculatePlan, formatCurrency } from '../../engine/calculator';
+import { calculatePlan } from '../../engine/calculator';
 import GrowthChart from '../../compoent/GrowthChart';
 import { Storage } from '../../engine/storage';
 import { Analytics } from '../../engine/analytics';
@@ -47,14 +46,17 @@ const InvestmentScenarioScreen: React.FC = () => {
   const [saved, setSaved] = useState(false);
   const [saveModalVisible, setSaveModalVisible] = useState(false);
   const [planName, setPlanName] = useState('');
+
   const [selectedRange, setSelectedRange] = useState<RangeKey>('3Y');
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const plan = calculatePlan(quiz, financialData);
+  const plan = calculatePlan(quiz, {
+    ...financialData,
+    horizon: Math.max(10, financialData?.horizon ?? 10),
+  });
   const { scenarios } = plan;
-  console.log("plan ffff", plan?.profile)
-  const weights = plan?.weights ?? {};
+   const weights = plan?.weights ?? {};
 
   const allocation = {
     equities: weights.RV ?? 0,
@@ -132,9 +134,9 @@ const InvestmentScenarioScreen: React.FC = () => {
       allocation: plan?.weights,
       scenarios: {
         years: financialData?.horizon,
-        base: scenarios?.base?.finalValue,
-        conservative: scenarios?.conservative?.finalValue,
-        optimistic: scenarios?.optimistic?.finalValue,
+        base: scenarios?.base?.yearlyValues[financialData?.horizon] ?? scenarios?.base?.finalValue,
+        conservative: scenarios?.conservative?.yearlyValues[financialData?.horizon] ?? scenarios?.conservative?.finalValue,
+        optimistic: scenarios?.optimistic?.yearlyValues[financialData?.horizon] ?? scenarios?.optimistic?.finalValue,
       },
       chartData: fullChartData,
     });
@@ -153,6 +155,8 @@ const InvestmentScenarioScreen: React.FC = () => {
       maximumFractionDigits: 2,
     })}`;
   };
+  const lastPoint = chartData[chartData.length - 1];
+
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBarComponent />
@@ -206,22 +210,18 @@ const InvestmentScenarioScreen: React.FC = () => {
             <MetricCard
               icon={imageIndex.Conservative}
               label={"Pesimista"}
-              // label={i18n.t('results.conservative')}
-              value={formatCurrency(scenarios?.conservative?.finalValue ?? 0)}
+              value={formatCurrency(lastPoint?.pessimistic ?? 0)}
             />
             <MetricCard
               icon={imageIndex.Base}
-              // label={i18n.t('results.base')}
               label={"Neutral"}
-
-              value={formatCurrency(scenarios?.base?.finalValue ?? 0)}
+              value={formatCurrency(lastPoint?.neutral ?? 0)}
               active
             />
             <MetricCard
               icon={imageIndex.Optimistic}
               label={"Optimista"}
-              // label={i18n.t('results.optimistic')}
-              value={formatCurrency(scenarios?.optimistic?.finalValue ?? 0)}
+              value={formatCurrency(lastPoint?.optimistic ?? 0)}
             />
           </View>
 
@@ -852,17 +852,17 @@ const styles = StyleSheet.create({
   profileBadgeRow: { flexDirection: 'row', marginBottom: 16 },
   profileBadge: {
     backgroundColor: '#E8F8ED',
-    borderRadius: 24,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderWidth: 1,
+    borderRadius: 18,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderWidth: 1.5,
     borderColor: '#B2E5BC',
   },
   profileBadgeText: {
     color: '#1A7A35',
-    fontSize: 16,
-    fontFamily: font.PoppinsSemiBold,
-    letterSpacing: 0.2,
+    fontSize: 20,
+    fontFamily: font.PoppinsBold,
+    // letterSpacing: 0.3,
   },
 
   card: {

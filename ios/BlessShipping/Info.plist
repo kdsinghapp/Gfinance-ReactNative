@@ -39,11 +39,11 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app needs your location to show map</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs your location to show map</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs your location to show map</string>
 	<key>UIAppFonts</key>
 	<array>

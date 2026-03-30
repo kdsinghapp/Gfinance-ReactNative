@@ -54,7 +54,9 @@ const GrowthChart: React.FC<Props> = ({ data = [] }) => {
       let n = safeNumber(item.neutral);
       let o = safeNumber(item.optimistic);
 
-      [p, n, o] = addOffsetIfEqual(p, n, o);
+      if (index > 0) {
+        [p, n, o] = addOffsetIfEqual(p, n, o);
+      }
 
       return {
         label: item?.label || MONTHS[index] || `P${index + 1}`,

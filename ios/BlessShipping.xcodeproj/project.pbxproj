@@ -9,115 +9,115 @@
 /* Begin PBXBuildFile section */
 		0AECF0D592CC4A35952868BB /* TT Neoris Trial DemiBold Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BDCD7D343A174F34A757877A /* TT Neoris Trial DemiBold Italic.ttf */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		204659EA798D425DBEE88895 /* Poppins-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 30C81CB0E57A4EC5B4F4111A /* Poppins-ExtraLight.ttf */; };
 		227392B2FAAD4D18A5E4881F /* TT Neoris Trial Black Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C8F3D165793F4F58B00B639F /* TT Neoris Trial Black Italic.ttf */; };
+		23775F4A1BE7473ABAF8215F /* Poppins-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9BDA3E587051432A97700D54 /* Poppins-BlackItalic.ttf */; };
 		2CCE72972AE649C2AC0239D0 /* TT Neoris Trial Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0569C5698C1140518C04BD8E /* TT Neoris Trial Bold.ttf */; };
+		2E0FAE0224E24EFC8276EEF4 /* sackersgothicstd-medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 563DDF687000487B96EB1D9E /* sackersgothicstd-medium.otf */; };
 		3858F1F801D14945A8B0672F /* TT Neoris Trial ExtraBold Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C0EF55C11FF741B980F24B60 /* TT Neoris Trial ExtraBold Italic.ttf */; };
+		3C12A3F9E2E747DD99F976DF /* Poppins-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4EAA8F6F39E249EE9914E18F /* Poppins-Thin.ttf */; };
 		3CBF9077E1494DEFBFE4006E /* TT Neoris Trial Thin Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 726D45B3B7B841BA9A3625E6 /* TT Neoris Trial Thin Italic.ttf */; };
 		47EBA2556F904A989E817C1A /* TT Neoris Trial ExtraLight Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7633AB502DB44FCA959AF883 /* TT Neoris Trial ExtraLight Italic.ttf */; };
+		4B9D0F8566C044A3A5C5D765 /* sackersgothicstd-light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 727556F477E048838C1A14ED /* sackersgothicstd-light.otf */; };
+		5B2A9189DF284AA48CADF79D /* Poppins-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1128B02BF95E415DAE6BE3DF /* Poppins-BoldItalic.ttf */; };
 		600AA01E33514953BDA3327A /* TT Neoris Trial Variable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 23BE6E31B5B8471C95577D4E /* TT Neoris Trial Variable.ttf */; };
 		6D56BC0A46294F81A4BD9F6D /* TT Neoris Trial ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7C69F740E34F30A614668C /* TT Neoris Trial ExtraBold.ttf */; };
+		6DED444EF80F4729A51A9022 /* Poppins-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 864A4B787458487983F0F644 /* Poppins-ExtraLightItalic.ttf */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		7CEF12DAC235479AAA908887 /* TT Neoris Trial ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FE5DCC8FD35747639E3BFEB5 /* TT Neoris Trial ExtraLight.ttf */; };
+		7D1529E437B74CA3BA54726A /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6262E085AEE4470FB9AE221F /* Poppins-Black.ttf */; };
 		7DF802757CCD449DA5FE836B /* TT Neoris Trial Hairline Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8BF6208708BA4AE586D9D6DE /* TT Neoris Trial Hairline Italic.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		8D51A65FC6A04A63BEDAA6F9 /* Poppins-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 051058941BDA473195C58C76 /* Poppins-Italic.ttf */; };
+		98ACB48AFB9D4D688EDD9E9D /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F938D0E6DFF1448A8E8DE3CF /* Poppins-Regular.ttf */; };
+		9B24EFB9807343FAA8D1969F /* Poppins-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 639FCB00A85D45068B7A64B5 /* Poppins-ExtraBoldItalic.ttf */; };
+		9EE959669E274CA1844D554B /* Poppins-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9718B0F694840889A9A6E3D /* Poppins-SemiBoldItalic.ttf */; };
 		9FEEC9C59EAC42409A0C963E /* TT Neoris Trial DemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 24B536112B9B4271AA20C95B /* TT Neoris Trial DemiBold.ttf */; };
+		A1AD74AA194842D5AC9FA315 /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C2DF61F6BF0E4672B96362D5 /* Poppins-SemiBold.ttf */; };
+		A1ECF5A8DBA84A109274CE3D /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE8A58C582AA4DA5A18DA812 /* Poppins-Light.ttf */; };
 		AA0F2AC03C0A499C9F7B0A46 /* TT Neoris Trial Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 72D1A480DE5C4502911C23A5 /* TT Neoris Trial Italic.ttf */; };
+		AA2628D00DA04772B483E56E /* Poppins-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8DC205BC5A4E441395DE67AA /* Poppins-ThinItalic.ttf */; };
 		AC37D5B2CC254D14B7743CEE /* TT Neoris Trial Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F89BF327AED94CE5AF4615D2 /* TT Neoris Trial Light.ttf */; };
 		AC78BB58482A4C488BDE9816 /* Monolith Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = BACC2B2BC9824EE28C331056 /* Monolith Regular.otf */; };
+		AE23EF6D828643B09A4D0260 /* Poppins-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E8BB3C0A4F4E4AB0A2847E87 /* Poppins-ExtraBold.ttf */; };
 		B136918589944E8DBA3C399C /* TT Neoris Trial Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8DFA08540A50490288791646 /* TT Neoris Trial Thin.ttf */; };
+		B45DD55C348B4BBD8889CE50 /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2DF011E8FD014439AAC70CFB /* Poppins-Medium.ttf */; };
 		C2B06A5D2420434DB8BA9F74 /* TT Neoris Trial Light Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 12016C250235407CBD6BA148 /* TT Neoris Trial Light Italic.ttf */; };
 		CB3E726B59DD4115B0945FB9 /* TT Neoris Trial Bold Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 481BFC8CF45646DC9510075F /* TT Neoris Trial Bold Italic.ttf */; };
+		D1A545C4889142389C184558 /* sackersgothicstd-heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 51341B5996E646FB835D611A /* sackersgothicstd-heavy.otf */; };
+		D42B384C0C0A4E548A72218A /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = B173936365CF43A395816814 /* OFL.txt */; };
 		D45771018053987D7A23E51E /* libPods-BlessShipping.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D0D9DF2D04DD2693698157 /* libPods-BlessShipping.a */; };
 		D8BCF44E096C4F09BB4C7F86 /* TT Neoris Trial Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0F025943F53849E399F4E818 /* TT Neoris Trial Medium.ttf */; };
+		DAFC52B473A54045B3ADFC6C /* Monolith Regular copy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1AD8964A5444471A8DA75E75 /* Monolith Regular copy.otf */; };
+		E1C0784C9BAA43F48A364DAF /* Poppins-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 58DD12ED2C3146A89BD08797 /* Poppins-MediumItalic.ttf */; };
 		E2C86E292A16421CA9B93DB5 /* Panton-Trial-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7DA315965DF24FD4811C120A /* Panton-Trial-SemiBold.ttf */; };
 		E3F391C189864712A1218DF7 /* TT Neoris Trial Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 54BA20C35C584592B4882FCE /* TT Neoris Trial Black.ttf */; };
 		EF5551C9490744F283B052C0 /* TT Neoris Trial Medium Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1010E562EFFD4E2CBC7EDE4E /* TT Neoris Trial Medium Italic.ttf */; };
+		F0079A8C4A31407880013FA7 /* Poppins-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 38C833E0024542A1AB872308 /* Poppins-Bold.ttf */; };
 		F335CE979421432B8D6B6428 /* TT Neoris Trial Hairline.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F293E960DF564ABA89346479 /* TT Neoris Trial Hairline.ttf */; };
 		F33910B4A07C44208F1F9FA6 /* TT Neoris Trial Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0F7FA053AFBA4A92B0BCCDFE /* TT Neoris Trial Regular.ttf */; };
 		FB7BFF0C4DDD83A78F262120 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
-		DAFC52B473A54045B3ADFC6C /* Monolith Regular copy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1AD8964A5444471A8DA75E75 /* Monolith Regular copy.otf */; };
-		4B9D0F8566C044A3A5C5D765 /* sackersgothicstd-light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 727556F477E048838C1A14ED /* sackersgothicstd-light.otf */; };
-		D1A545C4889142389C184558 /* sackersgothicstd-heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = 51341B5996E646FB835D611A /* sackersgothicstd-heavy.otf */; };
-		2E0FAE0224E24EFC8276EEF4 /* sackersgothicstd-medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 563DDF687000487B96EB1D9E /* sackersgothicstd-medium.otf */; };
-		204659EA798D425DBEE88895 /* Poppins-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 30C81CB0E57A4EC5B4F4111A /* Poppins-ExtraLight.ttf */; };
-		AA2628D00DA04772B483E56E /* Poppins-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8DC205BC5A4E441395DE67AA /* Poppins-ThinItalic.ttf */; };
-		6DED444EF80F4729A51A9022 /* Poppins-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 864A4B787458487983F0F644 /* Poppins-ExtraLightItalic.ttf */; };
-		5B2A9189DF284AA48CADF79D /* Poppins-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1128B02BF95E415DAE6BE3DF /* Poppins-BoldItalic.ttf */; };
-		A1ECF5A8DBA84A109274CE3D /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE8A58C582AA4DA5A18DA812 /* Poppins-Light.ttf */; };
-		B45DD55C348B4BBD8889CE50 /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2DF011E8FD014439AAC70CFB /* Poppins-Medium.ttf */; };
-		9EE959669E274CA1844D554B /* Poppins-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9718B0F694840889A9A6E3D /* Poppins-SemiBoldItalic.ttf */; };
-		9B24EFB9807343FAA8D1969F /* Poppins-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 639FCB00A85D45068B7A64B5 /* Poppins-ExtraBoldItalic.ttf */; };
-		AE23EF6D828643B09A4D0260 /* Poppins-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E8BB3C0A4F4E4AB0A2847E87 /* Poppins-ExtraBold.ttf */; };
-		23775F4A1BE7473ABAF8215F /* Poppins-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9BDA3E587051432A97700D54 /* Poppins-BlackItalic.ttf */; };
-		98ACB48AFB9D4D688EDD9E9D /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F938D0E6DFF1448A8E8DE3CF /* Poppins-Regular.ttf */; };
 		FD1DA600D77B441786F9410B /* Poppins-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0CC09B5B060D4B3680C81D28 /* Poppins-LightItalic.ttf */; };
-		F0079A8C4A31407880013FA7 /* Poppins-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 38C833E0024542A1AB872308 /* Poppins-Bold.ttf */; };
-		7D1529E437B74CA3BA54726A /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6262E085AEE4470FB9AE221F /* Poppins-Black.ttf */; };
-		3C12A3F9E2E747DD99F976DF /* Poppins-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4EAA8F6F39E249EE9914E18F /* Poppins-Thin.ttf */; };
-		A1AD74AA194842D5AC9FA315 /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C2DF61F6BF0E4672B96362D5 /* Poppins-SemiBold.ttf */; };
-		8D51A65FC6A04A63BEDAA6F9 /* Poppins-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 051058941BDA473195C58C76 /* Poppins-Italic.ttf */; };
-		E1C0784C9BAA43F48A364DAF /* Poppins-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 58DD12ED2C3146A89BD08797 /* Poppins-MediumItalic.ttf */; };
-		D42B384C0C0A4E548A72218A /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = B173936365CF43A395816814 /* OFL.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		00D0D9DF2D04DD2693698157 /* libPods-BlessShipping.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BlessShipping.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		051058941BDA473195C58C76 /* Poppins-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Italic.ttf"; path = "../assets/fonts/Poppins-Italic.ttf"; sourceTree = "<group>"; };
 		0569C5698C1140518C04BD8E /* TT Neoris Trial Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Bold.ttf"; path = "../assets/fonts/TT Neoris Trial Bold.ttf"; sourceTree = "<group>"; };
 		06795A017F618D0CCA11B21A /* Pods-BlessShipping.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlessShipping.debug.xcconfig"; path = "Target Support Files/Pods-BlessShipping/Pods-BlessShipping.debug.xcconfig"; sourceTree = "<group>"; };
+		0CC09B5B060D4B3680C81D28 /* Poppins-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-LightItalic.ttf"; path = "../assets/fonts/Poppins-LightItalic.ttf"; sourceTree = "<group>"; };
 		0F025943F53849E399F4E818 /* TT Neoris Trial Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Medium.ttf"; path = "../assets/fonts/TT Neoris Trial Medium.ttf"; sourceTree = "<group>"; };
 		0F7FA053AFBA4A92B0BCCDFE /* TT Neoris Trial Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Regular.ttf"; path = "../assets/fonts/TT Neoris Trial Regular.ttf"; sourceTree = "<group>"; };
 		1010E562EFFD4E2CBC7EDE4E /* TT Neoris Trial Medium Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Medium Italic.ttf"; path = "../assets/fonts/TT Neoris Trial Medium Italic.ttf"; sourceTree = "<group>"; };
+		1128B02BF95E415DAE6BE3DF /* Poppins-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-BoldItalic.ttf"; path = "../assets/fonts/Poppins-BoldItalic.ttf"; sourceTree = "<group>"; };
 		12016C250235407CBD6BA148 /* TT Neoris Trial Light Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Light Italic.ttf"; path = "../assets/fonts/TT Neoris Trial Light Italic.ttf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* BlessShipping.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlessShipping.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = BlessShipping/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = BlessShipping/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = BlessShipping/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		1AD8964A5444471A8DA75E75 /* Monolith Regular copy.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Monolith Regular copy.otf"; path = "../assets/fonts/Monolith Regular copy.otf"; sourceTree = "<group>"; };
 		23BE6E31B5B8471C95577D4E /* TT Neoris Trial Variable.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Variable.ttf"; path = "../assets/fonts/TT Neoris Trial Variable.ttf"; sourceTree = "<group>"; };
 		24B536112B9B4271AA20C95B /* TT Neoris Trial DemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial DemiBold.ttf"; path = "../assets/fonts/TT Neoris Trial DemiBold.ttf"; sourceTree = "<group>"; };
+		2DF011E8FD014439AAC70CFB /* Poppins-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Medium.ttf"; path = "../assets/fonts/Poppins-Medium.ttf"; sourceTree = "<group>"; };
+		30C81CB0E57A4EC5B4F4111A /* Poppins-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLight.ttf"; path = "../assets/fonts/Poppins-ExtraLight.ttf"; sourceTree = "<group>"; };
+		38C833E0024542A1AB872308 /* Poppins-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Bold.ttf"; path = "../assets/fonts/Poppins-Bold.ttf"; sourceTree = "<group>"; };
 		481BFC8CF45646DC9510075F /* TT Neoris Trial Bold Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Bold Italic.ttf"; path = "../assets/fonts/TT Neoris Trial Bold Italic.ttf"; sourceTree = "<group>"; };
+		4EAA8F6F39E249EE9914E18F /* Poppins-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Thin.ttf"; path = "../assets/fonts/Poppins-Thin.ttf"; sourceTree = "<group>"; };
+		51341B5996E646FB835D611A /* sackersgothicstd-heavy.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "sackersgothicstd-heavy.otf"; path = "../assets/fonts/sackersgothicstd-heavy.otf"; sourceTree = "<group>"; };
 		54BA20C35C584592B4882FCE /* TT Neoris Trial Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Black.ttf"; path = "../assets/fonts/TT Neoris Trial Black.ttf"; sourceTree = "<group>"; };
+		563DDF687000487B96EB1D9E /* sackersgothicstd-medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "sackersgothicstd-medium.otf"; path = "../assets/fonts/sackersgothicstd-medium.otf"; sourceTree = "<group>"; };
+		58DD12ED2C3146A89BD08797 /* Poppins-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-MediumItalic.ttf"; path = "../assets/fonts/Poppins-MediumItalic.ttf"; sourceTree = "<group>"; };
+		6262E085AEE4470FB9AE221F /* Poppins-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Black.ttf"; path = "../assets/fonts/Poppins-Black.ttf"; sourceTree = "<group>"; };
+		639FCB00A85D45068B7A64B5 /* Poppins-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraBoldItalic.ttf"; path = "../assets/fonts/Poppins-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		726D45B3B7B841BA9A3625E6 /* TT Neoris Trial Thin Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Thin Italic.ttf"; path = "../assets/fonts/TT Neoris Trial Thin Italic.ttf"; sourceTree = "<group>"; };
+		727556F477E048838C1A14ED /* sackersgothicstd-light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "sackersgothicstd-light.otf"; path = "../assets/fonts/sackersgothicstd-light.otf"; sourceTree = "<group>"; };
 		72D1A480DE5C4502911C23A5 /* TT Neoris Trial Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Italic.ttf"; path = "../assets/fonts/TT Neoris Trial Italic.ttf"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = BlessShipping/AppDelegate.swift; sourceTree = "<group>"; };
 		7633AB502DB44FCA959AF883 /* TT Neoris Trial ExtraLight Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial ExtraLight Italic.ttf"; path = "../assets/fonts/TT Neoris Trial ExtraLight Italic.ttf"; sourceTree = "<group>"; };
 		7D919E9E2E43309900B6C466 /* BlessShipping.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = BlessShipping.entitlements; path = BlessShipping/BlessShipping.entitlements; sourceTree = "<group>"; };
 		7DA315965DF24FD4811C120A /* Panton-Trial-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Panton-Trial-SemiBold.ttf"; path = "../assets/fonts/Panton-Trial-SemiBold.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = BlessShipping/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		864A4B787458487983F0F644 /* Poppins-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLightItalic.ttf"; path = "../assets/fonts/Poppins-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
 		8BF6208708BA4AE586D9D6DE /* TT Neoris Trial Hairline Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Hairline Italic.ttf"; path = "../assets/fonts/TT Neoris Trial Hairline Italic.ttf"; sourceTree = "<group>"; };
+		8DC205BC5A4E441395DE67AA /* Poppins-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ThinItalic.ttf"; path = "../assets/fonts/Poppins-ThinItalic.ttf"; sourceTree = "<group>"; };
 		8DFA08540A50490288791646 /* TT Neoris Trial Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Thin.ttf"; path = "../assets/fonts/TT Neoris Trial Thin.ttf"; sourceTree = "<group>"; };
+		9BDA3E587051432A97700D54 /* Poppins-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-BlackItalic.ttf"; path = "../assets/fonts/Poppins-BlackItalic.ttf"; sourceTree = "<group>"; };
 		AA7C69F740E34F30A614668C /* TT Neoris Trial ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial ExtraBold.ttf"; path = "../assets/fonts/TT Neoris Trial ExtraBold.ttf"; sourceTree = "<group>"; };
-		BACC2B2BC9824EE28C331056 /* Monolith Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Monolith Regular.otf"; path = "../assets/fonts/Monolith Regular.otf"; sourceTree = "<group>"; };
+		B173936365CF43A395816814 /* OFL.txt */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = OFL.txt; path = ../assets/fonts/OFL.txt; sourceTree = "<group>"; };
+		BACC2B2BC9824EE28C331056 /* Monolith Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Monolith Regular.otf"; path = "../assets/fonts/Monolith Regular.otf"; sourceTree = "<group>"; };
 		BD75D110FE2F239F064FBC94 /* Pods-BlessShipping.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BlessShipping.release.xcconfig"; path = "Target Support Files/Pods-BlessShipping/Pods-BlessShipping.release.xcconfig"; sourceTree = "<group>"; };
 		BDCD7D343A174F34A757877A /* TT Neoris Trial DemiBold Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial DemiBold Italic.ttf"; path = "../assets/fonts/TT Neoris Trial DemiBold Italic.ttf"; sourceTree = "<group>"; };
 		C0EF55C11FF741B980F24B60 /* TT Neoris Trial ExtraBold Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial ExtraBold Italic.ttf"; path = "../assets/fonts/TT Neoris Trial ExtraBold Italic.ttf"; sourceTree = "<group>"; };
+		C2DF61F6BF0E4672B96362D5 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBold.ttf"; path = "../assets/fonts/Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
 		C8F3D165793F4F58B00B639F /* TT Neoris Trial Black Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Black Italic.ttf"; path = "../assets/fonts/TT Neoris Trial Black Italic.ttf"; sourceTree = "<group>"; };
+		C9718B0F694840889A9A6E3D /* Poppins-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBoldItalic.ttf"; path = "../assets/fonts/Poppins-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		E8BB3C0A4F4E4AB0A2847E87 /* Poppins-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraBold.ttf"; path = "../assets/fonts/Poppins-ExtraBold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		EE8A58C582AA4DA5A18DA812 /* Poppins-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Light.ttf"; path = "../assets/fonts/Poppins-Light.ttf"; sourceTree = "<group>"; };
 		F293E960DF564ABA89346479 /* TT Neoris Trial Hairline.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Hairline.ttf"; path = "../assets/fonts/TT Neoris Trial Hairline.ttf"; sourceTree = "<group>"; };
 		F89BF327AED94CE5AF4615D2 /* TT Neoris Trial Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Light.ttf"; path = "../assets/fonts/TT Neoris Trial Light.ttf"; sourceTree = "<group>"; };
+		F938D0E6DFF1448A8E8DE3CF /* Poppins-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Regular.ttf"; path = "../assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
 		FE5DCC8FD35747639E3BFEB5 /* TT Neoris Trial ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial ExtraLight.ttf"; path = "../assets/fonts/TT Neoris Trial ExtraLight.ttf"; sourceTree = "<group>"; };
-		1AD8964A5444471A8DA75E75 /* Monolith Regular copy.otf */ = {isa = PBXFileReference; name = "Monolith Regular copy.otf"; path = "../assets/fonts/Monolith Regular copy.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		727556F477E048838C1A14ED /* sackersgothicstd-light.otf */ = {isa = PBXFileReference; name = "sackersgothicstd-light.otf"; path = "../assets/fonts/sackersgothicstd-light.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		51341B5996E646FB835D611A /* sackersgothicstd-heavy.otf */ = {isa = PBXFileReference; name = "sackersgothicstd-heavy.otf"; path = "../assets/fonts/sackersgothicstd-heavy.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		563DDF687000487B96EB1D9E /* sackersgothicstd-medium.otf */ = {isa = PBXFileReference; name = "sackersgothicstd-medium.otf"; path = "../assets/fonts/sackersgothicstd-medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		30C81CB0E57A4EC5B4F4111A /* Poppins-ExtraLight.ttf */ = {isa = PBXFileReference; name = "Poppins-ExtraLight.ttf"; path = "../assets/fonts/Poppins-ExtraLight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		8DC205BC5A4E441395DE67AA /* Poppins-ThinItalic.ttf */ = {isa = PBXFileReference; name = "Poppins-ThinItalic.ttf"; path = "../assets/fonts/Poppins-ThinItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		864A4B787458487983F0F644 /* Poppins-ExtraLightItalic.ttf */ = {isa = PBXFileReference; name = "Poppins-ExtraLightItalic.ttf"; path = "../assets/fonts/Poppins-ExtraLightItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		1128B02BF95E415DAE6BE3DF /* Poppins-BoldItalic.ttf */ = {isa = PBXFileReference; name = "Poppins-BoldItalic.ttf"; path = "../assets/fonts/Poppins-BoldItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		EE8A58C582AA4DA5A18DA812 /* Poppins-Light.ttf */ = {isa = PBXFileReference; name = "Poppins-Light.ttf"; path = "../assets/fonts/Poppins-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		2DF011E8FD014439AAC70CFB /* Poppins-Medium.ttf */ = {isa = PBXFileReference; name = "Poppins-Medium.ttf"; path = "../assets/fonts/Poppins-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		C9718B0F694840889A9A6E3D /* Poppins-SemiBoldItalic.ttf */ = {isa = PBXFileReference; name = "Poppins-SemiBoldItalic.ttf"; path = "../assets/fonts/Poppins-SemiBoldItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		639FCB00A85D45068B7A64B5 /* Poppins-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; name = "Poppins-ExtraBoldItalic.ttf"; path = "../assets/fonts/Poppins-ExtraBoldItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		E8BB3C0A4F4E4AB0A2847E87 /* Poppins-ExtraBold.ttf */ = {isa = PBXFileReference; name = "Poppins-ExtraBold.ttf"; path = "../assets/fonts/Poppins-ExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		9BDA3E587051432A97700D54 /* Poppins-BlackItalic.ttf */ = {isa = PBXFileReference; name = "Poppins-BlackItalic.ttf"; path = "../assets/fonts/Poppins-BlackItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		F938D0E6DFF1448A8E8DE3CF /* Poppins-Regular.ttf */ = {isa = PBXFileReference; name = "Poppins-Regular.ttf"; path = "../assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		0CC09B5B060D4B3680C81D28 /* Poppins-LightItalic.ttf */ = {isa = PBXFileReference; name = "Poppins-LightItalic.ttf"; path = "../assets/fonts/Poppins-LightItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		38C833E0024542A1AB872308 /* Poppins-Bold.ttf */ = {isa = PBXFileReference; name = "Poppins-Bold.ttf"; path = "../assets/fonts/Poppins-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		6262E085AEE4470FB9AE221F /* Poppins-Black.ttf */ = {isa = PBXFileReference; name = "Poppins-Black.ttf"; path = "../assets/fonts/Poppins-Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		4EAA8F6F39E249EE9914E18F /* Poppins-Thin.ttf */ = {isa = PBXFileReference; name = "Poppins-Thin.ttf"; path = "../assets/fonts/Poppins-Thin.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		C2DF61F6BF0E4672B96362D5 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; name = "Poppins-SemiBold.ttf"; path = "../assets/fonts/Poppins-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		051058941BDA473195C58C76 /* Poppins-Italic.ttf */ = {isa = PBXFileReference; name = "Poppins-Italic.ttf"; path = "../assets/fonts/Poppins-Italic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		58DD12ED2C3146A89BD08797 /* Poppins-MediumItalic.ttf */ = {isa = PBXFileReference; name = "Poppins-MediumItalic.ttf"; path = "../assets/fonts/Poppins-MediumItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		B173936365CF43A395816814 /* OFL.txt */ = {isa = PBXFileReference; name = "OFL.txt"; path = "../assets/fonts/OFL.txt"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -469,7 +469,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.BlessShippings;
+				PRODUCT_BUNDLE_IDENTIFIER = com.KMMPRPE;
 				PRODUCT_NAME = BlessShipping;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -498,7 +498,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.BlessShippings;
+				PRODUCT_BUNDLE_IDENTIFIER = com.KMMPRPE;
 				PRODUCT_NAME = BlessShipping;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -585,10 +585,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -668,10 +665,7 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
