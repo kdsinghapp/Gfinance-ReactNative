@@ -19,6 +19,7 @@ import FinancialCalculatorScreen from "../screen/FinancialCalculator/FinancialCa
 import InvestmentScenarioScreen from "../screen/InvestmentScenarioScreen/InvestmentScenarioScreen";
 import ProfileQuizScreen from "../screen/InvestmentPlanScreen/ProfileQuizScreen";
 import FinanShare from "../screen/FinanShare/FinanShare";
+import MortgageDetailsScreen from "../screen/MortgageDetails/MortgageDetailsScreen";
   const _routes: any = {
     REGISTRATION_ROUTE: [
       {
@@ -139,6 +140,10 @@ import FinanShare from "../screen/FinanShare/FinanShare";
     //   Component: DocumentShow,
     // },
 
+    {
+      name: ScreenNameEnum.MortgageDetails,
+      Component: MortgageDetailsScreen,
+    },
   ],
 
 

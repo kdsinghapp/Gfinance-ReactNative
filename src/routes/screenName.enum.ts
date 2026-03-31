@@ -137,6 +137,7 @@ export const ScreenNameEnum = {
   RaceDetail: 'RaceDetail',
   PresubscriberDetail: 'presubscriberDetail',
   CarDetail: 'CarDetail',
+  MortgageDetails: 'MortgageDetails',
 } as const;
 
 export type ScreenNameEnumType = (typeof ScreenNameEnum)[keyof typeof ScreenNameEnum];

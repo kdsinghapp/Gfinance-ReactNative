@@ -11,13 +11,14 @@ import {
 } from 'react-native';
 import Svg, { Path, Line, Circle, Text as SvgText } from 'react-native-svg';
 import ScreenNameEnum from '../../routes/screenName.enum';
-import { formatCurrency, futureValue } from '../../engine/calculator';
+import { formatCurrency, futureValue, calculateMortgagePayment, generateAmortizationTable, formatFullCurrency } from '../../engine/calculator';
 import i18n from '../../i18n';
 import StatusBarComponent from '../../compoent/StatusBarCompoent';
 import CustomHeader from '../../compoent/CustomHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import InvestmentGraph from '../../compoent/InvestmentGraph';
 import font from '../../theme/font';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -30,13 +31,21 @@ const frequencyOptions = [
 const FinancialCalculatorScreen = () => {
   const navigation = useNavigation<any>();
 
+  const [mode, setMode] = useState<'investment' | 'mortgage'>('mortgage');
+
+  // Investment States
   const [capital, setCapital] = useState('');
   const [contribution, setContribution] = useState('');
   const [frequency, setFrequency] = useState<'weekly' | 'monthly' | 'annual'>('annual');
   const [returnRate, setReturnRate] = useState('');
   const [years, setYears] = useState('');
 
-  const { fv, invested, growth, gainPct, portfolioPoints, capitalPoints } = useMemo(() => {
+  // Mortgage States
+  const [loanAmount, setLoanAmount] = useState('');
+  const [mortgageRate, setMortgageRate] = useState('');
+  const [mortgageYears, setMortgageYears] = useState('');
+
+  const investmentResults = useMemo(() => {
     const cap = parseFloat(capital) || 0;
     const cont = parseFloat(contribution) || 0;
     const rawYears = parseInt(years, 10) || 0;
@@ -57,12 +66,12 @@ const FinancialCalculatorScreen = () => {
 
     const steps = 7;
     for (let i = 0; i <= steps; i++) {
-        const stepYears = horizon > 0 ? (i / steps) * horizon : 0;
-        const v = futureValue(cap, cont, annualRate, stepYears, frequency);
-        const inv = cap + cont * stepYears * m;
+      const stepYears = horizon > 0 ? (i / steps) * horizon : 0;
+      const v = futureValue(cap, cont, annualRate, stepYears, frequency);
+      const inv = cap + cont * stepYears * m;
 
-        pPoints.push(v);
-        cPoints.push(inv);
+      pPoints.push(v);
+      cPoints.push(inv);
     }
 
     return {
@@ -75,13 +84,48 @@ const FinancialCalculatorScreen = () => {
     };
   }, [capital, contribution, frequency, returnRate, years]);
 
+  const mortgageResults = useMemo(() => {
+    const principal = parseFloat(loanAmount) || 0;
+    const rate = parseFloat(mortgageRate) || 0;
+    const yrs = parseInt(mortgageYears, 10) || 0;
+
+    const payment = calculateMortgagePayment(principal, rate, yrs);
+    const table = generateAmortizationTable(principal, rate, yrs);
+
+    const totalPaid = payment * (yrs * 12);
+    const totalInterest = totalPaid - principal;
+
+    // Points for graph (subset for performance)
+    const points: number[] = [];
+    const steps = 7;
+    const totalMonths = table.length;
+
+    if (totalMonths > 0) {
+      for (let i = 0; i <= steps; i++) {
+        const index = Math.min(totalMonths - 1, Math.floor((i / steps) * (totalMonths - 1)));
+        points.push(table[index].remainingBalance);
+      }
+    } else {
+      for (let i = 0; i <= steps; i++) points.push(principal);
+    }
+
+    return {
+      monthlyPayment: payment,
+      totalInterest: totalInterest,
+      totalPaid: totalPaid,
+      balancePoints: points,
+      amortizationTable: table,
+    };
+  }, [loanAmount, mortgageRate, mortgageYears]);
+
   const ft = (i18n.t('questions.financial') as any) || {};
-  const isFormValid =
-    capital !== '' &&
-    contribution !== '' &&
-    years !== '' &&
-    returnRate !== '' &&
-    frequency;
+
+  const isFormValid = mode === 'investment'
+    ? (capital !== '' && contribution !== '' && years !== '' && returnRate !== '' && frequency)
+    : (loanAmount !== '' && mortgageRate !== '' && mortgageYears !== '');
+
+  const { fv, invested, growth, gainPct, portfolioPoints, capitalPoints } = investmentResults;
+  const { monthlyPayment, totalInterest, totalPaid, balancePoints, amortizationTable } = mortgageResults;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -92,149 +136,190 @@ const FinancialCalculatorScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.container}
       >
-        <Text style={styles.screenTitle}>Financial Calculator</Text>
+        <Text style={styles.screenTitle}>
+          {mode === 'investment' ? '' : 'Mortgage Calculator'}
+          {/* {mode === 'investment' ? 'Investment Calculator' : 'Mortgage Calculator'} */}
+        </Text>
 
-        <View style={styles.mainCard}>
-          <Text style={styles.label}>
-            {ft.initialLabel || 'Initial Capital'}
-          </Text>
-          <TextInput
-            style={styles.input}
-            value={capital}
-            onChangeText={setCapital}
-            keyboardType="numeric"
-            placeholder="10000"
-            placeholderTextColor="#B8B8B8"
-          />
-
-          <Text style={styles.label}>
-            {ft.monthlyLabel || 'Periodic Contribution'}
-          </Text>
-          <TextInput
-            style={styles.input}
-            value={contribution}
-            onChangeText={setContribution}
-            keyboardType="numeric"
-            placeholder="300"
-            placeholderTextColor="#B8B8B8"
-          />
-
-          <Text style={styles.label}>
-            {ft.frequencyLabel || 'Contribution Frequency'}
-          </Text>
-
-          <View style={styles.frequencyRow}>
-            {frequencyOptions.map((item) => {
-              const active = frequency === item.value;
-
-              return (
-                <TouchableOpacity
-                  key={item.value}
-                  activeOpacity={0.9}
-                  onPress={() => setFrequency(item.value as 'weekly' | 'monthly' | 'annual')}
-                  style={[styles.frequencyButton, active && styles.frequencyButtonActive]}
-                >
-                  <Text
-                    style={[
-                      styles.frequencyButtonText,
-                      active && styles.frequencyButtonTextActive,
-                    ]}
-                  >
-                    {item.label}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-
-          <Text style={styles.label}>
-            {ft.returnLabel || 'Expected Return (%)'}
-          </Text>
-          <TextInput
-            style={styles.input}
-            value={returnRate}
-            onChangeText={setReturnRate}
-            keyboardType="numeric"
-            placeholder="10"
-            placeholderTextColor="#B8B8B8"
-          />
-
-          <Text style={styles.label}>
-            {ft.horizonLabel || 'Horizon (Years)'}
-          </Text>
-          <TextInput
-            style={styles.input}
-            value={years}
-            onChangeText={setYears}
-            keyboardType="numeric"
-            placeholder="5"
-            placeholderTextColor="#B8B8B8"
-          />
-
-          <View style={styles.resultCard}>
-            <Text style={styles.resultHeaderText}>Estimated Future Value</Text>
-
-            <View style={styles.resultValueRow}>
-              <Text style={styles.resultValue} numberOfLines={1} adjustsFontSizeToFit>
-                {formatCurrency(fv)}
-              </Text>
-
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>
-                  {gainPct > 0 ? `${Math.round(gainPct)}%` : '0%'}
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.resultBottomRow}>
-              <View style={styles.resultInfoBlock}>
-                <Text style={styles.resultInfoLabel}>Total Invested</Text>
-                <Text style={styles.resultInfoValue}>
-                  {formatCurrency(invested)}
-                </Text>
-              </View>
-
-              <View style={styles.resultInfoBlock}>
-                <Text style={styles.resultInfoLabel}>Estimated Interest</Text>
-                <Text style={[styles.resultInfoValue, { color: '#111111' }]}>
-                  +{formatCurrency(growth)}
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          <InvestmentGraph
-            portfolioData={portfolioPoints}
-            capitalData={capitalPoints}
-            years={parseInt(years, 10) || 1}
-          />
-
+        <View style={styles.tabContainer}>
+          <TouchableOpacity
+            style={[styles.tabButton, mode === 'investment' && styles.tabButtonActive]}
+            onPress={() => setMode('investment')}
+          >
+            <Text style={[styles.tabText, mode === 'investment' && styles.tabTextActive]}>Investment</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tabButton, mode === 'mortgage' && styles.tabButtonActive]}
+            onPress={() => setMode('mortgage')}
+          >
+            <Text style={[styles.tabText, mode === 'mortgage' && styles.tabTextActive]}>Mortgage</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* <TouchableOpacity
-          style={[
-            styles.generateButton,
-            { opacity: isFormValid ? 1 : 0.5 }
-          ]}
-          disabled={!isFormValid}
-          onPress={() =>
-            navigation.navigate(ScreenNameEnum.FinanShare, {
-              financialData: {
-                capital: parseFloat(capital) || 0,
-                monthly: parseFloat(contribution) || 0,
-                frequency: frequency,
-                horizon: parseFloat(years) || 1,
-                returnRate: returnRate,
-                gainPct: gainPct,
-                growth: growth,
-                invested: invested,
-                fv: fv
-              },
-            })
-          }
-        >
-          <Text style={styles.generateButtonText}>Generar simulación</Text>
-        </TouchableOpacity> */}
+        <View style={[styles.mainCard, { paddingBottom: 24 }]}>
+          {mode === 'investment' ? (
+            <>
+              <Text style={styles.label}>{ft.initialLabel || 'Initial Capital'}</Text>
+              <TextInput
+                style={styles.input}
+                value={capital}
+                onChangeText={setCapital}
+                keyboardType="numeric"
+                placeholder="10000"
+                placeholderTextColor="#B8B8B8"
+              />
+
+              <Text style={styles.label}>{ft.monthlyLabel || 'Periodic Contribution'}</Text>
+              <TextInput
+                style={styles.input}
+                value={contribution}
+                onChangeText={setContribution}
+                keyboardType="numeric"
+                placeholder="300"
+                placeholderTextColor="#B8B8B8"
+              />
+
+              <Text style={styles.label}>{ft.frequencyLabel || 'Contribution Frequency'}</Text>
+              <View style={styles.frequencyRow}>
+                {frequencyOptions.map((item) => {
+                  const active = frequency === item.value;
+                  return (
+                    <TouchableOpacity
+                      key={item.value}
+                      activeOpacity={0.9}
+                      onPress={() => setFrequency(item.value as 'weekly' | 'monthly' | 'annual')}
+                      style={[styles.frequencyButton, active && styles.frequencyButtonActive]}
+                    >
+                      <Text style={[styles.frequencyButtonText, active && styles.frequencyButtonTextActive]}>
+                        {item.label}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              <Text style={styles.label}>{ft.returnLabel || 'Expected Return (%)'}</Text>
+              <TextInput
+                style={styles.input}
+                value={returnRate}
+                onChangeText={setReturnRate}
+                keyboardType="numeric"
+                placeholder="10"
+                placeholderTextColor="#B8B8B8"
+              />
+
+              <Text style={styles.label}>{ft.horizonLabel || 'Horizon (Years)'}</Text>
+              <TextInput
+                style={styles.input}
+                value={years}
+                onChangeText={setYears}
+                keyboardType="numeric"
+                placeholder="5"
+                placeholderTextColor="#B8B8B8"
+              />
+
+              <View style={styles.resultCard}>
+                <Text style={styles.resultHeaderText}>Estimated Future Value</Text>
+                <View style={styles.resultValueRow}>
+                  <Text style={styles.resultValue} numberOfLines={1} adjustsFontSizeToFit>
+                    {formatCurrency(fv)}
+                  </Text>
+                  <View style={styles.badge}>
+                    <Text style={styles.badgeText}>
+                      {gainPct > 0 ? `${Math.round(gainPct)}%` : '0%'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.resultBottomRow}>
+                  <View style={styles.resultInfoBlock}>
+                    <Text style={styles.resultInfoLabel}>Total Invested</Text>
+                    <Text style={styles.resultInfoValue}>{formatCurrency(invested)}</Text>
+                  </View>
+                  <View style={styles.resultInfoBlock}>
+                    <Text style={styles.resultInfoLabel}>Estimated Interest</Text>
+                    <Text style={[styles.resultInfoValue, { color: '#34C759' }]}>+{formatCurrency(growth)}</Text>
+                  </View>
+                </View>
+              </View>
+
+              <InvestmentGraph
+                portfolioData={portfolioPoints}
+                capitalData={capitalPoints}
+                years={parseInt(years, 10) || 1}
+              />
+            </>
+          ) : (
+            <>
+              <Text style={styles.label}>Monto del préstamo (capital)</Text>
+              <TextInput
+                style={styles.input}
+                value={loanAmount}
+                onChangeText={setLoanAmount}
+                keyboardType="numeric"
+                placeholder="200000"
+                placeholderTextColor="#B8B8B8"
+              />
+
+              <Text style={styles.label}>Tipo de interés (TAE %)</Text>
+              <TextInput
+                style={styles.input}
+                value={mortgageRate}
+                onChangeText={setMortgageRate}
+                keyboardType="numeric"
+                placeholder="3.5"
+                placeholderTextColor="#B8B8B8"
+              />
+
+              <Text style={styles.label}>Plazo del préstamo (años)</Text>
+              <TextInput
+                style={styles.input}
+                value={mortgageYears}
+                onChangeText={setMortgageYears}
+                keyboardType="numeric"
+                placeholder="30"
+                placeholderTextColor="#B8B8B8"
+              />
+
+              <View style={[styles.resultCard,]}>
+                <Text style={[styles.resultHeaderText, { color: '#999999' }]}>Pago mensual</Text>
+                <View style={styles.resultValueRow}>
+                  <Text style={[styles.resultValue,  ]} numberOfLines={1} adjustsFontSizeToFit>
+                    {formatCurrency(monthlyPayment)}
+                  </Text>
+                </View>
+                <View style={styles.resultBottomRow}>
+                  <View style={styles.resultInfoBlock}>
+                    <Text style={[styles.resultInfoLabel,  ]}>Total pagada</Text>
+                    <Text style={[styles.resultInfoValue,  ]}>{formatCurrency(totalPaid)}</Text>
+                  </View>
+                  <View style={styles.resultInfoBlock}>
+                    <Text style={[styles.resultInfoLabel,  ]}>Intereses totales</Text>
+                    <Text style={[styles.resultInfoValue, { color: '#34C759' }]}>{formatCurrency(totalInterest)}</Text>
+                  </View>
+                </View>
+              </View>
+
+              <InvestmentGraph
+                portfolioData={balancePoints}
+                capitalData={new Array(balancePoints.length).fill(0)}
+                years={parseInt(mortgageYears, 10) || 1}
+              />
+
+              <TouchableOpacity
+                style={[styles.generateButton, { marginTop: 24, opacity: isFormValid ? 1 : 0.5 }]}
+                disabled={!isFormValid}
+                onPress={() => navigation.navigate(ScreenNameEnum.MortgageDetails, {
+                  loanAmount,
+                  mortgageRate,
+                  mortgageYears
+                })}
+              >
+                <Text style={styles.generateButtonText}>Ver el horario completo</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -258,24 +343,58 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'black',
     marginTop: 6,
-    marginBottom: 20,
+    marginBottom: 10,
     fontFamily: font.PoppinsBold
   },
 
+  tabContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#F0F0F0',
+    borderRadius: 14,
+    padding: 4,
+    marginBottom: 20,
+    marginHorizontal: 4,
+  },
+
+  tabButton: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+
+  tabButtonActive: {
+    backgroundColor: 'white',
+    // shadow
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+
+  tabText: {
+    fontSize: 14,
+    fontFamily: font.PoppinsSemiBold,
+    color: '#666666',
+  },
+
+  tabTextActive: {
+    color: 'black',
+  },
+
   mainCard: {
-     backgroundColor: 'white',
-  borderRadius: 24,
-  padding: 16,
-  marginBottom: 14,
-
-  // iOS Shadow
-  shadowColor: '#767676',
-  shadowOffset: { width: 0, height: 6 },
-  shadowOpacity: 0.2,
-  shadowRadius: 10,
-
-  // Android Shadow
-  elevation: 15,
+    backgroundColor: 'white',
+    borderRadius: 24,
+    padding: 16,
+    marginBottom: 14,
+    // iOS Shadow
+    shadowColor: '#767676',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    // Android Shadow
+    elevation: 15,
   },
 
   label: {
@@ -301,13 +420,13 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   frequencyButton: {
-   height: 48,
-  borderRadius: 15,
-  backgroundColor: '#EBEBEB',
-  alignItems: 'center',
-  justifyContent: 'center',
-   paddingHorizontal: 10,
-    },
+    height: 48,
+    borderRadius: 15,
+    backgroundColor: '#EBEBEB',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
   frequencyButtonActive: {
     backgroundColor: '#000000',
     borderColor: '#111111',
@@ -324,7 +443,6 @@ const styles = StyleSheet.create({
   frequencyButtonTextActive: {
     color: '#FFFFFF',
     fontFamily: font.PoppinsSemiBold,
-
   },
 
   resultCard: {
@@ -340,7 +458,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginTop: 5,
     fontFamily: font.PoppinsSemiBold,
-
   },
 
   resultValueRow: {
@@ -353,7 +470,6 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 31,
     fontFamily: font.PoppinsSemiBold,
-
     color: '#111111',
     marginRight: 12,
   },
@@ -390,59 +506,12 @@ const styles = StyleSheet.create({
     color: '#000000',
     marginBottom: 4,
     fontFamily: font.PoppinsRegular,
-
   },
 
   resultInfoValue: {
     fontSize: 15,
     color: '#111111',
     fontWeight: '700',
-  },
-
-  graphCard: {
-    backgroundColor: '#F7F8F8',
-    borderRadius: 18,
-    paddingVertical: 14,
-    paddingHorizontal: 10,
-    marginTop: 14,
-    borderColor: '#ECECEC',
-    alignItems: 'center',
-  },
-
-  graphTitle: {
-    width: '100%',
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#111111',
-    marginBottom: 8,
-    paddingHorizontal: 6,
-  },
-
-  legendRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 18,
-    marginTop: 4,
-  },
-
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 10
-  },
-
-  legendDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 10,
-    marginRight: 6,
-  },
-
-  legendText: {
-    fontSize: 10,
-    color: '#000000',
-    fontWeight: '500',
   },
 
   generateButton: {
@@ -457,6 +526,6 @@ const styles = StyleSheet.create({
   generateButtonText: {
     color: '#FFFFFF',
     fontSize: 17,
-    fontWeight: '700',
+    fontFamily: font.PoppinsBold,
   },
 });

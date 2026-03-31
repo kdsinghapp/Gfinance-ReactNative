@@ -458,6 +458,63 @@ export function calculatePlan(quiz: Quiz, financialData: { horizon: number, capi
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Mortgage Calculator logic (French Amortization System)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface AmortizationEntry {
+  month: number;
+  payment: number;
+  interest: number;
+  principal: number;
+  remainingBalance: number;
+}
+
+export function calculateMortgagePayment(principal: number, annualRate: number, years: number): number {
+  const p = Math.max(0, principal);
+  const rAnnual = Math.max(0, annualRate / 100);
+  const n = Math.max(1, years * 12);
+  const i = rAnnual / 12;
+
+  if (i === 0) return p / n;
+
+  const payment = (p * i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+  return isFinite(payment) ? payment : 0;
+}
+
+export function generateAmortizationTable(principal: number, annualRate: number, years: number): AmortizationEntry[] {
+  const p = Math.max(0, principal);
+  const rAnnual = Math.max(0, annualRate / 100);
+  const yearsVal = Math.max(1, years);
+  const n = yearsVal * 12;
+  const i = rAnnual / 12;
+  const monthlyPayment = calculateMortgagePayment(p, annualRate, yearsVal);
+
+  const table: AmortizationEntry[] = [];
+  let currentBalance = p;
+
+  for (let month = 1; month <= n; month++) {
+    const interestPayment = currentBalance * i;
+    const principalPayment = monthlyPayment - interestPayment;
+    currentBalance = Math.max(0, currentBalance - principalPayment);
+
+    table.push({
+      month,
+      payment: monthlyPayment,
+      interest: interestPayment,
+      principal: principalPayment,
+      remainingBalance: currentBalance,
+    });
+
+    // In case rounding causes currentBalance to reach 0 early or stay slightly above
+    if (currentBalance <= 0.01 && month < n) {
+      // Just fill the rest with 0s if needed, or break. But standard is to show all n months.
+    }
+  }
+
+  return table;
+}
+
 // UI Compatibility Layer
 // ─────────────────────────────────────────────────────────────────────────────
 export function toPct(x: number) {
@@ -477,7 +534,18 @@ export function formatCurrency(value: number): string {
   if (absValue >= 1e6)  return `${sign}€${(absValue / 1e6).toFixed(2)}M`;
   if (absValue >= 1e3)  return `${sign}€${(absValue / 1e3).toFixed(1)}K`;
 
-  return `${sign}$${Math.round(absValue).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+  return `${sign}€${Math.round(absValue).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+}
+
+export function formatFullCurrency(value: number): string {
+  if (value === null || value === undefined || isNaN(value)) return '$0';
+  if (!isFinite(value)) return '∞';
+
+  const sign = value < 0 ? '-' : '';
+  const parts = Math.abs(value).toFixed(2).split('.');
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  
+  return `${sign}€${parts.join('.')}`;
 }
 
 export function formatPercent(value: number, decimals = 0): string {
