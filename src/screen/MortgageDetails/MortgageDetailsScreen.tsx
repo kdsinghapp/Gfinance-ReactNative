@@ -8,7 +8,7 @@ import {
   StatusBar,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
- import {
+import {
   formatFullCurrency,
   calculateMortgagePayment,
   generateAmortizationTable,
@@ -16,6 +16,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import font from '../../theme/font';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomHeader from '../../compoent/CustomHeader';
+import ScreenNameEnum from '../../routes/screenName.enum';
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
 const COLORS = {
@@ -225,7 +226,15 @@ const MortgageDetailsScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.bg} />
-      <CustomHeader label='Amortization Schedule' />
+      <CustomHeader label='Amortization Schedule'
+
+
+        leftPress={() =>
+          navigation.reset({
+            index: 0,
+            routes: [{ name: ScreenNameEnum.ChoosePlan }],
+          })
+        } />
       {/* List */}
       <FlatList
         data={amortizationTable}
@@ -368,7 +377,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 16,
     alignItems: 'center',
-    marginBottom:15
+    marginBottom: 15
   },
   statsVerticalDivider: {
     width: 1,

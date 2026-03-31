@@ -56,7 +56,7 @@ const InvestmentScenarioScreen: React.FC = () => {
     horizon: Math.max(10, financialData?.horizon ?? 10),
   });
   const { scenarios } = plan;
-   const weights = plan?.weights ?? {};
+  const weights = plan?.weights ?? {};
 
   const allocation = {
     equities: weights.RV ?? 0,
@@ -146,7 +146,14 @@ const InvestmentScenarioScreen: React.FC = () => {
       setSaved(true);
       setSaveModalVisible(false);
       Analytics.planSaved();
-      navigation.navigate(ScreenNameEnum.SavedPlansScreen);
+      // Reset stack to ChoosePlan as root
+      navigation.reset({
+        index: 1,
+        routes: [
+          { name: ScreenNameEnum.ChoosePlan },
+          { name: ScreenNameEnum.SavedPlansScreen }
+        ],
+      });
     }
   };
   const formatCurrency = (amount: number) => {

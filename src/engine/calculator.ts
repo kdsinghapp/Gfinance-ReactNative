@@ -478,7 +478,8 @@ export function calculateMortgagePayment(principal: number, annualRate: number, 
 
   if (i === 0) return p / n;
 
-  const payment = (p * i * Math.pow(1 + i, n)) / (Math.pow(1 + i, n) - 1);
+  // Client Image formula: CUOTA = P * i / (1 - (1 + i)^-n)
+  const payment = (p * i) / (1 - Math.pow(1 + i, -n));
   return isFinite(payment) ? payment : 0;
 }
 

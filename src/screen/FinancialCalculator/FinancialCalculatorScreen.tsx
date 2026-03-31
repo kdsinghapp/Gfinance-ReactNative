@@ -111,6 +111,7 @@ const FinancialCalculatorScreen = () => {
 
     return {
       monthlyPayment: payment,
+      monthlyRate: rate / 12, // monthly linear rate
       totalInterest: totalInterest,
       totalPaid: totalPaid,
       balancePoints: points,
@@ -125,7 +126,7 @@ const FinancialCalculatorScreen = () => {
     : (loanAmount !== '' && mortgageRate !== '' && mortgageYears !== '');
 
   const { fv, invested, growth, gainPct, portfolioPoints, capitalPoints } = investmentResults;
-  const { monthlyPayment, totalInterest, totalPaid, balancePoints, amortizationTable } = mortgageResults;
+  const { monthlyPayment, monthlyRate, totalInterest, totalPaid, balancePoints, amortizationTable } = mortgageResults;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -250,51 +251,56 @@ const FinancialCalculatorScreen = () => {
             </>
           ) : (
             <>
-              <Text style={styles.label}>Monto del préstamo (capital)</Text>
+              <Text style={styles.label}>Importe del préstamo</Text>
               <TextInput
                 style={styles.input}
                 value={loanAmount}
                 onChangeText={setLoanAmount}
                 keyboardType="numeric"
-                placeholder="200000"
+                placeholder="70000"
                 placeholderTextColor="#B8B8B8"
               />
 
-              <Text style={styles.label}>Tipo de interés (TAE %)</Text>
+              <Text style={styles.label}>Tasa de interés anual (TAE %)</Text>
               <TextInput
                 style={styles.input}
                 value={mortgageRate}
                 onChangeText={setMortgageRate}
                 keyboardType="numeric"
-                placeholder="3.5"
+                placeholder="3.8"
                 placeholderTextColor="#B8B8B8"
               />
 
-              <Text style={styles.label}>Plazo del préstamo (años)</Text>
+              <Text style={styles.label}>Plazo del préstamo (Años)</Text>
               <TextInput
                 style={styles.input}
                 value={mortgageYears}
                 onChangeText={setMortgageYears}
                 keyboardType="numeric"
-                placeholder="30"
+                placeholder="10"
                 placeholderTextColor="#B8B8B8"
               />
 
-              <View style={[styles.resultCard,]}>
-                <Text style={[styles.resultHeaderText, { color: '#999999' }]}>Pago mensual</Text>
+               <View style={[styles.resultCard,]}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Text style={[styles.resultHeaderText, { color: '#999999' }]}>Pago mensual</Text>
+                  <View style={[styles.badge, { backgroundColor: '#5D00DF', minWidth: 65 }]}>
+                    <Text style={styles.badgeText}>{monthlyRate.toFixed(2)}% mes</Text>
+                  </View>
+                </View>
                 <View style={styles.resultValueRow}>
                   <Text style={[styles.resultValue,  ]} numberOfLines={1} adjustsFontSizeToFit>
-                    {formatCurrency(monthlyPayment)}
+                    {formatFullCurrency(monthlyPayment)}
                   </Text>
                 </View>
                 <View style={styles.resultBottomRow}>
                   <View style={styles.resultInfoBlock}>
-                    <Text style={[styles.resultInfoLabel,  ]}>Total pagada</Text>
-                    <Text style={[styles.resultInfoValue,  ]}>{formatCurrency(totalPaid)}</Text>
+                    <Text style={[styles.resultInfoLabel,  ]}>Total a pagar</Text>
+                    <Text style={[styles.resultInfoValue,  ]}>{formatFullCurrency(totalPaid)}</Text>
                   </View>
                   <View style={styles.resultInfoBlock}>
                     <Text style={[styles.resultInfoLabel,  ]}>Intereses totales</Text>
-                    <Text style={[styles.resultInfoValue, { color: '#34C759' }]}>{formatCurrency(totalInterest)}</Text>
+                    <Text style={[styles.resultInfoValue, { color: '#34C759' }]}>{formatFullCurrency(totalInterest)}</Text>
                   </View>
                 </View>
               </View>
