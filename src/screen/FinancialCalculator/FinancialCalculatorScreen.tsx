@@ -336,25 +336,53 @@ const FinancialCalculatorScreen = () => {
                 placeholderTextColor="#B8B8B8"
               />
 
-               <View style={[styles.resultCard,]}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Text style={[styles.resultHeaderText, { color: '#999999' }]}>Pago mensual</Text>
-                  <View style={[styles.badge, { backgroundColor: '#5D00DF', minWidth: 65 }]}>
-                    <Text style={styles.badgeText}>{monthlyRate.toFixed(2)}% mes</Text>
+               <View style={styles.resultCard}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                  <Text style={[styles.resultHeaderText, { color: '#999999', marginBottom: 0 }]}>Detalles del Préstamo</Text>
+                  <View style={[styles.badge, { backgroundColor: '#5D00DF', minWidth: 70 }]}>
+                    <Text style={styles.badgeText}>{mortgageRate}% TAE</Text>
                   </View>
                 </View>
+
+                {/* Main Payment Display */}
                 <View style={styles.resultValueRow}>
-                  <Text style={[styles.resultValue,  ]} numberOfLines={1} adjustsFontSizeToFit>
-                    {formatFullCurrency(monthlyPayment)}
-                  </Text>
+                  <View>
+                    <Text style={[styles.resultInfoLabel, { fontSize: 13 }]}>Cuota Mensual (M)</Text>
+                    <Text style={[styles.resultValue, { fontSize: 28 }]} numberOfLines={1} adjustsFontSizeToFit>
+                      {formatFullCurrency(monthlyPayment)}
+                    </Text>
+                  </View>
                 </View>
+
+                {/* Spreadsheet-like breakdown */}
+                <View style={[styles.resultBottomRow, { marginTop: 10, flexWrap: 'wrap', gap: 16 }]}>
+                  <View style={[styles.resultInfoBlock, { minWidth: '45%' }]}>
+                    <Text style={[styles.resultInfoLabel, { marginBottom: 2 }]}>Importe (P)</Text>
+                    <Text style={styles.resultInfoValue}>{formatFullCurrency(parseLocaleNumber(loanAmount))}</Text>
+                  </View>
+                  <View style={[styles.resultInfoBlock, { minWidth: '45%' }]}>
+                    <Text style={[styles.resultInfoLabel, { marginBottom: 2 }]}>Meses (n)</Text>
+                    <Text style={styles.resultInfoValue}>{(parseInt(mortgageYears, 10) || 0) * 12}</Text>
+                  </View>
+                  <View style={[styles.resultInfoBlock, { minWidth: '45%' }]}>
+                    <Text style={[styles.resultInfoLabel, { marginBottom: 2 }]}>Tasa Mensual (r)</Text>
+                    <Text style={styles.resultInfoValue}>{monthlyRate.toFixed(4)}%</Text>
+                  </View>
+                  <View style={[styles.resultInfoBlock, { minWidth: '45%' }]}>
+                    <Text style={[styles.resultInfoLabel, { marginBottom: 2 }]}>Plazo (Años)</Text>
+                    <Text style={styles.resultInfoValue}>{mortgageYears} Años</Text>
+                  </View>
+                </View>
+
+                <View style={styles.statsVerticalDivider} />
+
                 <View style={styles.resultBottomRow}>
                   <View style={styles.resultInfoBlock}>
-                    <Text style={[styles.resultInfoLabel,  ]}>Total a pagar</Text>
-                    <Text style={[styles.resultInfoValue,  ]}>{formatFullCurrency(totalPaid)}</Text>
+                    <Text style={styles.resultInfoLabel}>Total a pagar</Text>
+                    <Text style={styles.resultInfoValue}>{formatFullCurrency(totalPaid)}</Text>
                   </View>
                   <View style={styles.resultInfoBlock}>
-                    <Text style={[styles.resultInfoLabel,  ]}>Intereses totales</Text>
+                    <Text style={styles.resultInfoLabel}>Intereses totales</Text>
                     <Text style={[styles.resultInfoValue, { color: '#34C759' }]}>{formatFullCurrency(totalInterest)}</Text>
                   </View>
                 </View>
@@ -603,5 +631,10 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 17,
     fontFamily: font.PoppinsBold,
+  },
+  statsVerticalDivider: {
+    height: 1,
+    backgroundColor: '#ECECEC',
+    marginVertical: 15,
   },
 });
