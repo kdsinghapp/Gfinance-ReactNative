@@ -1,15 +1,39 @@
 // src/engine/calculator.ts
 
 // Utility to safely parse numbers from strings with currency/symbols
-const parseNum = (val: any): number => {
+// Utility to safely parse numbers from strings with currency/symbols
+// Handles both '.' and ',' as decimal separators
+export const parseLocaleNumber = (val: any): number => {
   if (typeof val === 'number') return isNaN(val) ? 0 : val;
-  if (typeof val === 'string') {
-    const cleaned = val.replace(/[^0-9.]/g, '');
+  if (typeof val === 'string' && val.trim() !== '') {
+    // 1. Remove thousands separators (dots if there's a comma later, or commas if there's a dot later)
+    // For simplicity in a Spanish context, we'll strip dots and then convert comma to dot.
+    // If there's no comma, we treat the dot as a decimal (allowing standard US input too).
+    
+    let normalized = val.trim();
+    const lastComma = normalized.lastIndexOf(',');
+    const lastDot = normalized.lastIndexOf('.');
+    
+    if (lastComma > -1 && lastComma > lastDot) {
+      // Comma is decimal. Remove dots (thousands) and replace comma.
+      normalized = normalized.replace(/\./g, '').replace(',', '.');
+    } else if (lastDot > -1 && lastDot > lastComma) {
+      // Dot is decimal. Remove commas (thousands).
+      normalized = normalized.replace(/,/g, '');
+    } else if (lastComma > -1) {
+      // Only comma present.
+      normalized = normalized.replace(',', '.');
+    }
+    
+    // Final cleanup: remove anything not a digit or the decimal dot
+    const cleaned = normalized.replace(/[^0-9.]/g, '');
     const num = parseFloat(cleaned);
     return isNaN(num) ? 0 : num;
   }
   return 0;
 };
+
+const parseNum = parseLocaleNumber;
 
 export type Weights = { RV: number; RF: number; Cash: number; Crypto: number }; // 0..1
 
@@ -529,28 +553,35 @@ export function formatCurrency(value: number): string {
   const absValue = Math.abs(value);
   const sign = value < 0 ? '-' : '';
 
-  if (absValue >= 1e15) return `${sign}${(absValue / 1e15).toFixed(2)}Q`;
-  if (absValue >= 1e12) return `${sign}€${(absValue / 1e12).toFixed(2)}T`;
-  if (absValue >= 1e9)  return `${sign}€${(absValue / 1e9).toFixed(2)}B`;
-  if (absValue >= 1e6)  return `${sign}€${(absValue / 1e6).toFixed(2)}M`;
-  if (absValue >= 1e3)  return `${sign}€${(absValue / 1e3).toFixed(1)}K`;
+  let formatted = '';
+  if (absValue >= 1e15) formatted = `${(absValue / 1e15).toFixed(2)}Q`;
+  else if (absValue >= 1e12) formatted = `${(absValue / 1e12).toFixed(2)}T`;
+  else if (absValue >= 1e9)  formatted = `${(absValue / 1e9).toFixed(2)}B`;
+  else if (absValue >= 1e6)  formatted = `${(absValue / 1e6).toFixed(2)}M`;
+  else if (absValue >= 1e3)  formatted = `${(absValue / 1e3).toFixed(1)}K`;
+  else formatted = Math.round(absValue).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-  return `${sign}€${Math.round(absValue).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+  // Convert dot to comma for decimals if present
+  formatted = formatted.replace('.', ',');
+  
+  return `${sign}€${formatted}`;
 }
 
 export function formatFullCurrency(value: number): string {
-  if (value === null || value === undefined || isNaN(value)) return '$0';
+  if (value === null || value === undefined || isNaN(value)) return '€0,00';
   if (!isFinite(value)) return '∞';
 
   const sign = value < 0 ? '-' : '';
   const parts = Math.abs(value).toFixed(2).split('.');
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  // Thousands separator: dot
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   
-  return `${sign}€${parts.join('.')}`;
+  // Decimal separator: comma
+  return `${sign}€${parts[0]},${parts[1]}`;
 }
 
-export function formatPercent(value: number, decimals = 0): string {
-  return `${value.toFixed(decimals)}%`;
+export function formatPercent(value: number, decimals = 2): string {
+  return `${value.toFixed(decimals).replace('.', ',')}%`;
 }
 
 // Helper for RecommendedAllocation screen

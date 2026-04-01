@@ -160,6 +160,37 @@ const translations = {
       language: 'Language',
       logout: 'Logout',
     },
+
+    definitions: {
+      tae: {
+        title: 'APR (Annual Percentage Rate)',
+        desc: 'The annual cost of borrowing or the annual yield on an investment, including all fees and interests. Use it to compare different financial products.',
+      },
+      horizon: {
+        title: 'Investment Horizon',
+        desc: 'The period of time you expect to hold an investment before needing the money back. Longer horizons generally allow for higher risk and potential returns.',
+      },
+      equity: {
+        title: 'Equities (Stocks)',
+        desc: 'Ownership in companies. They don\'t have a guaranteed return and prices fluctuate, but historically they offer the highest long-term growth.',
+      },
+      fixed_income: {
+        title: 'Fixed Income (Bonds)',
+        desc: 'Loans to governments or corporations. You receive a fixed interest rate. It is more stable than stocks but typically offers lower long-term returns.',
+      },
+      amortization: {
+        title: 'French Amortization',
+        desc: 'A system where your monthly payment remains constant. Initially, you pay more interest; over time, more of your payment goes towards the principal.',
+      },
+      initial_capital: {
+        title: 'Initial Investment',
+        desc: 'The lump sum amount you invest at the start of your financial plan.',
+      },
+      contributions: {
+        title: 'Periodic Contributions',
+        desc: 'The amount of money you save and invest regularly (weekly, monthly, or annually).',
+      },
+    },
   },
   es: {
     ChangeLanguage: 'Cambiar idioma',
@@ -319,6 +350,37 @@ const translations = {
       preferences: 'Preferencias',
       language: 'Idioma',
       logout: 'Cerrar sesión',
+    },
+
+    definitions: {
+      tae: {
+        title: 'TAE (Tasa Anual Equivalente)',
+        desc: 'Indica el coste o rendimiento real de un producto financiero al año. Incluye intereses y comisiones, lo que permite comparar diferentes opciones fácilmente.',
+      },
+      horizon: {
+        title: 'Horizonte de Inversión',
+        desc: 'El tiempo que planeas mantener tu dinero invertido. Un horizonte largo te permite superar caídas temporales del mercado y buscar mayores beneficios.',
+      },
+      equity: {
+        title: 'Renta Variable (Acciones)',
+        desc: 'Inversión en empresas donde pasas a ser "socio". No hay rentabilidad garantizada y el precio oscila, pero ofrece el mayor potencial de crecimiento a largo plazo.',
+      },
+      fixed_income: {
+        title: 'Renta Fija (Bonos)',
+        desc: 'Préstamos que haces a gobiernos o empresas a cambio de un interés fijo. Es más segura y predecible que las acciones, aunque suele dar menor rentabilidad.',
+      },
+      amortization: {
+        title: 'Amortización Francesa',
+        desc: 'Sistema donde pagas una cuota mensual fija. Al principio de la hipoteca pagas más intereses y al final devuelves más capital acumulado.',
+      },
+      initial_capital: {
+        title: 'Capital Inicial',
+        desc: 'Cantidad de dinero con la que empiezas tu plan de inversión o el importe total del préstamo solicitado.',
+      },
+      contributions: {
+        title: 'Contribuciones Periódicas',
+        desc: 'El ahorro constante que añades a tu plan de inversión cada semana, mes o año para aprovechar el interés compuesto.',
+      },
     },
   },
 };

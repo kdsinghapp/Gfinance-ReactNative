@@ -15,7 +15,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 import i18n from '../../i18n';
-import { calculatePlan } from '../../engine/calculator';
+import { calculatePlan, formatFullCurrency, parseLocaleNumber } from '../../engine/calculator';
+import InfoModal from '../../compoent/InfoModal';
 import GrowthChart from '../../compoent/GrowthChart';
 import { Storage } from '../../engine/storage';
 import { Analytics } from '../../engine/analytics';
@@ -48,6 +49,18 @@ const InvestmentScenarioScreen: React.FC = () => {
   const [planName, setPlanName] = useState('');
 
   const [selectedRange, setSelectedRange] = useState<RangeKey>('3Y');
+
+  // Info Modal State
+  const [infoVisible, setInfoVisible] = useState(false);
+  const [infoContent, setInfoContent] = useState({ title: '', desc: '' });
+
+  const showInfo = (key: string) => {
+    const defs = (i18n.t('definitions') as any) || {};
+    if (defs[key]) {
+      setInfoContent(defs[key]);
+      setInfoVisible(true);
+    }
+  };
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -157,10 +170,7 @@ const InvestmentScenarioScreen: React.FC = () => {
     }
   };
   const formatCurrency = (amount: number) => {
-    return `$${amount.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })}`;
+    return formatFullCurrency(amount);
   };
   const lastPoint = chartData[chartData.length - 1];
 
@@ -201,6 +211,7 @@ const InvestmentScenarioScreen: React.FC = () => {
             <AllocationRing
               allocation={allocation}
               totalValue={formatCurrency(totalPortfolioValue)}
+              onInfoPress={showInfo}
             />
 
           </View>
@@ -361,6 +372,13 @@ const InvestmentScenarioScreen: React.FC = () => {
             </View>
           </View>
         </Modal>
+
+        <InfoModal
+          visible={infoVisible}
+          title={infoContent.title}
+          description={infoContent.desc}
+          onClose={() => setInfoVisible(false)}
+        />
       </Animated.View>
     </SafeAreaView>
   );
@@ -376,6 +394,7 @@ type AllocationRingProps = {
     crypto: number;
   };
   totalValue: string;
+  onInfoPress: (key: string) => void;
 };
 
 const RING_SIZE = 200;
@@ -393,6 +412,7 @@ const SLICES = [
 const AllocationRing: React.FC<AllocationRingProps> = ({
   allocation,
   totalValue,
+  onInfoPress,
 }) => {
   const cx = RING_SIZE / 2;
   const cy = RING_SIZE / 2;
@@ -492,14 +512,15 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
                 marginBottom: 2
 
               }}>Equities</Text>
-              <Image
-
-                style={{
-                  height: 15,
-                  width: 15,
-                  left: 5
-                }}
-                source={imageIndex.wait} />
+              <TouchableOpacity onPress={() => onInfoPress('equity')}>
+                <Image
+                  style={{
+                    height: 15,
+                    width: 15,
+                    left: 5
+                  }}
+                  source={imageIndex.wait} />
+              </TouchableOpacity>
             </View>
 
             <Text style={{
@@ -534,14 +555,15 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
                 fontFamily: font.PoppinsRegular,
                 marginBottom: 2
               }}>Fixed Income</Text>
-              <Image
-
-                style={{
-                  height: 15,
-                  width: 15,
-                  left: 5
-                }}
-                source={imageIndex.wait} />
+              <TouchableOpacity onPress={() => onInfoPress('fixed_income')}>
+                <Image
+                  style={{
+                    height: 15,
+                    width: 15,
+                    left: 5
+                  }}
+                  source={imageIndex.wait} />
+              </TouchableOpacity>
             </View>
 
             <Text style={{
@@ -582,14 +604,15 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
                 marginBottom: 2
 
               }}>Cash</Text>
-              <Image
-
-                style={{
-                  height: 15,
-                  width: 15,
-                  left: 5
-                }}
-                source={imageIndex.wait} />
+              <TouchableOpacity onPress={() => onInfoPress('tae')}>
+                <Image
+                  style={{
+                    height: 15,
+                    width: 15,
+                    left: 5
+                  }}
+                  source={imageIndex.wait} />
+              </TouchableOpacity>
             </View>
 
             <Text style={{
@@ -620,13 +643,15 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
                 fontFamily: font.PoppinsRegular,
                 marginBottom: 2
               }}>Crypto</Text>
-              <Image
-                style={{
-                  height: 15,
-                  width: 15,
-                  left: 5
-                }}
-                source={imageIndex.wait} />
+              <TouchableOpacity onPress={() => onInfoPress('equity')}>
+                <Image
+                  style={{
+                    height: 15,
+                    width: 15,
+                    left: 5
+                  }}
+                  source={imageIndex.wait} />
+              </TouchableOpacity>
             </View>
 
             <Text style={{

@@ -11,7 +11,15 @@ import {
 } from 'react-native';
 import Svg, { Path, Line, Circle, Text as SvgText } from 'react-native-svg';
 import ScreenNameEnum from '../../routes/screenName.enum';
-import { formatCurrency, futureValue, calculateMortgagePayment, generateAmortizationTable, formatFullCurrency } from '../../engine/calculator';
+import { 
+  formatCurrency, 
+  futureValue, 
+  calculateMortgagePayment, 
+  generateAmortizationTable, 
+  formatFullCurrency,
+  parseLocaleNumber 
+} from '../../engine/calculator';
+import InfoModal from '../../compoent/InfoModal';
 import i18n from '../../i18n';
 import StatusBarComponent from '../../compoent/StatusBarCompoent';
 import CustomHeader from '../../compoent/CustomHeader';
@@ -45,13 +53,25 @@ const FinancialCalculatorScreen = () => {
   const [mortgageRate, setMortgageRate] = useState('');
   const [mortgageYears, setMortgageYears] = useState('');
 
+  // Info Modal State
+  const [infoVisible, setInfoVisible] = useState(false);
+  const [infoContent, setInfoContent] = useState({ title: '', desc: '' });
+
+  const showInfo = (key: string) => {
+    const defs = (i18n.t('definitions') as any) || {};
+    if (defs[key]) {
+      setInfoContent(defs[key]);
+      setInfoVisible(true);
+    }
+  };
+
   const investmentResults = useMemo(() => {
-    const cap = parseFloat(capital) || 0;
-    const cont = parseFloat(contribution) || 0;
+    const cap = parseLocaleNumber(capital);
+    const cont = parseLocaleNumber(contribution);
     const rawYears = parseInt(years, 10) || 0;
     const horizon = Math.max(1, Math.min(rawYears, 100));
 
-    const annualRate = (parseFloat(returnRate) || 0) / 100;
+    const annualRate = parseLocaleNumber(returnRate) / 100;
     const mults = { weekly: 52, monthly: 12, annual: 1 };
     const m = mults[frequency] || 12;
     const n = horizon * m;
@@ -85,8 +105,8 @@ const FinancialCalculatorScreen = () => {
   }, [capital, contribution, frequency, returnRate, years]);
 
   const mortgageResults = useMemo(() => {
-    const principal = parseFloat(loanAmount) || 0;
-    const rate = parseFloat(mortgageRate) || 0;
+    const principal = parseLocaleNumber(loanAmount);
+    const rate = parseLocaleNumber(mortgageRate);
     const yrs = parseInt(mortgageYears, 10) || 0;
 
     const payment = calculateMortgagePayment(principal, rate, yrs);
@@ -160,7 +180,12 @@ const FinancialCalculatorScreen = () => {
         <View style={[styles.mainCard, { paddingBottom: 24 }]}>
           {mode === 'investment' ? (
             <>
-              <Text style={styles.label}>{ft.initialLabel || 'Initial Capital'}</Text>
+              <View style={styles.labelRow}>
+                <Text style={styles.label}>{ft.initialLabel || 'Initial Capital'}</Text>
+                <TouchableOpacity onPress={() => showInfo('initial_capital')}>
+                  <Icon name="info-outline" size={18} color="#B8B8B8" />
+                </TouchableOpacity>
+              </View>
               <TextInput
                 style={styles.input}
                 value={capital}
@@ -170,7 +195,12 @@ const FinancialCalculatorScreen = () => {
                 placeholderTextColor="#B8B8B8"
               />
 
-              <Text style={styles.label}>{ft.monthlyLabel || 'Periodic Contribution'}</Text>
+              <View style={styles.labelRow}>
+                <Text style={styles.label}>{ft.monthlyLabel || 'Periodic Contribution'}</Text>
+                <TouchableOpacity onPress={() => showInfo('contributions')}>
+                  <Icon name="info-outline" size={18} color="#B8B8B8" />
+                </TouchableOpacity>
+              </View>
               <TextInput
                 style={styles.input}
                 value={contribution}
@@ -199,7 +229,12 @@ const FinancialCalculatorScreen = () => {
                 })}
               </View>
 
-              <Text style={styles.label}>{ft.returnLabel || 'Expected Return (%)'}</Text>
+              <View style={styles.labelRow}>
+                <Text style={styles.label}>{ft.returnLabel || 'Expected Return (%)'}</Text>
+                <TouchableOpacity onPress={() => showInfo('tae')}>
+                  <Icon name="info-outline" size={18} color="#B8B8B8" />
+                </TouchableOpacity>
+              </View>
               <TextInput
                 style={styles.input}
                 value={returnRate}
@@ -209,7 +244,12 @@ const FinancialCalculatorScreen = () => {
                 placeholderTextColor="#B8B8B8"
               />
 
-              <Text style={styles.label}>{ft.horizonLabel || 'Horizon (Years)'}</Text>
+              <View style={styles.labelRow}>
+                <Text style={styles.label}>{ft.horizonLabel || 'Horizon (Years)'}</Text>
+                <TouchableOpacity onPress={() => showInfo('horizon')}>
+                  <Icon name="info-outline" size={18} color="#B8B8B8" />
+                </TouchableOpacity>
+              </View>
               <TextInput
                 style={styles.input}
                 value={years}
@@ -251,7 +291,12 @@ const FinancialCalculatorScreen = () => {
             </>
           ) : (
             <>
-              <Text style={styles.label}>Importe del préstamo</Text>
+              <View style={styles.labelRow}>
+                <Text style={styles.label}>Importe del préstamo</Text>
+                <TouchableOpacity onPress={() => showInfo('initial_capital')}>
+                  <Icon name="info-outline" size={18} color="#B8B8B8" />
+                </TouchableOpacity>
+              </View>
               <TextInput
                 style={styles.input}
                 value={loanAmount}
@@ -261,7 +306,12 @@ const FinancialCalculatorScreen = () => {
                 placeholderTextColor="#B8B8B8"
               />
 
-              <Text style={styles.label}>Tasa de interés anual (TAE %)</Text>
+              <View style={styles.labelRow}>
+                <Text style={styles.label}>Tasa de interés anual (TAE %)</Text>
+                <TouchableOpacity onPress={() => showInfo('tae')}>
+                  <Icon name="info-outline" size={18} color="#B8B8B8" />
+                </TouchableOpacity>
+              </View>
               <TextInput
                 style={styles.input}
                 value={mortgageRate}
@@ -271,7 +321,12 @@ const FinancialCalculatorScreen = () => {
                 placeholderTextColor="#B8B8B8"
               />
 
-              <Text style={styles.label}>Plazo del préstamo (Años)</Text>
+              <View style={styles.labelRow}>
+                <Text style={styles.label}>Plazo del préstamo (Años)</Text>
+                <TouchableOpacity onPress={() => showInfo('horizon')}>
+                  <Icon name="info-outline" size={18} color="#B8B8B8" />
+                </TouchableOpacity>
+              </View>
               <TextInput
                 style={styles.input}
                 value={mortgageYears}
@@ -327,6 +382,13 @@ const FinancialCalculatorScreen = () => {
         </View>
 
       </ScrollView>
+
+      <InfoModal
+        visible={infoVisible}
+        title={infoContent.title}
+        description={infoContent.desc}
+        onClose={() => setInfoVisible(false)}
+      />
     </SafeAreaView>
   );
 };
@@ -403,11 +465,19 @@ const styles = StyleSheet.create({
     elevation: 15,
   },
 
+  labelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 10,
+    marginBottom: 0,
+  },
+
   label: {
     fontSize: 14,
     color: '#000000',
-    marginBottom: 12,
-    marginTop: 10,
+    marginBottom: 10,
+    marginTop: 0,
     fontFamily: font.PoppinsSemiBold
   },
 
