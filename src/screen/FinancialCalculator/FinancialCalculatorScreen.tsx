@@ -388,11 +388,7 @@ const FinancialCalculatorScreen = () => {
                 </View>
               </View>
 
-              <InvestmentGraph
-                portfolioData={balancePoints}
-                capitalData={new Array(balancePoints.length).fill(0)}
-                years={parseInt(mortgageYears, 10) || 1}
-              />
+
 
               <TouchableOpacity
                 style={[styles.generateButton, { marginTop: 24, opacity: isFormValid ? 1 : 0.5 }]}

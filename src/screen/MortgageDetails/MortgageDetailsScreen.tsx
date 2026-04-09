@@ -12,6 +12,7 @@ import {
   formatFullCurrency,
   calculateMortgagePayment,
   generateAmortizationTable,
+  parseLocaleNumber,
 } from '../../engine/calculator';
 import font from '../../theme/font';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -92,8 +93,8 @@ const MortgageDetailsScreen = () => {
   const { loanAmount, mortgageRate, mortgageYears } = route.params || {};
 
   const mortgageResults = useMemo(() => {
-    const principal = parseFloat(loanAmount) || 0;
-    const rate = parseFloat(mortgageRate) || 0;
+    const principal = parseLocaleNumber(loanAmount);
+    const rate = parseLocaleNumber(mortgageRate);
     const yrs = parseInt(mortgageYears, 10) || 0;
 
     const payment = calculateMortgagePayment(principal, rate, yrs);
@@ -128,7 +129,7 @@ const MortgageDetailsScreen = () => {
         {/* Rate & Term badges */}
         <View style={styles.badgeRow}>
           <View style={styles.badge}>
-            <Text style={styles.badgeText}>{mortgageRate}% p.a.</Text>
+            <Text style={styles.badgeText}>{mortgageRate}% TAE</Text>
           </View>
           <View style={styles.badge}>
             <Text style={styles.badgeText}>{mortgageYears} Años</Text>
@@ -140,7 +141,7 @@ const MortgageDetailsScreen = () => {
       <View style={styles.statsCard}>
         <StatPill
           label="Monto del préstamo"
-          value={formatFullCurrency(parseFloat(loanAmount) || 0)}
+          value={formatFullCurrency(parseLocaleNumber(loanAmount))}
         />
         <View style={styles.statsVerticalDivider} />
         <StatPill
@@ -188,7 +189,7 @@ const MortgageDetailsScreen = () => {
           <View style={styles.yearSeparator}>
             <View style={styles.yearSeparatorLine} />
             <Text style={styles.yearSeparatorText}>
-              Year {item?.month / 12} complete
+              Año {item?.month / 12} completo
             </Text>
             <View style={styles.yearSeparatorLine} />
           </View>
@@ -226,14 +227,11 @@ const MortgageDetailsScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.bg} />
-      <CustomHeader label='Amortization Schedule'
+      <CustomHeader label='Calendario de amortización'
 
 
         leftPress={() =>
-          navigation.reset({
-            index: 0,
-            routes: [{ name: ScreenNameEnum.ChoosePlan }],
-          })
+          navigation.goBack()
         } />
       {/* List */}
       <FlatList
