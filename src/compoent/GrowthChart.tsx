@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { View, StyleSheet, Dimensions, Text } from 'react-native';
 import Svg, { Path, Line, Text as SvgText } from 'react-native-svg';
+import font from '../theme/font';
 
 const { width } = Dimensions.get('window');
 
@@ -23,7 +24,7 @@ type Props = {
   data?: ChartItem[];
 };
 
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const safeNumber = (value: any, fallback = 0) => {
   const n = Number(value);
@@ -163,7 +164,7 @@ const GrowthChart: React.FC<Props> = ({ data = [] }) => {
         ))}
 
         {/* AREAS */}
-{/* <Path d={optArea} fill="#F59E0B" opacity={0.1} />
+        {/* <Path d={optArea} fill="#F59E0B" opacity={0.1} />
 <Path d={pessArea} fill="#3B82F6" opacity={0.2} />
 <Path d={neutralArea} fill="#22C55E" opacity={0.1} /> */}
 
@@ -208,18 +209,26 @@ const GrowthChart: React.FC<Props> = ({ data = [] }) => {
         ))}
 
         {/* X LABELS */}
-        {pessimisticPoints.map((p, i) => (
-          <SvgText
-            key={i}
-            x={p.x}
-            y={CHART_HEIGHT - 10}
-            fontSize="10"
-            fill="#9CA3AF"
-            textAnchor="middle"
-          >
-            {p.label}
-          </SvgText>
-        ))}
+        {pessimisticPoints.map((p, i) => {
+          const total = pessimisticPoints.length;
+          // Filter to show max ~5-6 labels evenly spaced
+          const freq = Math.ceil(total / 5);
+          if (i % freq !== 0 && i !== total - 1) return null;
+
+          return (
+            <SvgText
+              key={i}
+              x={p.x}
+              y={CHART_HEIGHT - 6}
+              fontSize="10"
+              fontWeight="500"
+              fill="#9CA3AF"
+              textAnchor="middle"
+            >
+              {p.label}
+            </SvgText>
+          );
+        })}
 
       </Svg>
 
@@ -265,7 +274,7 @@ const styles = StyleSheet.create({
   legendText: {
     fontSize: 13,
     color: '#374151',
-    fontWeight: '500',
+    fontFamily: font.PoppinsMedium,
   },
 
   dot: {

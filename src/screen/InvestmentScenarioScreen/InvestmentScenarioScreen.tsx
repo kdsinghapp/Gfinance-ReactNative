@@ -108,7 +108,11 @@ const InvestmentScenarioScreen: React.FC = () => {
     };
   }, [financialData]);
 
-
+  const totalInvested = useMemo(() => {
+    const years = horizon;
+    const m = frequency === 'weekly' ? 52 : frequency === 'monthly' ? 12 : 1;
+    return principal + (contribution * years * m);
+  }, [principal, contribution, horizon, frequency]);
 
   const chartData = useMemo(() => {
     // Strictly follow the selected horizon
@@ -500,7 +504,7 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
 
               <Text style={{
                 color: "#A9A9A9",
-                fontSize: 12,
+                fontSize: 11,
                 fontFamily: font.PoppinsRegular,
                 marginBottom: 2
 
@@ -533,7 +537,7 @@ const AllocationRing: React.FC<AllocationRingProps> = ({
                 width: 10,
                 backgroundColor: "#22C55E",
                 borderRadius: 20,
-                right: 8
+                right: 4
               }} />
 
               <Text style={{

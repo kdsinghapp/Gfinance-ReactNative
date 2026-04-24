@@ -343,9 +343,9 @@ export function buildProfile(quiz?: Quiz) {
  */
 const CAGR_DATA = {
   cash: {
-    pessimistic: { "1": 0.0, "2": 0.3, "3": 0.6, "5": 0.9, "7": 1.1, "10": 1.3, "15": 1.5 },
-    neutral: { "1": 1.2, "2": 1.3, "3": 1.4, "5": 1.5, "7": 1.6, "10": 1.7, "15": 1.8 },
-    optimistic: { "1": 2.0, "2": 2.0, "3": 2.0, "5": 2.0, "7": 2.0, "10": 2.0, "15": 2.0 }
+    pessimistic: { "1": 0.0, "2": 0.1, "3": 0.2, "5": 0.4, "7": 0.5, "10": 0.6, "15": 0.7 },
+    neutral: { "1": 0.2, "2": 0.3, "3": 0.4, "5": 0.6, "7": 0.7, "10": 0.8, "15": 0.9 },
+    optimistic: { "1": 0.4, "2": 0.5, "3": 0.7, "5": 1.0, "7": 1.2, "10": 1.4, "15": 1.6 }
   },
   fixed_income: {
     pessimistic: { "1": -3.0, "2": 0.5, "3": 1.5, "5": 2.5, "7": 3.0, "10": 3.3, "15": 3.5 },
@@ -368,22 +368,18 @@ export function getAssetRate(asset: keyof typeof CAGR_DATA, scenario: 'pessimist
   const data = CAGR_DATA[asset][scenario] as Record<string, number>;
   const horizons = [1, 2, 3, 5, 7, 10, 15];
   
-  if (years <= 1) return data["1"];
-  if (years >= 15) return data["15"];
-  if (data[years.toString()]) return data[years.toString()];
-  
-  let low = 1, high = 15;
-  for (let i = 0; i < horizons.length - 1; i++) {
-    if (years > horizons[i] && years < horizons[i+1]) {
-      low = horizons[i];
-      high = horizons[i+1];
+  // Find the nearest lower interval (bucket logic)
+  // 1-<2 uses 1y; 2-<3 uses 2y; 3-<5 uses 3y; 5-<7 uses 5y; 7-<10 uses 7y; 10-<15 uses 10y; 15+ uses 15y
+  let selectedHorizon = 1;
+  for (const h of horizons) {
+    if (years >= h) {
+      selectedHorizon = h;
+    } else {
       break;
     }
   }
   
-  const rLow = data[low.toString()];
-  const rHigh = data[high.toString()];
-  return rLow + (rHigh - rLow) * (years - low) / (high - low);
+  return data[selectedHorizon.toString()];
 }
 
 export function getWeightedRate(weights: Weights, scenario: 'pessimistic' | 'neutral' | 'optimistic', years: number): number {
@@ -605,11 +601,11 @@ export function formatCurrency(value: number): string {
   // Convert dot to comma for decimals if present
   formatted = formatted.replace('.', ',');
   
-  return `${sign}€${formatted}`;
+  return `${sign}$${formatted}`;
 }
 
 export function formatFullCurrency(value: number): string {
-  if (value === null || value === undefined || isNaN(value)) return '€0,00';
+  if (value === null || value === undefined || isNaN(value)) return '$0,00';
   if (!isFinite(value)) return '∞';
 
   const sign = value < 0 ? '-' : '';
@@ -618,7 +614,7 @@ export function formatFullCurrency(value: number): string {
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   
   // Decimal separator: comma
-  return `${sign}€${parts[0]},${parts[1]}`;
+  return `${sign}$${parts[0]},${parts[1]}`;
 }
 
 export function formatPercent(value: number, decimals = 2): string {
