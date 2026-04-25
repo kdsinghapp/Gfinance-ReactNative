@@ -53,7 +53,8 @@ export interface ScenarioResult {
   totalContributed: number;
   totalGrowth: number;
   growthPercentage: number;
-  yearlyValues: number[]; // value at end of each year
+  yearlyValues: number[]; // kept for compatibility
+  monthlyValues: number[]; // new granular values
 }
 
 export interface PlanResult {
@@ -417,16 +418,20 @@ export function futureValue(
   return isFinite(result) ? Math.min(result, 1e25) : 1e25;
 }
 
-function buildYearlyValues(
+function buildProgressionValues(
   principal: number,
   contrib: number,
   annualRate: number,
   years: number,
-  frequency: 'weekly' | 'monthly' | 'annual' = 'monthly'
+  frequency: 'weekly' | 'monthly' | 'annual' = 'monthly',
+  step: 'year' | 'month' = 'month'
 ): number[] {
   const values: number[] = [principal];
-  for (let y = 1; y <= years; y++) {
-    values.push(futureValue(principal, contrib, annualRate, y, frequency));
+  const totalSteps = step === 'year' ? years : years * 12;
+  
+  for (let i = 1; i <= totalSteps; i++) {
+    const t = step === 'year' ? i : i / 12;
+    values.push(futureValue(principal, contrib, annualRate, t, frequency));
   }
   return values;
 }
@@ -447,9 +452,11 @@ function buildScenario(
   
   const totalGrowth = finalValue - totalContributed;
   const growthPercentage = totalContributed > 0 ? (totalGrowth / totalContributed) * 100 : 0;
-  const yearlyValues = buildYearlyValues(principal, contrib, annualRate, years, frequency);
+  
+  const yearlyValues = buildProgressionValues(principal, contrib, annualRate, years, frequency, 'year');
+  const monthlyValues = buildProgressionValues(principal, contrib, annualRate, years, frequency, 'month');
 
-  return { label, annualRate, finalValue, totalContributed, totalGrowth, growthPercentage, yearlyValues };
+  return { label, annualRate, finalValue, totalContributed, totalGrowth, growthPercentage, yearlyValues, monthlyValues };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

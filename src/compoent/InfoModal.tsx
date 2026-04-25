@@ -7,8 +7,12 @@ import {
   TouchableOpacity,
   ScrollView,
   TouchableWithoutFeedback,
+  Dimensions,
 } from 'react-native';
 import font from '../theme/font';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 interface InfoModalProps {
   visible: boolean;
@@ -22,28 +26,28 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose, title, descript
     if (!description) return null;
 
     const lines = description.split('\n');
+    let currentSection: 'none' | 'que_es' | 'lo_importante' | 'riesgo' = 'none';
+
     return lines.map((line, index) => {
       const trimmed = line.trim();
-      if (!trimmed) return <View key={index} style={{ height: 8 }} />;
+      if (!trimmed) return <View key={index} style={{ height: 12 }} />;
 
-      // Header detection
-      const isHeader =
-        trimmed.startsWith('¿Qué es?') ||
-        trimmed.startsWith('Lo importante:') ||
-        trimmed.startsWith('Riesgo:');
-
-      // Tip detection
-      const isTip = trimmed.startsWith('👉');
-
-      if (isHeader) {
-        return (
-          <Text key={index} style={styles.sectionHeader}>
-            {trimmed}
-          </Text>
-        );
+      // Section Header Detection
+      if (trimmed.startsWith('¿Qué es?')) {
+        currentSection = 'que_es';
+        return <Text key={index} style={styles.sectionHeader}>{trimmed}</Text>;
+      }
+      if (trimmed.startsWith('Lo importante:')) {
+        currentSection = 'lo_importante';
+        return <Text key={index} style={styles.sectionHeader}>{trimmed}</Text>;
+      }
+      if (trimmed.startsWith('Riesgo:')) {
+        currentSection = 'riesgo';
+        return <Text key={index} style={[styles.sectionHeader, { color: '#E53935' }]}>{trimmed}</Text>;
       }
 
-      if (isTip) {
+      // Tip Detection
+      if (trimmed.startsWith('👉')) {
         return (
           <View key={index} style={styles.tipContainer}>
             <Text style={styles.tipText}>{trimmed}</Text>
@@ -51,27 +55,21 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose, title, descript
         );
       }
 
+      // Content Rendering based on section
+      if (currentSection === 'lo_importante') {
+        return (
+          <View key={index} style={styles.bulletRow}>
+            <View style={styles.bulletPoint} />
+            <Text style={styles.bodyText}>{trimmed}</Text>
+          </View>
+        );
+      }
+
+      // Default paragraph rendering
       return (
-
-        <View style={{
-          flexDirection: 'row',
-          alignItems: 'flex-start',
-          marginBottom: 10,
-          paddingRight: 10,
-        }}>
-          <View style={{
-            height: 6,
-            width: 6,
-            borderRadius: 3,
-            backgroundColor: '#111',
-            marginTop: 8,
-            marginRight: 12,
-          }} />
-          <Text style={[styles.bodyText, { flex: 1 }]}>
-            {trimmed}
-          </Text>
-        </View>
-
+        <Text key={index} style={styles.bodyText}>
+          {trimmed}
+        </Text>
       );
     });
   };
@@ -83,29 +81,52 @@ const InfoModal: React.FC<InfoModalProps> = ({ visible, onClose, title, descript
       animationType="fade"
       onRequestClose={onClose}
     >
-      <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.overlay}>
-          <TouchableWithoutFeedback>
-            <View style={styles.content}>
-              <View style={styles.header}>
-                <Text style={styles.title}>{title}</Text>
-              </View>
+      <View style={styles.overlay}>
+        {/* Backdrop for closing */}
+        <TouchableOpacity
+          style={styles.backdrop}
+          activeOpacity={1}
+          onPress={onClose}
+        />
 
-              <ScrollView
-                showsVerticalScrollIndicator={false}
-                style={styles.scrollArea}
-                contentContainerStyle={{ paddingBottom: 10 }}
-              >
-                {renderContent()}
-              </ScrollView>
-
-              <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                <Text style={styles.closeButtonText}>Entendido</Text>
-              </TouchableOpacity>
+        {/* Modal Content */}
+        <View style={styles.content}>
+          {/* Header */}
+          <View style={styles.modalHeader}>
+            <View style={styles.headerTitleContainer}>
+              <Text style={styles.title} numberOfLines={2}>{title}</Text>
+              {/* <View style={styles.titleUnderline} /> */}
             </View>
-          </TouchableWithoutFeedback>
+            <TouchableOpacity
+              onPress={onClose}
+              style={styles.closeIconButton}
+              activeOpacity={0.7}
+            >
+              <Icon name="close" size={24} color="#111" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Body */}
+          <View style={styles.scrollContainer}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              style={styles.scrollArea}
+              contentContainerStyle={styles.scrollContent}
+            >
+              {renderContent()}
+            </ScrollView>
+          </View>
+
+          {/* Footer */}
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={onClose}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.closeButtonText}>Entendido</Text>
+          </TouchableOpacity>
         </View>
-      </TouchableWithoutFeedback>
+      </View>
     </Modal>
   );
 };
@@ -115,72 +136,110 @@ export default InfoModal;
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 24,
+    padding: 20,
+  },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
   },
   content: {
     width: '100%',
-     backgroundColor: 'white',
+    maxHeight: SCREEN_HEIGHT * 0.8,
+    backgroundColor: '#FFFFFF',
     borderRadius: 32,
     padding: 24,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 20 },
-    shadowOpacity: 0.15,
-    shadowRadius: 30,
-    elevation: 20,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
   },
-  header: {
-    marginBottom: 20,
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+  headerTitleContainer: {
+    flex: 1,
+    marginRight: 10,
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     color: '#111',
     fontFamily: font.PoppinsBold,
-    marginBottom: 8,
+    lineHeight: 30,
   },
-  titleDivider: {
-    height: 3,
+  titleUnderline: {
+    height: 4,
     width: 40,
-    backgroundColor: 'black',
+    backgroundColor: '#111',
+    marginTop: 8,
     borderRadius: 2,
   },
+  closeIconButton: {
+    padding: 8,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+  },
+  scrollContainer: {
+    flexShrink: 1, // Crucial for ScrollView inside a maxHeight container
+    marginBottom: 20,
+  },
   scrollArea: {
-    marginBottom: 24,
+    flexGrow: 0,
+  },
+  scrollContent: {
+    paddingBottom: 8,
   },
   sectionHeader: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: font.PoppinsBold,
     color: '#111',
     marginTop: 12,
-    marginBottom: 6,
+    marginBottom: 8,
   },
   bodyText: {
-    fontSize: 15,
+    fontSize: 16,
     fontFamily: font.PoppinsRegular,
     color: '#444',
-    lineHeight: 22,
+    lineHeight: 24,
     marginBottom: 4,
   },
+  bulletRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 10,
+    paddingLeft: 4,
+  },
+  bulletPoint: {
+    height: 6,
+    width: 6,
+    borderRadius: 3,
+    backgroundColor: '#111',
+    marginTop: 10,
+    marginRight: 12,
+  },
   tipContainer: {
-    backgroundColor: '#F3F4F6',
-    borderRadius: 16,
-    padding: 16,
+    backgroundColor: '#F0F7FF',
+    borderRadius: 20,
+    padding: 20,
     marginTop: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: 'black',
+    borderLeftWidth: 5,
+    borderLeftColor: '#007AFF',
   },
   tipText: {
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: font.PoppinsMedium,
-    color: '#111',
-    lineHeight: 20,
+    color: '#0055B3',
+    lineHeight: 22,
   },
   closeButton: {
-    backgroundColor: 'black',
-    borderRadius: 18,
-    height: 54,
+    backgroundColor: '#111',
+    borderRadius: 20,
+    height: 56,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -190,8 +249,9 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   closeButtonText: {
-    color: 'white',
-    fontSize: 16,
+    color: '#FFFFFF',
+    fontSize: 17,
     fontFamily: font.PoppinsBold,
   },
 });
+

@@ -83,17 +83,21 @@ const InvestmentScenarioScreen: React.FC = () => {
   }, [plan]);
 
   const fullChartData = useMemo(() => {
-    const baseValues = currentScenarios.base.yearlyValues ?? [];
-    const conservativeValues = currentScenarios.conservative.yearlyValues ?? [];
-    const optimisticValues = currentScenarios.optimistic.yearlyValues ?? [];
+    const baseValues = (currentScenarios.base.monthlyValues ?? []).slice(1);
+    const conservativeValues = (currentScenarios.conservative.monthlyValues ?? []).slice(1);
+    const optimisticValues = (currentScenarios.optimistic.monthlyValues ?? []).slice(1);
 
-    return baseValues.map((val: number, idx: number) => ({
-      year: idx + 1,
-      label: `Y${idx + 1}`,
-      pessimistic: conservativeValues[idx] ?? 0,
-      neutral: val ?? 0,
-      optimistic: optimisticValues[idx] ?? 0,
-    }));
+    return baseValues.map((val: number, idx: number) => {
+      const month = idx + 1;
+      const isYearEnd = month % 12 === 0;
+      return {
+        month,
+        label: isYearEnd ? `Y${month / 12}` : `M${month}`,
+        pessimistic: conservativeValues[idx] ?? 0,
+        neutral: val ?? 0,
+        optimistic: optimisticValues[idx] ?? 0,
+      };
+    });
   }, [currentScenarios]);
 
   const initialPoint = useMemo(() => {

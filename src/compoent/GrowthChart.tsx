@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { View, StyleSheet, Dimensions, Text } from 'react-native';
 import Svg, { Path, Line, Text as SvgText } from 'react-native-svg';
 import font from '../theme/font';
+import i18n from '../i18n';
 
 const { width } = Dimensions.get('window');
 
@@ -112,18 +113,12 @@ const GrowthChart: React.FC<Props> = ({ data = [] }) => {
   const neutralPoints = buildPoints('neutral');
   const optimisticPoints = buildPoints('optimistic');
 
-  const buildSmoothPath = (pts: any[]) => {
+  const buildPath = (pts: any[]) => {
     if (pts.length < 2) return '';
     let d = `M ${pts[0].x} ${pts[0].y}`;
-
-    for (let i = 0; i < pts.length - 1; i++) {
-      const current = pts[i];
-      const next = pts[i + 1];
-      const cpX = (current.x + next.x) / 2;
-
-      d += ` C ${cpX} ${current.y}, ${cpX} ${next.y}, ${next.x} ${next.y}`;
+    for (let i = 1; i < pts.length; i++) {
+      d += ` L ${pts[i].x} ${pts[i].y}`;
     }
-
     return d;
   };
 
@@ -131,9 +126,9 @@ const GrowthChart: React.FC<Props> = ({ data = [] }) => {
     `${path} L ${pts[pts.length - 1].x} ${PAD_TOP + plotHeight}
      L ${pts[0].x} ${PAD_TOP + plotHeight} Z`;
 
-  const pessPath = buildSmoothPath(pessimisticPoints);
-  const neutralPath = buildSmoothPath(neutralPoints);
-  const optPath = buildSmoothPath(optimisticPoints);
+  const pessPath = buildPath(pessimisticPoints);
+  const neutralPath = buildPath(neutralPoints);
+  const optPath = buildPath(optimisticPoints);
 
   const pessArea = buildArea(pessPath, pessimisticPoints);
   const neutralArea = buildArea(neutralPath, neutralPoints);
@@ -171,19 +166,18 @@ const GrowthChart: React.FC<Props> = ({ data = [] }) => {
         {/* LINES */}
         <Path
           d={optPath}
-          stroke="#F59E0B"
+          stroke="#8B5CF6"
           strokeWidth={3}
           fill="none"
-          opacity={0.9}
+          opacity={1}
         />
 
         <Path
           d={pessPath}
-          stroke="#3B82F6"
+          stroke="#EF4444"
           strokeWidth={2}
           fill="none"
-          strokeDasharray="6 4"
-          opacity={0.7}
+          opacity={0.8}
         />
 
         <Path
@@ -211,9 +205,22 @@ const GrowthChart: React.FC<Props> = ({ data = [] }) => {
         {/* X LABELS */}
         {pessimisticPoints.map((p, i) => {
           const total = pessimisticPoints.length;
-          // Filter to show max ~5-6 labels evenly spaced
-          const freq = Math.ceil(total / 5);
-          if (i % freq !== 0 && i !== total - 1) return null;
+
+          // Logic for monthly data: Show 'Start' and Year ends (Y1, Y2, etc.)
+          // If the labels are too crowded, filter them further
+          const isStart = i === 0;
+          const isYearEnd = p.label?.startsWith('Y');
+          const isLast = i === total - 1;
+
+          if (!isStart && !isYearEnd && !isLast) return null;
+
+          // If too many years, only show every few years
+          if (isYearEnd) {
+            const yearNum = parseInt(p.label?.substring(1) || '0');
+            const totalYears = Math.ceil(total / 12);
+            const yearFreq = totalYears > 10 ? 5 : totalYears > 5 ? 2 : 1;
+            if (yearNum % yearFreq !== 0 && !isLast) return null;
+          }
 
           return (
             <SvgText
@@ -221,7 +228,7 @@ const GrowthChart: React.FC<Props> = ({ data = [] }) => {
               x={p.x}
               y={CHART_HEIGHT - 6}
               fontSize="10"
-              fontWeight="500"
+              fontWeight="600"
               fill="#9CA3AF"
               textAnchor="middle"
             >
@@ -235,18 +242,18 @@ const GrowthChart: React.FC<Props> = ({ data = [] }) => {
       {/* LEGEND */}
       <View style={styles.legendContainer}>
         <View style={styles.legendItem}>
-          <View style={[styles.dot, { backgroundColor: '#3B82F6' }]} />
-          <Text style={styles.legendText}>Pesimista</Text>
+          <View style={[styles.dot, { backgroundColor: '#EF4444' }]} />
+          <Text style={styles.legendText}>{i18n.t('results.conservative')}</Text>
         </View>
 
         <View style={styles.legendItem}>
           <View style={[styles.dot, { backgroundColor: '#22C55E' }]} />
-          <Text style={styles.legendText}>Neutral</Text>
+          <Text style={styles.legendText}>{i18n.t('results.base')}</Text>
         </View>
 
         <View style={styles.legendItem}>
-          <View style={[styles.dot, { backgroundColor: '#F59E0B' }]} />
-          <Text style={styles.legendText}>Optimista</Text>
+          <View style={[styles.dot, { backgroundColor: '#8B5CF6' }]} />
+          <Text style={styles.legendText}>{i18n.t('results.optimistic')}</Text>
         </View>
       </View>
 
